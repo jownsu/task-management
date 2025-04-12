@@ -1,7 +1,5 @@
 "use client";
 
-import { FcGoogle } from "react-icons/fc";
-
 /* COMPONENTS */
 import { Button } from "@/components/ui/button";
 import {
@@ -9,18 +7,18 @@ import {
 	CardContent,
 	CardTitle
 } from "@/components/ui/card";
+import KanbanIcon from "@/components/kanban-icon";
 
 /* ACTIONS */
 import { signIn } from "next-auth/react";
 
 const SocialsLogin = () => {
 	return (
-		<Card className="flex flex-col items-center max-w-[400] min-w-[400] mx-auto gap-[21]">
-			<CardTitle className="t-[21]">Login</CardTitle>
+		<Card className="flex flex-col items-center max-w-[560] w-full mx-auto gap-[21] border-none">
+			<CardTitle className="t-[21]"><KanbanIcon /></CardTitle>
 			<CardContent className="w-full flex flex-col gap-[12]">
 				<Button
-					variant="outline"
-					className="flex gap-[16] w-full"
+					className="flex gap-[16] w-full h-[53] rounded-lg text-md"
 					onClick={() =>
 						signIn("google", {
 							redirect: false,
@@ -28,8 +26,7 @@ const SocialsLogin = () => {
 						})
 					}
 				>
-					Sign in with Google
-					<FcGoogle className="size-[16]" />
+					Log in with Google
 				</Button>
 			</CardContent>
 		</Card>

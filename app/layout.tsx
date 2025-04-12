@@ -5,7 +5,6 @@ import type { Metadata } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
 
 /* COMPONENTS */
-import Nav from "@/components/navigation/nav";
 import Providers from "@/components/providers";
 
 /* STYLES */
@@ -33,7 +32,6 @@ export default function RootLayout({
 				className={`${jakarta.variable} bg-background flex flex-col gap-[16] min-h-screen`}
 			>
 				<Providers>
-					<Nav />
 					<main className="px-[16] flex h-full flex-1">
 						{children}
 					</main>

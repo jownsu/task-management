@@ -71,7 +71,25 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+  
   --font-main: var(--font-jakarta);
+
+  --text-xl: 1.5rem;
+  --text-xl--line-height: 1.875rem;
+  --text-xl--font-weight: 700;
+
+  --text-lg: 1.125rem;
+  --text-lg--line-height: 1.438rem;
+  --text-lg--font-weight: 700;
+
+  --text-md: 0.938rem;
+  --text-md--line-height: 1.188rem;
+  --text-md--font-weight: 700;
+
+  --text-sm: 0.75rem;
+  --text-sm--line-height: 0.938rem;
+  --text-sm--font-weight: 700;
+  --text-sm--letter-spacing: 0.15rem;
 }
 
 @utility container {
