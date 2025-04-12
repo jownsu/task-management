@@ -2,7 +2,7 @@
 import type { Metadata } from "next";
 
 /* PLUGINS */
-import { Poppins } from "next/font/google";
+import { Plus_Jakarta_Sans } from "next/font/google";
 
 /* COMPONENTS */
 import Nav from "@/components/navigation/nav";
@@ -11,10 +11,10 @@ import Providers from "@/components/providers";
 /* STYLES */
 import "./globals.css";
 
-const poppins = Poppins({
-	variable: "--font-poppins",
+const jakarta = Plus_Jakarta_Sans({
+	variable: "--font-jakarta",
 	subsets: ["latin"],
-	weight: ["100", "200", "300", "400","500", "600", "700"]
+	weight: ["200", "300", "400","500", "600", "700"]
 });
 
 export const metadata: Metadata = {
@@ -30,7 +30,7 @@ export default function RootLayout({
 	return (
 		<html lang="en" suppressHydrationWarning>
 			<body
-				className={`$${poppins.variable} bg-background flex flex-col gap-[16] min-h-screen`}
+				className={`${jakarta.variable} bg-background flex flex-col gap-[16] min-h-screen`}
 			>
 				<Providers>
 					<Nav />
