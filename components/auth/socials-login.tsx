@@ -1,7 +1,5 @@
 "use client";
 
-/* PLUGINS */
-import { FaGithub } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 
 /* COMPONENTS */
@@ -32,19 +30,6 @@ const SocialsLogin = () => {
 				>
 					Sign in with Google
 					<FcGoogle className="size-[16]" />
-				</Button>
-				<Button
-					variant="outline"
-					className="flex gap-[16] w-full"
-					onClick={() =>
-						signIn("github", {
-							redirect: false,
-							redirectTo: "/"
-						})
-					}
-				>
-					Sign in with Github
-					<FaGithub className="size-[16]" />
 				</Button>
 			</CardContent>
 		</Card>
