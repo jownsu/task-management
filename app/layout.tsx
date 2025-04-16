@@ -6,6 +6,7 @@ import { Plus_Jakarta_Sans } from "next/font/google";
 
 /* COMPONENTS */
 import Providers from "@/components/providers";
+import Navbar from "@/components/navbar";
 
 /* STYLES */
 import "./globals.css";
@@ -32,6 +33,7 @@ export default function RootLayout({
 				className={`${jakarta.variable} bg-background flex flex-col gap-[16] min-h-screen`}
 			>
 				<Providers>
+					<Navbar />
 					<main className="px-[16] flex h-full flex-1">
 						{children}
 					</main>
