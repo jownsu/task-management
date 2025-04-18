@@ -159,6 +159,9 @@
   height: calc(--value([integer])rem / 16);
   width: calc(--value([integer])rem / 16);
 }
+@utility tracking-* {
+  letter-spacing: calc(--value([integer])rem / 16);
+}
 
 html,
 body {

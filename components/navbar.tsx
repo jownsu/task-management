@@ -1,28 +1,26 @@
 /* COMPONENTS */
-import KanbanIcon from "@/components/kanban-icon";
+import NavMobile from "@/components/side-nav/nav-mobile";
 import { Button } from "@/components/ui/button";
-import KanbanIconOnly from "@/public/icon-kanban.svg";
 
 /* ICONS */
+import IconKanban from "@/components/kanban-icon";
 import Ellipsis from "@/public/icon-ellipsis.svg";
-import { FaChevronDown, FaPlus } from "react-icons/fa";
+import IconKanbanOnly from "@/public/icon-kanban.svg";
+import { FaPlus } from "react-icons/fa";
 
 const Navbar = () => {
 	return (
-		<nav className="flex bg-foreground h-[96] px-[24] justify-between">
+		<nav className="flex bg-foreground h-[64] md:h-[96] px-[24] justify-between z-[99]">
 			<div className="gap-[24] hidden md:flex">
 				<div className="border-r-2 border-background pr-[24] flex">
-					<KanbanIcon />
+					<IconKanban />
 				</div>
 				<h1 className="self-center text-black text-xl">Platform Launch</h1>
 			</div>
 
 			<div className="flex items-center gap-[16] md:hidden">
-				<KanbanIconOnly />
-				<button type="button" className="flex items-center gap-[4]">
-					<h1 className="text-lg">Platform Launch</h1>
-					<FaChevronDown className="text-primary size-[12]" />
-				</button>
+				<IconKanbanOnly />
+				<NavMobile />
 			</div>
 
 			<div className="self-center flex items-center gap-[16] md:gap-[24]">
