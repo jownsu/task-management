@@ -4,7 +4,7 @@
 import dynamic from "next/dynamic";
 
 /* COMPONENTS */
-const BoardsDropdown = dynamic(() => import("@/components/side-nav/boards-dropdown"), {
+const BoardsDropdown = dynamic(() => import("@/components/navigation/boards-dropdown"), {
 	ssr: false
 });
 

@@ -6,8 +6,8 @@ import { Plus_Jakarta_Sans } from "next/font/google";
 
 /* COMPONENTS */
 import Providers from "@/components/providers";
-import Navbar from "@/components/navbar";
-import SideNav from "@/components/side-nav/side-nav";
+import Navbar from "@/components/navigation/navbar";
+import SideNav from "@/components/navigation/side-nav";
 
 /* STYLES */
 import "./globals.css";

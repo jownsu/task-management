@@ -1,8 +1,8 @@
 "use client";
 
 /* COMPONENTS */
-import BoardsList from "@/components/side-nav/boards-list";
-import ThemeSwitch from "@/components/side-nav/theme-switch";
+import BoardsList from "@/components/navigation/boards-list";
+import ThemeSwitch from "@/components/navigation/theme-switch";
 import {
 	Sheet,
 	SheetContent,

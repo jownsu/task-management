@@ -1,7 +1,7 @@
 /* COMPONENTS */
-import BoardsList from "@/components/side-nav/boards-list";
 import KanbanIcon from "@/components/kanban-icon";
-import ThemeSwitch from "@/components/side-nav/theme-switch";
+import BoardsList from "@/components/navigation/boards-list";
+import ThemeSwitch from "@/components/navigation/theme-switch";
 
 /* ICONS */
 import IconHide from "@/public/icon-hide.svg";

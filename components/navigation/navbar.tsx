@@ -1,6 +1,6 @@
 /* COMPONENTS */
 import { Button } from "@/components/ui/button";
-import NavMobile from "@/components/side-nav/nav-mobile";
+import NavMobile from "@/components/navigation/nav-mobile";
 
 /* ICONS */
 import IconKanban from "@/components/kanban-icon";
