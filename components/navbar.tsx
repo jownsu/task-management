@@ -9,12 +9,12 @@ import { FaPlus } from "react-icons/fa";
 
 const Navbar = () => {
 	return (
-		<nav className="flex bg-foreground h-[64] md:h-[96] px-[24] justify-between z-[99]">
+		<nav className="flex bg-foreground h-[64] md:h-[81] lg:h-[96] px-[24] justify-between z-[99] fixed w-full">
 			<div className="gap-[24] hidden md:flex">
 				<div className="border-r-2 border-background pr-[24] flex">
 					<IconKanban />
 				</div>
-				<h1 className="self-center text-black text-xl">Platform Launch</h1>
+				<h1 className="self-center text-xl">Platform Launch</h1>
 			</div>
 
 			<NavMobile />

@@ -7,6 +7,7 @@ import { Plus_Jakarta_Sans } from "next/font/google";
 /* COMPONENTS */
 import Providers from "@/components/providers";
 import Navbar from "@/components/navbar";
+import SideNav from "@/components/side-nav/side-nav";
 
 /* STYLES */
 import "./globals.css";
@@ -14,7 +15,7 @@ import "./globals.css";
 const jakarta = Plus_Jakarta_Sans({
 	variable: "--font-jakarta",
 	subsets: ["latin"],
-	weight: ["200", "300", "400","500", "600", "700"]
+	weight: ["200", "300", "400", "500", "600", "700"]
 });
 
 export const metadata: Metadata = {
@@ -34,8 +35,9 @@ export default function RootLayout({
 			>
 				<Providers>
 					<Navbar />
-					<main className="px-[16] flex h-full flex-1">
-						{children}
+					<main className="flex h-full flex-1">
+						<SideNav />
+						<div className="px-[16] pt-[120]">{children}</div>
 					</main>
 				</Providers>
 			</body>
