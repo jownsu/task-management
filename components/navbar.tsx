@@ -1,11 +1,10 @@
 /* COMPONENTS */
-import NavMobile from "@/components/side-nav/nav-mobile";
 import { Button } from "@/components/ui/button";
+import NavMobile from "@/components/side-nav/nav-mobile";
 
 /* ICONS */
 import IconKanban from "@/components/kanban-icon";
 import Ellipsis from "@/public/icon-ellipsis.svg";
-import IconKanbanOnly from "@/public/icon-kanban.svg";
 import { FaPlus } from "react-icons/fa";
 
 const Navbar = () => {
@@ -18,10 +17,7 @@ const Navbar = () => {
 				<h1 className="self-center text-black text-xl">Platform Launch</h1>
 			</div>
 
-			<div className="flex items-center gap-[16] md:hidden">
-				<IconKanbanOnly />
-				<NavMobile />
-			</div>
+			<NavMobile />
 
 			<div className="self-center flex items-center gap-[16] md:gap-[24]">
 				<Button
