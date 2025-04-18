@@ -39,11 +39,9 @@ const BOARD_LINKS = [
 const NavMobile = () => {
 	return (
 		<Sheet>
-			<SheetTrigger asChild>
-				<button type="button" className="flex items-center gap-[4]">
-					<h1 className="text-lg">Platform Launch</h1>
-					<FaChevronDown className="text-primary size-[12]" />
-				</button>
+			<SheetTrigger className="flex items-center gap-[4] group cursor-pointer">
+				<h1 className="text-lg">Platform Launch</h1>
+				<FaChevronDown className="text-primary size-[12] group-data-[state=open]:-rotate-180 duration-200" />
 			</SheetTrigger>
 			<SheetContent side="top" className="pt-[80]">
 				<div className="bg-foreground w-full max-w-[264] mx-auto rounded-lg">
