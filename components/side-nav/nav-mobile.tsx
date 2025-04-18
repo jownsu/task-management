@@ -4,6 +4,7 @@
 import Link from "next/link";
 
 /* COMPONENTS */
+import ThemeSwitch from "@/components/side-nav/theme-switch";
 import {
 	Sheet,
 	SheetContent,
@@ -79,7 +80,9 @@ const NavMobile = () => {
 							</span>
 						</button>
 					</div>
-					<SheetFooter>Theme switch</SheetFooter>
+					<SheetFooter>
+						<ThemeSwitch />
+					</SheetFooter>
 				</div>
 			</SheetContent>
 		</Sheet>
