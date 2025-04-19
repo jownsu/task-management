@@ -22,9 +22,9 @@ const SideNav = () => {
 	return (
 		<nav
 			className={cn(
-				"bg-foreground w-[260] flex flex-col z-[100] border-r-lines pb-[32] fixed left-0 h-full duration-500",
+				"bg-foreground w-[260] flex-col z-[100] border-r-lines pb-[32] fixed left-0 h-full duration-500 lg:w-[300] hidden md:flex",
 				{
-					["left-[-260]"]: !is_sidebar_open
+					["left-[-260] lg:left-[-300]"]: !is_sidebar_open
 				}
 			)}
 		>

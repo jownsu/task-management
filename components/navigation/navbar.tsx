@@ -23,7 +23,7 @@ const Navbar = () => {
 		<nav className="flex bg-foreground h-[64] md:h-[81] lg:h-[96] px-[24] justify-between z-[99] fixed w-full">
 			<div className="gap-[24] hidden md:flex">
 				<div className={cn("border-r-2 border-background pr-[24] flex duration-500 delay-0", {
-					["pr-[109] duration-300 delay-200"]: is_sidebar_open
+					["pr-[109] duration-300 delay-200 lg:pr-[149]"]: is_sidebar_open
 				})}>
 					<IconKanban />
 				</div>

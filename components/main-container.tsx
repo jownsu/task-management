@@ -19,7 +19,7 @@ const MainContainer = ({ children }: Props) => {
 	return (
 		<main
 			className={cn("px-[16] pt-[120] duration-500", {
-				["pl-[260]"]: is_sidebar_open
+				["md:pl-[260] lg:pl-[300]"]: is_sidebar_open
 			})}
 		>
 			{children}
