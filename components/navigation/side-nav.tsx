@@ -9,6 +9,7 @@ import ThemeSwitch from "@/components/navigation/theme-switch";
 import { useNavigationStore } from "@/store/navigation.store";
 
 /* ICONS */
+import IconEye from "@/public/icon-eye.svg";
 import IconHide from "@/public/icon-hide.svg";
 
 /* UTILITIES */
@@ -35,11 +36,24 @@ const SideNav = () => {
 
 			<button
 				type="button"
-				className="flex items-center gap-[12] h-[48] pl-[24] rounded-r-full text-medium-grey text-md hover:bg-primary/10 hover:text-primary mr-[24]"
+				className="flex items-center gap-[12] h-[48] pl-[24] rounded-r-full text-medium-grey text-md hover:bg-primary/10 hover:text-primary mr-[24] cursor-pointer"
 				onClick={() => setOpenSidebar(false)}
 			>
 				<IconHide />
 				Hide Sidebar
+			</button>
+
+			<button
+				type="button"
+				className={cn(
+					"w-[56] h-[46] bg-primary text-white rounded-r-full absolute bottom-[32] items-center justify-center right-0 translate-x-full cursor-pointer flex opacity-100 transition-opacity duration-200 delay-500 z-[99] hover:bg-primary-foreground",
+					{
+						["opacity-0 delay-0"]: is_sidebar_open
+					}
+				)}
+				onClick={() => setOpenSidebar(true)}
+			>
+				<IconEye />
 			</button>
 		</nav>
 	);
