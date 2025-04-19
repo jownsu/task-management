@@ -8,6 +8,7 @@ import { Plus_Jakarta_Sans } from "next/font/google";
 import Providers from "@/components/providers";
 import Navbar from "@/components/navigation/navbar";
 import SideNav from "@/components/navigation/side-nav";
+import MainContainer from "@/components/main-container";
 
 /* STYLES */
 import "./globals.css";
@@ -35,10 +36,12 @@ export default function RootLayout({
 			>
 				<Providers>
 					<Navbar />
-					<main className="flex h-full flex-1">
+					<div className="flex h-full flex-1">
 						<SideNav />
-						<div className="px-[16] pt-[120]">{children}</div>
-					</main>
+						<MainContainer>
+							{children}
+						</MainContainer>
+					</div>
 				</Providers>
 			</body>
 		</html>
