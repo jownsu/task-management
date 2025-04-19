@@ -37,7 +37,7 @@ const BoardsList = () => {
 							"flex items-center gap-[12] h-[48] pl-[24] rounded-r-full text-medium-grey text-md",
 							{
 								["bg-primary text-white"]: board.id === 1,
-								["hover:bg-primary/10 hover:text-primary"]: board.id !== 1
+								["hover:bg-primary/10 hover:text-primary dark:hover:bg-white"]: board.id !== 1
 							}
 						)}
 					>
@@ -47,7 +47,7 @@ const BoardsList = () => {
 
 				<button
 					type="button"
-					className="flex items-center gap-[12] h-[48] pl-[24] rounded-r-full text-primary text-md hover:bg-primary/10 hover:text-primary cursor-pointer"
+					className="flex items-center gap-[12] h-[48] pl-[24] rounded-r-full text-primary text-md hover:bg-primary/10 hover:text-primary cursor-pointer dark:hover:bg-white"
 				>
 					<IconBoardLink />{" "}
 					<span className="flex items-center gap-[4]">
