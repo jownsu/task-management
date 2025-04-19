@@ -1,14 +1,11 @@
 /* NEXT */
 import type { Metadata } from "next";
 
-/* PLUGINS */
-import { Plus_Jakarta_Sans } from "next/font/google";
-
 /* COMPONENTS */
 import Providers from "@/components/providers";
-import Navbar from "@/components/navigation/navbar";
-import SideNav from "@/components/navigation/side-nav";
-import MainContainer from "@/components/main-container";
+
+/* PLUGINS */
+import { Plus_Jakarta_Sans } from "next/font/google";
 
 /* STYLES */
 import "./globals.css";
@@ -35,13 +32,7 @@ export default function RootLayout({
 				className={`${jakarta.variable} bg-background flex flex-col gap-[16] min-h-screen`}
 			>
 				<Providers>
-					<Navbar />
-					<div className="flex h-full flex-1">
-						<SideNav />
-						<MainContainer>
-							{children}
-						</MainContainer>
-					</div>
+					{children}
 				</Providers>
 			</body>
 		</html>
