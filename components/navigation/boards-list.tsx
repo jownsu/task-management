@@ -1,8 +1,11 @@
+/* NEXT */
 import Link from "next/link";
+
+/* COMPONENTS */
+import CreateBoardButton from "@/components/navigation/create-board-button";
 
 /* ICONS */
 import IconBoardLink from "@/public/icon-board-link.svg";
-import { FaPlus } from "react-icons/fa";
 
 /* UTILITIES */
 import { cn } from "@/lib/utils";
@@ -45,15 +48,7 @@ const BoardsList = () => {
 					</Link>
 				))}
 
-				<button
-					type="button"
-					className="flex items-center gap-[12] h-[48] pl-[24] rounded-r-full text-primary text-md hover:bg-primary/10 hover:text-primary cursor-pointer dark:hover:bg-white"
-				>
-					<IconBoardLink />{" "}
-					<span className="flex items-center gap-[4]">
-						<FaPlus className="size-[10]" /> Create New board
-					</span>
-				</button>
+				<CreateBoardButton />
 			</div>
 		</div>
 	);

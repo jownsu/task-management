@@ -5,6 +5,7 @@ import type { Metadata } from "next";
 import Navbar from "@/components/navigation/navbar";
 import SideNav from "@/components/navigation/side-nav";
 import MainContainer from "@/components/main-container";
+import CreateBoardmodal from "@/components/board/create-board-modal";
 
 export const metadata: Metadata = {
 	title: "Nextjs with drizzle template",
@@ -23,6 +24,9 @@ export default function RootLayout({
 				<SideNav />
 				<MainContainer>{children}</MainContainer>
 			</div>
+
+			{/* MODALS */}
+			<CreateBoardmodal />
 		</>
 	);
 }
