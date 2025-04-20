@@ -50,6 +50,7 @@ const Navbar = () => {
 				<ActionOptions 
 					name="Board" 
 					onDeleteClick={() => setModal("delete_board", true)}
+					onEditClick={() => setModal("edit_board", true)}
 				/>
 			</div>
 		</nav>
