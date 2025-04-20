@@ -13,7 +13,7 @@ const CreateBoardButton = () => {
 	return (
 		<button
 			type="button"
-			className="flex items-center gap-[12] h-[48] pl-[24] rounded-r-full text-primary text-md hover:bg-primary/10 hover:text-primary cursor-pointer dark:hover:bg-white"
+			className="flex items-center gap-[12] h-[48] pl-[24] rounded-r-full text-primary text-h-md hover:bg-primary/10 hover:text-primary cursor-pointer dark:hover:bg-white"
 			onClick={() => setModal("add_board", true)}
 		>
 			<IconBoardLink />{" "}

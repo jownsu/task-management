@@ -2,7 +2,7 @@
 import Link from "next/link";
 
 /* COMPONENTS */
-import CreateBoardButton from "@/components/navigation/create-board-button";
+import CreateBoardButton from "@/components/board/create-board-button";
 
 /* ICONS */
 import IconBoardLink from "@/public/icon-board-link.svg";
@@ -37,7 +37,7 @@ const BoardsList = () => {
 						key={board.id}
 						href="/"
 						className={cn(
-							"flex items-center gap-[12] h-[48] pl-[24] rounded-r-full text-medium-grey text-md",
+							"flex items-center gap-[12] h-[48] pl-[24] rounded-r-full text-medium-grey !text-h-md",
 							{
 								["bg-primary text-white"]: board.id === 1,
 								["hover:bg-primary/10 hover:text-primary dark:hover:bg-white"]: board.id !== 1

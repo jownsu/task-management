@@ -76,22 +76,31 @@
   
   --font-main: var(--font-jakarta);
 
-  --text-xl: 1.5rem;
-  --text-xl--line-height: 1.875rem;
-  --text-xl--font-weight: 700;
+  --text-h-xl: 1.5rem;
+  --text-h-xl--line-height: 1.875rem;
+  --text-h-xl--font-weight: 700;
 
-  --text-lg: 1.125rem;
-  --text-lg--line-height: 1.438rem;
-  --text-lg--font-weight: 700;
+  --text-h-lg: 1.125rem;
+  --text-h-lg--line-height: 1.438rem;
+  --text-h-lg--font-weight: 700;
 
-  --text-md: 0.938rem;
-  --text-md--line-height: 1.188rem;
-  --text-md--font-weight: 700;
+  --text-h-md: 0.938rem;
+  --text-h-md--line-height: 1.188rem;
+  --text-h-md--font-weight: 700;
 
-  --text-sm: 0.75rem;
-  --text-sm--line-height: 0.938rem;
-  --text-sm--font-weight: 700;
-  --text-sm--letter-spacing: 0.15rem;
+  --text-h-sm: 0.75rem;
+  --text-h-sm--line-height: 0.938rem;
+  --text-h-sm--font-weight: 700;
+  --text-h-sm--letter-spacing: 0.15rem;
+
+  --text-b-lg: 0.813rem;
+  --text-b-lg--line-height: 1.438rem;
+  --text-b-lg--font-weight: 5100;
+
+  --text-b-md: 0.75rem;
+  --text-b-md--line-height: 0.938;
+  --text-b-md--font-weight: 5100;
+  
 }
 
 @utility container {

@@ -27,7 +27,7 @@ const Navbar = () => {
 				})}>
 					<IconKanban />
 				</div>
-				<h1 className="self-center text-xl">Platform Launch</h1>
+				<h1 className="self-center !text-h-xl">Platform Launch</h1>
 			</div>
 
 			<NavMobile />

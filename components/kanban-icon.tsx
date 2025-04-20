@@ -4,7 +4,7 @@ const KanbanIcon = () => {
 	return (
 		<div className="flex items-center gap-[14]">
 			<MainIcon />
-			<span className="text-xl">Kanban</span>
+			<span className="!text-h-xl">Kanban</span>
 		</div>
 	);
 };

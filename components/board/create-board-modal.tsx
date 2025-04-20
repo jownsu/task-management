@@ -61,7 +61,7 @@ const CreateBoardmodal = () => {
 		>
 			<DialogContent>
 				<DialogHeader>
-					<DialogTitle className="text-lg">Add New Board</DialogTitle>
+					<DialogTitle className="text-h-lg">Add New Board</DialogTitle>
 				</DialogHeader>
 
 				<Form {...form}>

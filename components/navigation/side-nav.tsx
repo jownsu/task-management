@@ -36,7 +36,7 @@ const SideNav = () => {
 
 			<button
 				type="button"
-				className="flex items-center gap-[12] h-[48] pl-[24] rounded-r-full text-medium-grey text-md hover:bg-primary/10 hover:text-primary mr-[24] cursor-pointer dark:hover:bg-white"
+				className="flex items-center gap-[12] h-[48] pl-[24] rounded-r-full text-medium-grey !text-h-md hover:bg-primary/10 hover:text-primary mr-[24] cursor-pointer dark:hover:bg-white"
 				onClick={() => setOpenSidebar(false)}
 			>
 				<IconHide />
