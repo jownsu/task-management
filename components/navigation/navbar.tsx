@@ -11,12 +11,14 @@ import { FaPlus } from "react-icons/fa";
 
 /* STORE */
 import { useNavigationStore } from "@/store/navigation.store";
+import { useBoardStore } from "@/store/board.store";
 
 /* UTILITIES */
 import { cn } from "@/lib/utils";
 
 const Navbar = () => {
 	const is_sidebar_open = useNavigationStore((state) => state.is_sidebar_open);
+	const setModal = useBoardStore((state) => state.setModal);
 
 	return (
 		<nav className="flex bg-foreground h-[64] md:h-[81] lg:h-[96] px-[24] justify-between z-[99] fixed w-full">
@@ -45,7 +47,10 @@ const Navbar = () => {
 					<FaPlus className="size-[12]" />{" "}
 					<span className="hidden md:block">Add New Task</span>
 				</Button>
-				<ActionOptions name="Board" />
+				<ActionOptions 
+					name="Board" 
+					onDeleteClick={() => setModal("delete_board", true)}
+				/>
 			</div>
 		</nav>
 	);
