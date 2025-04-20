@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const create_board_schema = z.object({
+export const board_schema = z.object({
 	name: z.string(),
 	columns: z.array(z.object({
 		id: z.number().optional(),
@@ -8,4 +8,4 @@ export const create_board_schema = z.object({
 	}))
 });
 
-export type CreateBoard = z.infer<typeof create_board_schema>;
+export type BoardSchemaType = z.infer<typeof board_schema>;

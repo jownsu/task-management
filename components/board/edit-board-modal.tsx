@@ -11,7 +11,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 
 /* SCHEMA */
-import { create_board_schema, CreateBoard } from "@/schema/board-schema";
+import { board_schema, BoardSchemaType } from "@/schema/board-schema";
 
 /* STORE */
 import { useBoardStore } from "@/store/board.store";
@@ -24,8 +24,8 @@ const EditBoardmodal = () => {
 	const setModal = useBoardStore((state) => state.setModal);
 	const modals = useBoardStore((state) => state.modals);
 
-	const form = useForm<CreateBoard>({
-		resolver: zodResolver(create_board_schema),
+	const form = useForm<BoardSchemaType>({
+		resolver: zodResolver(board_schema),
 		defaultValues: {
 			name: "Platform Launch",
 			columns: [
@@ -54,7 +54,7 @@ const EditBoardmodal = () => {
 		name: "columns"
 	});
 
-	const onEditBoardSubmit: SubmitHandler<CreateBoard> = (data) => {
+	const onEditBoardSubmit: SubmitHandler<BoardSchemaType> = (data) => {
 		console.log(data);
 		form.reset();
 		setModal("edit_board", false);
