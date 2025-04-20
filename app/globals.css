@@ -95,11 +95,11 @@
 
   --text-b-lg: 0.813rem;
   --text-b-lg--line-height: 1.438rem;
-  --text-b-lg--font-weight: 5100;
+  --text-b-lg--font-weight: 500;
 
   --text-b-md: 0.75rem;
   --text-b-md--line-height: 0.938;
-  --text-b-md--font-weight: 5100;
+  --text-b-md--font-weight: 500;
   
 }
 

@@ -31,7 +31,7 @@ const BoardsDropdown = () => {
 	return (
 		<Sheet>
 			<SheetTrigger className="flex items-center gap-[4] group cursor-pointer">
-				<h1 className="text-lg">Platform Launch</h1>
+				<h1 className="text-h-lg">Platform Launch</h1>
 				<FaChevronDown className="text-primary size-[12] group-data-[state=open]:-rotate-180 duration-200" />
 			</SheetTrigger>
 			<SheetContent side="top" className="pt-[80] px-[65]">
