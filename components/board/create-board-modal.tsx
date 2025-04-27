@@ -16,6 +16,9 @@ import { board_schema, BoardSchemaType } from "@/schema/board-schema";
 /* STORE */
 import { useBoardStore } from "@/store/board.store";
 
+/* HOOKS */
+import { useCreateBoard } from "@/hooks/useCreateBoard";
+
 /* ICONS */
 import { FaPlus } from "react-icons/fa";
 import { IoIosClose } from "react-icons/io";
@@ -27,13 +30,13 @@ const CreateBoardmodal = () => {
 	const form = useForm<BoardSchemaType>({
 		resolver: zodResolver(board_schema),
 		defaultValues: {
-			name: "",
+			title: "",
 			columns: [
 				{
-					name: "Todo"
+					title: "Todo"
 				},
 				{
-					name: "Doing"
+					title: "Doing"
 				}
 			]
 		}
@@ -48,8 +51,10 @@ const CreateBoardmodal = () => {
 		name: "columns"
 	});
 
+	const { createBoard } = useCreateBoard();
+
 	const onCreateBoardSubmit: SubmitHandler<BoardSchemaType> = (data) => {
-		console.log(data);
+		createBoard(data);
 		form.reset();
 		setModal("add_board", false);
 	};
@@ -71,7 +76,7 @@ const CreateBoardmodal = () => {
 					>
 						<FormField
 							control={form.control}
-							name="name"
+							name="title"
 							render={({ field }) => (
 								<FormItem>
 									<FormLabel>Board Name</FormLabel>
@@ -91,7 +96,7 @@ const CreateBoardmodal = () => {
 									<FormField
 										key={column.id}
 										control={form.control}
-										name={`columns.${index}.name`}
+										name={`columns.${index}.title`}
 										render={({ field }) => (
 											<div className="flex items-center">
 												<Input
@@ -114,7 +119,7 @@ const CreateBoardmodal = () => {
 								<Button
 									type="button"
 									variant="secondary"
-									onClick={() => append({ name: "" })}
+									onClick={() => append({ title: "" })}
 								>
 									<FaPlus /> Add New Column
 								</Button>

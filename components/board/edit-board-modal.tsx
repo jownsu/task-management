@@ -27,19 +27,19 @@ const EditBoardmodal = () => {
 	const form = useForm<BoardSchemaType>({
 		resolver: zodResolver(board_schema),
 		defaultValues: {
-			name: "Platform Launch",
+			title: "Platform Launch",
 			columns: [
 				{
 					id: 1,
-					name: "Need to finish ASAP"
+					title: "Need to finish ASAP"
 				},
 				{
 					id: 2,
-					name: "Ongoing"
+					title: "Ongoing"
 				},
 				{
 					id: 3,
-					name: "RND"
+					title: "RND"
 				}
 			]
 		}
@@ -77,7 +77,7 @@ const EditBoardmodal = () => {
 					>
 						<FormField
 							control={form.control}
-							name="name"
+							name="title"
 							render={({ field }) => (
 								<FormItem>
 									<FormLabel>Board Name</FormLabel>
@@ -97,7 +97,7 @@ const EditBoardmodal = () => {
 									<FormField
 										key={column.id}
 										control={form.control}
-										name={`columns.${index}.name`}
+										name={`columns.${index}.title`}
 										render={({ field }) => (
 											<div className="flex items-center">
 												<Input
@@ -120,7 +120,7 @@ const EditBoardmodal = () => {
 								<Button
 									type="button"
 									variant="secondary"
-									onClick={() => append({ name: "" })}
+									onClick={() => append({ title: "" })}
 								>
 									<FaPlus /> Add New Column
 								</Button>
