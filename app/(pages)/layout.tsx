@@ -1,6 +1,3 @@
-/* NEXT */
-import type { Metadata } from "next";
-
 /* COMPONENTS */
 import Navbar from "@/components/navigation/navbar";
 import SideNav from "@/components/navigation/side-nav";
@@ -9,18 +6,21 @@ import CreateBoardmodal from "@/components/board/create-board-modal";
 import DeleteBoardmodal from "@/components/board/delete-board-modal";
 import EditBoardmodal from "@/components/board/edit-board-modal";
 
-export const metadata: Metadata = {
-	title: "Nextjs with drizzle template",
-	description: "Nextjs with drizzle template"
-};
+/* PLUGINS */
+import { HydrationBoundary } from "@tanstack/react-query";
 
-export default function RootLayout({
+/* QUERIES */
+import { prefetchBoard } from "@/queries/board.query";
+
+export default async function RootLayout({
 	children
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
+	const prefetched_boards = await prefetchBoard();
+
 	return (
-		<>
+		<HydrationBoundary state={prefetched_boards}>
 			<Navbar />
 			<div className="flex h-full flex-1">
 				<SideNav />
@@ -31,6 +31,6 @@ export default function RootLayout({
 			<CreateBoardmodal />
 			<DeleteBoardmodal />
 			<EditBoardmodal />
-		</>
+		</HydrationBoundary>
 	);
 }

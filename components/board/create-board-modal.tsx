@@ -16,8 +16,8 @@ import { board_schema, BoardSchemaType } from "@/schema/board-schema";
 /* STORE */
 import { useBoardStore } from "@/store/board.store";
 
-/* HOOKS */
-import { useCreateBoard } from "@/hooks/useCreateBoard";
+/* MUTATIONS */
+import { useCreateBoard } from "@/mutations/board.mutation";
 
 /* ICONS */
 import { FaPlus } from "react-icons/fa";

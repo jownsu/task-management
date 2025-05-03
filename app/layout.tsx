@@ -6,6 +6,7 @@ import Providers from "@/components/providers";
 
 /* PLUGINS */
 import { Plus_Jakarta_Sans } from "next/font/google";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 /* STYLES */
 import "./globals.css";
@@ -17,8 +18,8 @@ const jakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-	title: "Nextjs with drizzle template",
-	description: "Nextjs with drizzle template"
+	title: "Kanban Task Management",
+	description: "Kanban Task Management"
 };
 
 export default function RootLayout({
@@ -33,6 +34,7 @@ export default function RootLayout({
 			>
 				<Providers>
 					{children}
+					<ReactQueryDevtools initialIsOpen={false} />
 				</Providers>
 			</body>
 		</html>
