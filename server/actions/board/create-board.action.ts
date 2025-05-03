@@ -44,6 +44,6 @@ export const createBoardAction = action
 
         return {
             status: true,
-            message: "Success"
+            data: new_board
         }
     })

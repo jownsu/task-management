@@ -1,7 +1,7 @@
 export interface Board {
-    id: number;
-    name: string;
-    columns: Columns[];
+    id: string;
+    title: string;
+    user_id: string;
 }
 
 export interface Columns {
