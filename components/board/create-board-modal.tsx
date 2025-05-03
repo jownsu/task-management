@@ -51,12 +51,10 @@ const CreateBoardmodal = () => {
 		name: "columns"
 	});
 
-	const { createBoard } = useCreateBoard();
+	const { createBoard, isPending } = useCreateBoard();
 
 	const onCreateBoardSubmit: SubmitHandler<BoardSchemaType> = (data) => {
 		createBoard(data);
-		form.reset();
-		setModal("add_board", false);
 	};
 
 	return (
@@ -126,8 +124,12 @@ const CreateBoardmodal = () => {
 							</div>
 						</FormItem>
 
-						<Button type="submit" className="w-full">
-							Create New Board
+						<Button 
+							type="submit" 
+							className="w-full"
+							disabled={isPending}
+						>
+							{isPending ? "Creating board..." : "Create New Board"}
 						</Button>
 					</form>
 				</Form>
