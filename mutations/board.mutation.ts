@@ -9,10 +9,13 @@ import { createBoardAction } from "@/server/actions/board/create-board.action";
 import { Board } from "@/types/board";
 
 /* PLUGINS */
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
+
+/* UTILITIES */
+import getQueryClient from "@/lib/get-query-client";
 
 export const useCreateBoard = () => {
-	const queryClient = useQueryClient();
+	const queryClient = getQueryClient();
 
 	const { mutate: createBoard, ...rest } = useMutation({
 		mutationFn: (data: BoardSchemaType) => createBoardAction(data),
