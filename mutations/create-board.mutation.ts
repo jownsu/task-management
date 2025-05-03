@@ -15,7 +15,7 @@ export const useCreateBoard = () => {
 	const queryClient = useQueryClient();
 
 	const { mutate: createBoard, ...rest } = useMutation({
-		mutationFn: (data: BoardSchemaType) => createBoardAction(data),
+		mutationFn: (payload: BoardSchemaType) => createBoardAction(payload),
 		onSuccess: (response) => {
             if(response?.data?.status){
                 const new_board = response.data.data;

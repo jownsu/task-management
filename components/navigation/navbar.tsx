@@ -1,8 +1,5 @@
 "use client";
 
-/* NEXT */
-import { useParams } from "next/navigation";
-
 /* COMPONENTS */
 import ActionOptions from "@/components/actions-dropdown";
 import NavMobile from "@/components/navigation/nav-mobile";
@@ -25,9 +22,8 @@ import { cn } from "@/lib/utils";
 const Navbar = () => {
 	const is_sidebar_open = useNavigationStore((state) => state.is_sidebar_open);
 	const setModal = useBoardStore((state) => state.setModal);
-	const { board_id } = useParams() as { board_id: string };
 
-	const active_board = useGetActiveBoard(board_id);
+	const active_board = useGetActiveBoard();
 	
 	return (
 		<nav className="flex bg-foreground h-[64] md:h-[81] lg:h-[96] px-[24] justify-between z-[99] fixed w-full">

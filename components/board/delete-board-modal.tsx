@@ -10,12 +10,18 @@ import {
 	DialogTitle
 } from "@/components/ui/dialog";
 
+/* HOOKS */
+import { useGetActiveBoard } from "@/hooks/board.hook";
+import { useDeleteBoard } from "@/mutations/delete-board.mutation";
+
 /* STORE */
 import { useBoardStore } from "@/store/board.store";
 
 const DeleteBoardmodal = () => {
 	const setModal = useBoardStore((state) => state.setModal);
 	const modals = useBoardStore((state) => state.modals);
+	const active_board = useGetActiveBoard();
+	const { deleteBoard, isPending } = useDeleteBoard();
 
 	return (
 		<Dialog
@@ -30,26 +36,30 @@ const DeleteBoardmodal = () => {
 				</DialogHeader>
 
 				<DialogDescription>
-					Are you sure you want to delete the &apos;Platform Launch&apos; board?
-					This action will remove all columns and tasks and cannot be reversed.
+					Are you sure you want to delete the &apos;{active_board?.title}&apos;
+					board? This action will remove all columns and tasks and cannot be
+					reversed.
 				</DialogDescription>
 
 				<div className="flex flex-col gap-[16] md:flex-row">
-					<Button 
-						type="button" 
-						variant="destructive" 
-						className="flex-1"
-						onClick={() => setModal("delete_board", false)}
-					>
-						Delete
-					</Button>
-					<Button 
-						type="button" 
-						variant="secondary" 
+					<Button
+						type="button"
+						variant="secondary"
 						className="flex-1"
 						onClick={() => setModal("delete_board", false)}
 					>
 						Cancel
+					</Button>
+					<Button
+						type="button"
+						variant="destructive"
+						className="flex-1"
+						onClick={() =>
+							active_board?.id && deleteBoard({ id: active_board?.id })
+						}
+						disabled={isPending}
+					>
+						{isPending ? "Deleting..." : "Delete"}
 					</Button>
 				</div>
 			</DialogContent>
