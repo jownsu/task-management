@@ -25,7 +25,15 @@ export const getBoardAction = action.action(async () => {
 	}
 
 	const all_boards = await db.query.boards.findMany({
-		where: eq(boards.user_id, user_id)
+		where: eq(boards.user_id, user_id),
+		with: {
+			columns: {
+				columns: {
+					id: true,
+					title: true
+				}
+			}
+		}
 	});
 
 	return {

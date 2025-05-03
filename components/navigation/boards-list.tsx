@@ -30,7 +30,7 @@ const BoardsList = () => {
 				{boards?.map((board) => (
 					<Link
 						key={board.id}
-						href="/"
+						href={`/${board.id}`}
 						className={cn(
 							"flex items-center gap-[12] h-[48] pl-[24] rounded-r-full text-medium-grey !text-h-md",
 							{
