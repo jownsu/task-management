@@ -1,22 +1,19 @@
 /* NEXT */
 import { useParams } from "next/navigation";
-
-/* PLUGINS */
-import { useQueryClient } from "@tanstack/react-query";
-
-/* TYPES */
-import { Board } from "@/types/board";
+import { useMemo } from "react";
 
 /* CONSTANTS */
-import { CACHE_KEY_BOARDS } from "@/constants/query-keys";
+import { useGetBoard } from "@/queries/board.query";
 
 export const useGetActiveBoard = () => {
-	const queryClient = useQueryClient();
 	const { board_id } = useParams() as { board_id: string };
 
-	const active_board = queryClient
-		.getQueryData<Board[]>(CACHE_KEY_BOARDS)
-		?.find((board) => board.id === board_id);
+	const { boards } = useGetBoard();
 
-	return active_board ?? undefined;
+	const active_board = useMemo(
+		() => boards?.find((board) => board.id === board_id),
+		[boards, board_id]
+	);
+
+	return active_board;
 };
