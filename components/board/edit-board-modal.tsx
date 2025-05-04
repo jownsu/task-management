@@ -28,24 +28,7 @@ const EditBoardmodal = () => {
 	const active_board = useGetActiveBoard();
 
 	const form = useForm<BoardSchemaType>({
-		resolver: zodResolver(board_schema),
-		defaultValues: {
-			title: "Platform Launch",
-			columns: [
-				{
-					id: 1,
-					title: "Need to finish ASAP"
-				},
-				{
-					id: 2,
-					title: "Ongoing"
-				},
-				{
-					id: 3,
-					title: "RND"
-				}
-			]
-		}
+		resolver: zodResolver(board_schema)
 	});
 
 	const {
@@ -64,14 +47,15 @@ const EditBoardmodal = () => {
 	};
 
 	useEffect(() => {
-		if(modals.edit_board){
+		if(modals.edit_board && active_board){
 			form.reset({
-				columns: active_board?.columns,
-				title: active_board?.title,
+				id: active_board.id,
+				columns: active_board.columns,
+				title: active_board.title,
 			});
 		}
 	}, [form, active_board, modals.edit_board]);
-	
+
 	return (
 		<Dialog
 			open={modals.edit_board}
@@ -132,7 +116,7 @@ const EditBoardmodal = () => {
 								<Button
 									type="button"
 									variant="secondary"
-									onClick={() => append({ title: "" })}
+									onClick={() => append({ title: "", id: crypto.randomUUID(), is_new: true })}
 								>
 									<FaPlus /> Add New Column
 								</Button>

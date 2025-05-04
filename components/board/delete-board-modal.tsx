@@ -26,7 +26,8 @@ const DeleteBoardmodal = () => {
 	return (
 		<Dialog
 			open={modals.delete_board}
-			onOpenChange={(value) => setModal("delete_board", value)}
+			onOpenChange={(value) => !isPending && setModal("delete_board", value)}
+
 		>
 			<DialogContent>
 				<DialogHeader>
@@ -47,6 +48,7 @@ const DeleteBoardmodal = () => {
 						variant="secondary"
 						className="flex-1"
 						onClick={() => setModal("delete_board", false)}
+						disabled={isPending}
 					>
 						Cancel
 					</Button>

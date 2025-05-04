@@ -1,10 +1,12 @@
 import { z } from "zod";
 
 export const board_schema = z.object({
+	id: z.string().optional(),
 	title: z.string(),
 	columns: z.array(z.object({
-		id: z.number().optional(),
-		title: z.string()
+		id: z.string().optional(),
+		title: z.string(),
+		is_new: z.boolean().default(false).optional()
 	}))
 });
 
