@@ -1,5 +1,8 @@
 "use client";
 
+/* NEXT */
+import { useEffect } from "react";
+
 /* COMPONENTS */
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Form, FormField, FormItem, FormLabel } from "@/components/ui/form";
@@ -56,6 +59,12 @@ const CreateBoardmodal = () => {
 	const onCreateBoardSubmit: SubmitHandler<BoardSchemaType> = (data) => {
 		createBoard(data);
 	};
+
+	useEffect(() => {
+		if(modals.add_board){
+			form.reset();
+		}
+	}, [modals.add_board, form]);
 
 	return (
 		<Dialog

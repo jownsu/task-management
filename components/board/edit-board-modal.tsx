@@ -19,10 +19,13 @@ import { useBoardStore } from "@/store/board.store";
 /* ICONS */
 import { FaPlus } from "react-icons/fa";
 import { IoIosClose } from "react-icons/io";
+import { useGetActiveBoard } from "@/hooks/board.hook";
+import { useEffect } from "react";
 
 const EditBoardmodal = () => {
 	const setModal = useBoardStore((state) => state.setModal);
 	const modals = useBoardStore((state) => state.modals);
+	const active_board = useGetActiveBoard();
 
 	const form = useForm<BoardSchemaType>({
 		resolver: zodResolver(board_schema),
@@ -60,6 +63,15 @@ const EditBoardmodal = () => {
 		setModal("edit_board", false);
 	};
 
+	useEffect(() => {
+		if(modals.edit_board){
+			form.reset({
+				columns: active_board?.columns,
+				title: active_board?.title,
+			});
+		}
+	}, [form, active_board, modals.edit_board]);
+	
 	return (
 		<Dialog
 			open={modals.edit_board}

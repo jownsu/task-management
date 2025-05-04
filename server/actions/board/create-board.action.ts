@@ -39,7 +39,15 @@ export const createBoardAction = action
                 board_id: new_board.id
             }));
 
-            await db.insert(columns).values(all_columns_input)
+            const new_columns = await db.insert(columns).values(all_columns_input).returning();
+
+            return {
+                status: true,
+                data: {
+                    ...new_board,
+                    columns: new_columns
+                }
+            }
         }
 
         return {
