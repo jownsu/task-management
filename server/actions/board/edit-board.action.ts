@@ -1,5 +1,4 @@
 "use server";
-"use server";
 
 /* SERVER */
 import { db, dbPool } from "@/server";
@@ -42,24 +41,45 @@ export const editBoardAction = action
 			.returning();
 
 		if (updated_board && parsedInput.columns.length) {
-			await dbPool.transaction(async (tx) => {
-				parsedInput.columns.map(async (column) => {
-					if (column.is_new) {
-						await tx
-                            .insert(columns)
-                            .values({ board_id: updated_board.id, title: column.title});
-					} 
-                    else if (!column.is_new && column.id) {
-						await tx
-							.update(columns)
-							.set({ title: column.title })
-							.where(eq(columns.id, column.id));
-					}
-				});
+			const all_updated_columns = await dbPool.transaction(async (tx) => {
+				return await Promise.all(
+					parsedInput.columns.map(async (column) => {
+						if (column.is_new) {
+							const [new_column] = await tx
+								.insert(columns)
+								.values({ board_id: updated_board.id, title: column.title})
+								.returning();
+
+							return new_column;
+						} 
+						else if (!column.is_new && column.id) {
+							const [updated_column] = await tx
+								.update(columns)
+								.set({ title: column.title })
+								.where(eq(columns.id, column.id))
+								.returning();
+							
+							return updated_column;
+						}
+						return column;
+					})
+				)
 			});
+
+			return {
+				status: true,
+				data: {
+					...updated_board,
+					columns: all_updated_columns
+				}
+			}
 		}
 
 		return {
-			status: true
-		};
+			status: true,
+			data: {
+				...updated_board,
+				columns: []
+			}
+		}
 	});

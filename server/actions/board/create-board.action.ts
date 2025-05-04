@@ -52,6 +52,9 @@ export const createBoardAction = action
 
         return {
             status: true,
-            data: new_board
+            data: {
+                ...new_board,
+                columns: []
+            },
         }
     })

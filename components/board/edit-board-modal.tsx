@@ -16,6 +16,9 @@ import { board_schema, BoardSchemaType } from "@/schema/board-schema";
 /* STORE */
 import { useBoardStore } from "@/store/board.store";
 
+/* MUTATIONS */
+import { useEditBoard } from "@/mutations/edit-board.mutation";
+
 /* ICONS */
 import { FaPlus } from "react-icons/fa";
 import { IoIosClose } from "react-icons/io";
@@ -26,6 +29,8 @@ const EditBoardmodal = () => {
 	const setModal = useBoardStore((state) => state.setModal);
 	const modals = useBoardStore((state) => state.modals);
 	const active_board = useGetActiveBoard();
+
+	const { editBoard, isPending } = useEditBoard();
 
 	const form = useForm<BoardSchemaType>({
 		resolver: zodResolver(board_schema)
@@ -41,9 +46,7 @@ const EditBoardmodal = () => {
 	});
 
 	const onEditBoardSubmit: SubmitHandler<BoardSchemaType> = (data) => {
-		console.log(data);
-		form.reset();
-		setModal("edit_board", false);
+		editBoard(data);
 	};
 
 	useEffect(() => {
@@ -117,14 +120,19 @@ const EditBoardmodal = () => {
 									type="button"
 									variant="secondary"
 									onClick={() => append({ title: "", id: crypto.randomUUID(), is_new: true })}
+									disabled={isPending}
 								>
 									<FaPlus /> Add New Column
 								</Button>
 							</div>
 						</FormItem>
 
-						<Button type="submit" className="w-full">
-							Save Changes
+						<Button 
+							type="submit" 
+							className="w-full"
+							disabled={isPending}
+						>
+							{isPending ? "Saving..." : "Save Changes"}
 						</Button>
 					</form>
 				</Form>

@@ -6,6 +6,6 @@ export interface Board {
 }
 
 export interface Columns {
-    id: string;
+    id?: string;
     title: string;
 }
