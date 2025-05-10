@@ -1,5 +1,6 @@
 /* COMPONENTS */
 import ColumnItem from "@/components/columns/column-item";
+import CreateColumnItem from "@/components/columns/create-column-item";
 import EmptyBoard from "@/components/columns/empty-board";
 
 /* CONSTANTS */
@@ -56,6 +57,7 @@ const TaskPage = () => {
 			{COLUMNS.map((column) => (
 				<ColumnItem key={column.id} column={column} />
 			))}
+			<CreateColumnItem />
 		</div>
 	);
 };
