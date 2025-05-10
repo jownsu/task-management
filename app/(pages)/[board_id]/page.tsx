@@ -2,6 +2,7 @@
 import ColumnItem from "@/components/columns/column-item";
 import CreateColumnItem from "@/components/columns/create-column-item";
 import EmptyBoard from "@/components/columns/empty-board";
+import CreateTaskModal from "@/components/task/create-task-modal";
 
 /* CONSTANTS */
 import { ColumnWithTasks } from "@/constants/types";
@@ -58,6 +59,9 @@ const TaskPage = () => {
 				<ColumnItem key={column.id} column={column} />
 			))}
 			<CreateColumnItem />
+
+			{/* MODALS */}
+			<CreateTaskModal />
 		</div>
 	);
 };

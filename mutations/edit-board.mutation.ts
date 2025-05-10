@@ -9,7 +9,7 @@ import { editBoardAction } from "@/server/actions/board/edit-board.action";
 import { useBoardStore } from "@/store/board.store";
 
 /* TYPES */
-import { Board } from "@/types/board";
+import { Board } from "@/constants/types";
 
 /* PLUGINS */
 import { useMutation, useQueryClient } from "@tanstack/react-query";

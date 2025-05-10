@@ -11,6 +11,7 @@ import { FaPlus } from "react-icons/fa";
 
 /* STORE */
 import { useBoardStore } from "@/store/board.store";
+import { useTaskStore } from "@/store/task.store";
 import { useNavigationStore } from "@/store/navigation.store";
 
 /* HOOKS */
@@ -21,7 +22,8 @@ import { cn } from "@/lib/utils";
 
 const Navbar = () => {
 	const is_sidebar_open = useNavigationStore((state) => state.is_sidebar_open);
-	const setModal = useBoardStore((state) => state.setModal);
+	const setBoardModal = useBoardStore((state) => state.setModal);
+	const setTaskModal = useTaskStore((state) => state.setModal);
 
 	const active_board = useGetActiveBoard();
 	
@@ -48,14 +50,15 @@ const Navbar = () => {
 				<Button
 					type="button"
 					className="text-md h-[32] w-[48] md:w-fit md:h-[48] md:!px-[24]"
+					onClick={() => setTaskModal("add_task", true)}
 				>
 					<FaPlus className="size-[12]" />{" "}
 					<span className="hidden md:block">Add New Task</span>
 				</Button>
 				<ActionOptions 
 					name="Board" 
-					onDeleteClick={() => setModal("delete_board", true)}
-					onEditClick={() => setModal("edit_board", true)}
+					onDeleteClick={() => setBoardModal("delete_board", true)}
+					onEditClick={() => setBoardModal("edit_board", true)}
 				/>
 			</div>
 		</nav>
