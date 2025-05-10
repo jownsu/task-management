@@ -11,7 +11,7 @@ const CreateColumnItem = () => {
 
 	return (
 		<button
-			className="flex items-center w-[280] justify-center rounded-lg cursor-pointer text-h-xl text-medium-grey bg-[#E9EFFAFF] gap-[8] hover:text-primary dark:bg-foreground/25"
+			className="flex items-center w-[280] justify-center rounded-lg cursor-pointer text-h-xl text-medium-grey bg-[#E9EFFAFF] gap-[8] hover:text-primary dark:bg-foreground/25 shrink-0 mt-[39]"
 			type="button"
 			onClick={() => setModal("edit_board", true)}
 		>
