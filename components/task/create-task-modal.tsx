@@ -104,7 +104,7 @@ const CreateTaskModal = () => {
 
 						<FormField
 							control={form.control}
-							name="title"
+							name="description"
 							render={({ field }) => (
 								<FormItem>
 									<FormLabel>Description</FormLabel>

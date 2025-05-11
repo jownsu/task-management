@@ -3,6 +3,7 @@ import { z } from "zod";
 export const task_schema = z.object({
     id: z.string().optional(),
     title: z.string(),
+    description: z.string(),
     column_id: z.string(),
     sub_tasks: z.array(z.object({
         id: z.string().optional(),
