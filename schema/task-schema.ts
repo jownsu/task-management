@@ -12,4 +12,10 @@ export const task_schema = z.object({
     }))
 });
 
+export const delete_task_schema = z.object({
+	id: z.string()
+});
+
 export type TaskSchemaType = z.infer<typeof task_schema>;
+export type DeleteTaskSchemaType = z.infer<typeof delete_task_schema>;
+
