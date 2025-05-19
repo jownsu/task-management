@@ -2,18 +2,13 @@
 
 /* SERVER */
 import { db } from "@/server";
-import { boards } from "@/server/schema";
+import { columns } from "@/server/schema";
 import { auth } from "@/server/auth";
-
-/* PLUGINS */
-import { createSafeActionClient } from "next-safe-action";
 
 /* SCHEMA */
 import { eq } from "drizzle-orm";
 
-const action = createSafeActionClient();
-
-export const getColumnAction = action.action(async () => {
+export const getColumnAction = async (board_id: string) => {
 	const session = await auth();
 	const user_id = session?.user.id;
 
@@ -25,7 +20,7 @@ export const getColumnAction = action.action(async () => {
 	}
 
 	const all_columns = await db.query.columns.findMany({
-		where: eq(boards.user_id, user_id),
+		where: eq(columns.board_id, board_id),
 		with: {
 			tasks: {
 				with: {
@@ -39,4 +34,4 @@ export const getColumnAction = action.action(async () => {
 		status: true,
 		data: all_columns
 	};
-});
+};

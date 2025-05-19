@@ -62,7 +62,7 @@ const CreateTaskModal = () => {
 		name: "sub_tasks"
 	});
 
-	const onCreateBoardSubmit: SubmitHandler<TaskSchemaType> = (data) => {
+	const onCreateTaskSubmit: SubmitHandler<TaskSchemaType> = (data) => {
 		console.log(data);
 	};
 
@@ -85,7 +85,7 @@ const CreateTaskModal = () => {
 				<Form {...form}>
 					<form
 						className="flex flex-col gap-[24]"
-						onSubmit={form.handleSubmit(onCreateBoardSubmit)}
+						onSubmit={form.handleSubmit(onCreateTaskSubmit)}
 					>
 						<FormField
 							control={form.control}
