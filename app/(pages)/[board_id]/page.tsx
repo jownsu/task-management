@@ -15,7 +15,8 @@ interface Props {
 }
 
 const TaskPage = async ({ params }: Props) => {
-	const prefetched_columns = await prefetchColumn(params.board_id);
+	const { board_id } = await params;
+	const prefetched_columns = await prefetchColumn(board_id);
 
 	return (
 		<div className="h-full overflow-auto p-[24]">
