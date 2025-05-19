@@ -1,6 +1,7 @@
 /* COMPONENTS */
 import ColumnList from "@/components/columns/column-list";
 import CreateTaskModal from "@/components/task/create-task-modal";
+import DeleteColumnModal from "@/components/columns/delete-column-modal";
 
 /* PLUGINS */
 import { HydrationBoundary } from "@tanstack/react-query";
@@ -15,7 +16,7 @@ interface Props {
 }
 
 const TaskPage = async ({ params }: Props) => {
-	const { board_id } = await params;
+	const { board_id } = await params as { board_id: string };
 	const prefetched_columns = await prefetchColumn(board_id);
 
 	return (
@@ -26,6 +27,7 @@ const TaskPage = async ({ params }: Props) => {
 
 			{/* MODALS */}
 			<CreateTaskModal />
+			<DeleteColumnModal />
 		</div>
 	);
 };

@@ -1,5 +1,8 @@
 "use client";
 
+/* NEXT */
+import { useEffect } from "react";
+
 /* COMPONENTS */
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Form, FormField, FormItem, FormLabel } from "@/components/ui/form";
@@ -15,6 +18,7 @@ import { board_schema, BoardSchemaType } from "@/schema/board-schema";
 
 /* STORE */
 import { useBoardStore } from "@/store/board.store";
+import { useColumnStore } from "@/store/column.store";
 
 /* MUTATIONS */
 import { useEditBoard } from "@/mutations/edit-board.mutation";
@@ -23,11 +27,15 @@ import { useEditBoard } from "@/mutations/edit-board.mutation";
 import { FaPlus } from "react-icons/fa";
 import { IoIosClose } from "react-icons/io";
 import { useGetActiveBoard } from "@/hooks/board.hook";
-import { useEffect } from "react";
+import { MdDeleteOutline } from "react-icons/md";
 
 const EditBoardmodal = () => {
-	const setModal = useBoardStore((state) => state.setModal);
-	const modals = useBoardStore((state) => state.modals);
+	const board_modals = useBoardStore((state) => state.modals);
+	const column_modals = useColumnStore((state) => state.modals);
+	const setBoardModal = useBoardStore((state) => state.setModal);
+	const setColumnModal = useColumnStore((state) => state.setModal);
+	const setSelectedColumn = useColumnStore((state) => state.setSelectedColumn);
+	
 	const active_board = useGetActiveBoard();
 
 	const { editBoard, isPending } = useEditBoard();
@@ -50,19 +58,19 @@ const EditBoardmodal = () => {
 	};
 
 	useEffect(() => {
-		if(modals.edit_board && active_board){
+		if(board_modals.edit_board && active_board){
 			form.reset({
 				id: active_board.id,
 				columns: active_board.columns,
 				title: active_board.title,
 			});
 		}
-	}, [form, active_board, modals.edit_board]);
+	}, [form, active_board, board_modals.edit_board]);
 
 	return (
 		<Dialog
-			open={modals.edit_board}
-			onOpenChange={(value) => setModal("edit_board", value)}
+			open={board_modals.edit_board && !column_modals.delete_column}
+			onOpenChange={(value) => setBoardModal("edit_board", value)}
 		>
 			<DialogContent>
 				<DialogHeader>
@@ -104,13 +112,30 @@ const EditBoardmodal = () => {
 													type="text"
 													placeholder="e.g. Done"
 												/>
-												<button
-													type="button"
-													className="cursor-pointer t-[32] hover:text-destructive text-medium-grey duration-200  translate-x-2.5"
-													onClick={() => remove(index)}
-												>
-													<IoIosClose />
-												</button>
+												{
+													column.is_new 
+													? (
+														<button
+															type="button"
+															className="cursor-pointer t-[32] hover:text-destructive text-medium-grey duration-200  translate-x-2.5"
+															onClick={() => remove(index)}
+														>
+															<IoIosClose />
+														</button>
+													)
+													: (
+														<button
+															type="button"
+															className="cursor-pointer t-[32] hover:text-destructive text-medium-grey duration-200  translate-x-2.5 scale-75"
+															onClick={() => {
+																setColumnModal("delete_column", true);
+																setSelectedColumn(column);
+															}}
+														>
+															<MdDeleteOutline />
+														</button>
+													)
+												}
 											</div>
 										)}
 									/>

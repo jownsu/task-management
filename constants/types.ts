@@ -10,10 +10,10 @@ export interface Board {
     id: string;
     title: string;
     user_id: string;
-    columns: Columns[];
+    columns: Column[];
 }
 
-export interface Columns {
+export interface Column {
     id?: string;
     title: string;
 }
