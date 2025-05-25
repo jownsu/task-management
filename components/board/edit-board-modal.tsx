@@ -1,13 +1,14 @@
 "use client";
 
 /* NEXT */
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 /* COMPONENTS */
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Form, FormField, FormItem, FormLabel } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import DeleteColumnModal from "@/components/columns/delete-column-modal";
 
 /* PLUGINS */
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -18,7 +19,6 @@ import { board_schema, BoardSchemaType } from "@/schema/board-schema";
 
 /* STORE */
 import { useBoardStore } from "@/store/board.store";
-import { useColumnStore } from "@/store/column.store";
 
 /* MUTATIONS */
 import { useEditBoard } from "@/mutations/edit-board.mutation";
@@ -29,16 +29,17 @@ import { IoIosClose } from "react-icons/io";
 import { useGetActiveBoard } from "@/hooks/board.hook";
 import { MdDeleteOutline } from "react-icons/md";
 
+/* CONSTANTS */
+import { Column } from "@/constants/types";
+
 const EditBoardmodal = () => {
 	const board_modals = useBoardStore((state) => state.modals);
-	const column_modals = useColumnStore((state) => state.modals);
 	const setBoardModal = useBoardStore((state) => state.setModal);
-	const setColumnModal = useColumnStore((state) => state.setModal);
-	const setSelectedColumn = useColumnStore((state) => state.setSelectedColumn);
+	const [selected_column, setSelectedColumn] = useState<Column | null>(null)
+	const [open_delete_column_modal, setDeleteColumnModal] = useState(false)
+	
 	
 	const active_board = useGetActiveBoard();
-
-	const { editBoard, isPending } = useEditBoard();
 
 	const form = useForm<BoardSchemaType>({
 		resolver: zodResolver(board_schema)
@@ -50,8 +51,11 @@ const EditBoardmodal = () => {
 		remove
 	} = useFieldArray({
 		control: form.control,
-		name: "columns"
+		name: "columns",
+		keyName: "generated_id"
 	});
+
+	const { editBoard, isPending } = useEditBoard();
 
 	const onEditBoardSubmit: SubmitHandler<BoardSchemaType> = (data) => {
 		editBoard(data);
@@ -69,7 +73,7 @@ const EditBoardmodal = () => {
 
 	return (
 		<Dialog
-			open={board_modals.edit_board && !column_modals.delete_column}
+			open={board_modals.edit_board && !open_delete_column_modal}
 			onOpenChange={(value) => setBoardModal("edit_board", value)}
 		>
 			<DialogContent>
@@ -128,8 +132,8 @@ const EditBoardmodal = () => {
 															type="button"
 															className="cursor-pointer t-[32] hover:text-destructive text-medium-grey duration-200  translate-x-2.5 scale-75"
 															onClick={() => {
-																setColumnModal("delete_column", true);
-																setSelectedColumn(column);
+																setDeleteColumnModal(true);
+																setSelectedColumn({...column, index});
 															}}
 														>
 															<MdDeleteOutline />
@@ -162,6 +166,18 @@ const EditBoardmodal = () => {
 					</form>
 				</Form>
 			</DialogContent>
+
+			<DeleteColumnModal 
+				open={open_delete_column_modal}
+				onOpenChange={setDeleteColumnModal}
+				selected_column={selected_column}
+				onDeleteColumn={() => {
+					if(selected_column?.index !== undefined){
+						remove(selected_column.index);
+						setDeleteColumnModal(false);
+					}
+				}}
+			/>
 		</Dialog>
 	);
 };

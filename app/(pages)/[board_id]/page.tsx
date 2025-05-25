@@ -1,7 +1,6 @@
 /* COMPONENTS */
 import ColumnList from "@/components/columns/column-list";
 import CreateTaskModal from "@/components/task/create-task-modal";
-import DeleteColumnModal from "@/components/columns/delete-column-modal";
 
 /* PLUGINS */
 import { HydrationBoundary } from "@tanstack/react-query";
@@ -27,7 +26,6 @@ const TaskPage = async ({ params }: Props) => {
 
 			{/* MODALS */}
 			<CreateTaskModal />
-			<DeleteColumnModal />
 		</div>
 	);
 };

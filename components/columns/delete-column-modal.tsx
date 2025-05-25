@@ -1,9 +1,13 @@
 "use client";
 
+/* NEXT */
+import { useParams } from "next/navigation";
+
 /* COMPONENTS */
 import { Button } from "@/components/ui/button";
 import {
 	Dialog,
+	DialogClose,
 	DialogContent,
 	DialogDescription,
 	DialogHeader,
@@ -11,28 +15,35 @@ import {
 } from "@/components/ui/dialog";
 
 /* HOOKS */
-import { useDeleteBoard } from "@/mutations/delete-board.mutation";
+import { useDeleteColumn } from "@/mutations/delete-column.mutation";
 
-/* STORE */
-import { useColumnStore } from "@/store/column.store";
+/* CONSTANTS */
+import { Column } from "@/constants/types";
 
-const DeleteColumnModal = () => {
-	const setModal = useColumnStore((state) => state.setModal);
-	const modals = useColumnStore((state) => state.modals);
-	const selected_column = useColumnStore((state) => state.selected_column);
+interface Props {
+	open: boolean;
+	onOpenChange: (open: boolean) => void;
+	selected_column: Column | null;
+	onDeleteColumn?: () => void;
+}
 
-	/* TODO: Replace with delete column function */
-	const { deleteBoard, isPending } = useDeleteBoard();
+const DeleteColumnModal = ({ open, onOpenChange, selected_column, onDeleteColumn }: Props) => {
+	const { board_id } = useParams() as { board_id: string };
+	const { deleteColumn, isPending } = useDeleteColumn(board_id, {
+		onSuccess: () => {
+			onDeleteColumn?.();
+		}
+	});
 
 	return (
 		<Dialog
-			open={modals.delete_column}
-			onOpenChange={(value) => !isPending && setModal("delete_column", value)}
+			open={open}
+			onOpenChange={(open) => !isPending && onOpenChange(open)}
 		>
 			<DialogContent>
 				<DialogHeader>
 					<DialogTitle className="text-h-lg text-destructive">
-						Delete this colummn?
+						Delete this column?
 					</DialogTitle>
 				</DialogHeader>
 
@@ -43,21 +54,23 @@ const DeleteColumnModal = () => {
 				</DialogDescription>
 
 				<div className="flex flex-col gap-[16] md:flex-row">
-					<Button
-						type="button"
-						variant="secondary"
-						className="flex-1"
-						onClick={() => setModal("delete_column", false)}
-						disabled={isPending}
-					>
-						Cancel
-					</Button>
+					<DialogClose asChild>
+						<Button
+							type="button"
+							variant="secondary"
+							className="flex-1"
+							disabled={isPending}
+						>
+							Cancel
+						</Button>
+					</DialogClose>
+
 					<Button
 						type="button"
 						variant="destructive"
 						className="flex-1"
 						onClick={() =>
-							selected_column?.id && deleteBoard({ id: selected_column?.id })
+							selected_column?.id && deleteColumn({ id: selected_column?.id })
 						}
 						disabled={isPending}
 					>

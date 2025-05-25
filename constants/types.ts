@@ -16,4 +16,10 @@ export interface Board {
 export interface Column {
     id?: string;
     title: string;
+    index?: number;
+}
+
+export interface CallbackResponse<T = unknown> {
+	onSuccess?: (data?: T) => void;
+	onError?: (error_msg?: string) => void;
 }
