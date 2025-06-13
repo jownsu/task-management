@@ -26,7 +26,6 @@ import { useEditBoard } from "@/hooks/mutations/edit-board.mutation";
 /* ICONS */
 import { FaPlus } from "react-icons/fa";
 import { IoIosClose } from "react-icons/io";
-import { useGetActiveBoard } from "@/hooks/board.hook";
 import { MdDeleteOutline } from "react-icons/md";
 
 /* CONSTANTS */
@@ -35,11 +34,8 @@ import { Column } from "@/types";
 const EditBoardmodal = () => {
 	const board_modals = useBoardStore((state) => state.modals);
 	const setBoardModal = useBoardStore((state) => state.setModal);
-	const [selected_column, setSelectedColumn] = useState<Column | null>(null)
+	const [selected_column, setSelectedColumn] = useState<Column & { index: number }>()
 	const [open_delete_column_modal, setDeleteColumnModal] = useState(false)
-	
-	
-	const active_board = useGetActiveBoard();
 
 	const form = useForm<BoardSchemaType>({
 		resolver: zodResolver(board_schema)
@@ -62,14 +58,25 @@ const EditBoardmodal = () => {
 	};
 
 	useEffect(() => {
-		if(board_modals.edit_board && active_board){
+
+		/* TODO: Get the active board then setup the form */
+		if(board_modals.edit_board){
 			form.reset({
-				id: active_board.id,
-				columns: active_board.columns,
-				title: active_board.title,
+				id: crypto.randomUUID(),
+				title: "Board title here",
+				columns: [
+					{
+						id: crypto.randomUUID(),
+						title: "Todo",
+					},
+					{
+						id: crypto.randomUUID(),
+						title: "Doing",
+					}
+				],
 			});
 		}
-	}, [form, active_board, board_modals.edit_board]);
+	}, [form, board_modals.edit_board]);
 
 	return (
 		<Dialog
@@ -132,8 +139,14 @@ const EditBoardmodal = () => {
 															type="button"
 															className="cursor-pointer t-[32] hover:text-destructive text-medium-grey duration-200  translate-x-2.5 scale-75"
 															onClick={() => {
-																setDeleteColumnModal(true);
-																setSelectedColumn({...column, index});
+																if(column.id){
+																	setDeleteColumnModal(true);
+																	setSelectedColumn({
+																		id: column.id,
+																		title: column.title,
+																		index
+																	});
+																}
 															}}
 														>
 															<MdDeleteOutline />

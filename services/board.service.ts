@@ -9,7 +9,7 @@ class BoardService extends APIClient{
         super("/boards");
     }
 
-    getBoards = async (board_id: string) => {
+    getBoards = async (board_id?: string) => {
         const response = await this.get<Board[]>("/", { params: { board_id } })
             .then((res) => {
                 if(!res.status){

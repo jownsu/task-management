@@ -11,7 +11,6 @@ import {
 } from "@/components/ui/dialog";
 
 /* HOOKS */
-import { useGetActiveBoard } from "@/hooks/board.hook";
 import { useDeleteBoard } from "@/hooks/mutations/delete-board.mutation";
 
 /* STORE */
@@ -20,7 +19,6 @@ import { useBoardStore } from "@/store/board.store";
 const DeleteBoardmodal = () => {
 	const setModal = useBoardStore((state) => state.setModal);
 	const modals = useBoardStore((state) => state.modals);
-	const active_board = useGetActiveBoard();
 	const { deleteBoard, isPending } = useDeleteBoard();
 
 	return (
@@ -36,8 +34,9 @@ const DeleteBoardmodal = () => {
 					</DialogTitle>
 				</DialogHeader>
 
+				{/* TODO: Active board title */}
 				<DialogDescription>
-					Are you sure you want to delete the &apos;{active_board?.title}&apos;
+					Are you sure you want to delete the &apos;Board title here&apos;
 					board? This action will remove all columns and tasks and cannot be
 					reversed.
 				</DialogDescription>
@@ -56,9 +55,7 @@ const DeleteBoardmodal = () => {
 						type="button"
 						variant="destructive"
 						className="flex-1"
-						onClick={() =>
-							active_board?.id && deleteBoard({ id: active_board?.id })
-						}
+						onClick={() => deleteBoard({ id: "1" })} /* TODO: Active board title */
 						disabled={isPending}
 					>
 						{isPending ? "Deleting..." : "Delete"}

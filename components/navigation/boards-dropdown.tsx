@@ -15,9 +15,6 @@ import {
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { useMediaQuery } from "react-responsive";
 
-/* HOOKS */
-import { useGetActiveBoard } from "@/hooks/board.hook";
-
 /* ICONS */
 import { FaChevronDown } from "react-icons/fa";
 
@@ -26,7 +23,6 @@ import { BREAKPOINTS } from "@/constants";
 
 const BoardsDropdown = () => {
 	const is_mobile = useMediaQuery({ maxWidth: BREAKPOINTS.mobile });
-	const active_board = useGetActiveBoard();
 
 	if (!is_mobile) {
 		return null;
@@ -35,7 +31,7 @@ const BoardsDropdown = () => {
 	return (
 		<Sheet>
 			<SheetTrigger className="flex items-center gap-[4] group cursor-pointer">
-				<h1 className="text-h-lg">{active_board?.title}</h1>
+				<h1 className="text-h-lg">Active Board Title</h1> {/* TODO: Get active board title */}
 				<FaChevronDown className="text-primary size-[12] group-data-[state=open]:-rotate-180 duration-200" />
 			</SheetTrigger>
 			<SheetContent side="top" className="pt-[80] px-[65]">

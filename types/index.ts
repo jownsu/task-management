@@ -12,6 +12,7 @@ export interface Board {
 export interface Column {
     id: string;
     title: string;
+    is_new?: boolean;
     tasks?: Task[];
 }
 

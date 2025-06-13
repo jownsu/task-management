@@ -23,7 +23,7 @@ import { Column } from "@/types";
 interface Props {
 	open: boolean;
 	onOpenChange: (open: boolean) => void;
-	selected_column: Column | null;
+	selected_column?: Column;
 	onDeleteColumn?: () => void;
 }
 

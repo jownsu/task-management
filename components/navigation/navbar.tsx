@@ -14,9 +14,6 @@ import { useBoardStore } from "@/store/board.store";
 import { useTaskStore } from "@/store/task.store";
 import { useNavigationStore } from "@/store/navigation.store";
 
-/* HOOKS */
-import { useGetActiveBoard } from "@/hooks/board.hook";
-
 /* UTILITIES */
 import { cn } from "@/lib/utils";
 
@@ -24,8 +21,6 @@ const Navbar = () => {
 	const is_sidebar_open = useNavigationStore((state) => state.is_sidebar_open);
 	const setBoardModal = useBoardStore((state) => state.setModal);
 	const setTaskModal = useTaskStore((state) => state.setModal);
-
-	const active_board = useGetActiveBoard();
 	
 	return (
 		<nav className="flex bg-foreground h-[64] md:h-[81] lg:h-[96] px-[24] justify-between z-[99] fixed w-full">
@@ -41,7 +36,7 @@ const Navbar = () => {
 				>
 					<IconKanban />
 				</div>
-				<h1 className="self-center !text-h-xl">{active_board?.title}</h1>
+				<h1 className="self-center !text-h-xl">Active Board Title</h1> {/* TODO: Get active board title */}
 			</div>
 
 			<NavMobile />

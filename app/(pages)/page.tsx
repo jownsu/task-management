@@ -3,9 +3,6 @@
 /* COMPONENTS */
 import { Button } from "@/components/ui/button";
 
-/* ACTIONS */
-import { signOut } from "next-auth/react";
-
 const HomePage = () => {
 
 	return (
@@ -13,9 +10,6 @@ const HomePage = () => {
 			<p>Home Page</p>
 			<Button
 				variant="destructive"
-				onClick={() => {
-					signOut();
-				}}
 			>
 				Logout
 			</Button>
