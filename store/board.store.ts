@@ -2,7 +2,7 @@
 import { create } from "zustand";
 
 /* TYPES */
-import { Board } from "@/constants/types";
+import { Board } from "@/types";
 
 interface Modals {
 	add_board: boolean;

@@ -8,33 +8,23 @@ import { CACHE_KEY_BOARDS } from "@/constants/query-keys";
 import getQueryClient from "@/lib/get-query-client"
 
 /* ACTIONS */
-import { getBoardAction } from "@/server/actions/board/get-board.action";
+import boardService from "@/services/board.service";
 
-const getBoardQueryFn = async () => {
-    const response = await getBoardAction();
-            
-    if(response?.data?.status){
-        return response?.data.data;
-    }
-
-    return [];
-}
-
-export const prefetchBoard = async () => {
+export const prefetchBoard = async (board_id: string) => {
     const queryClient = getQueryClient();
 
     await queryClient.prefetchQuery({
         queryKey: CACHE_KEY_BOARDS,
-        queryFn: getBoardQueryFn
+        queryFn: () => boardService.getBoards(board_id)
     });
 
 	return dehydrate(queryClient);
 };
 
-export const useGetBoard = () => {
+export const useGetBoard = (board_id: string) => {
     const {data: boards, ...rest} = useQuery({
         queryKey: CACHE_KEY_BOARDS,
-        queryFn: getBoardQueryFn
+        queryFn: () => boardService.getBoards(board_id)
     });
 
     return { boards, ...rest}

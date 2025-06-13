@@ -15,10 +15,10 @@ import {
 } from "@/components/ui/dialog";
 
 /* HOOKS */
-import { useDeleteColumn } from "@/mutations/delete-column.mutation";
+import { useDeleteColumn } from "@/hooks/mutations/delete-column.mutation";
 
 /* CONSTANTS */
-import { Column } from "@/constants/types";
+import { Column } from "@/types";
 
 interface Props {
 	open: boolean;

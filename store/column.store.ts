@@ -2,7 +2,7 @@
 import { create } from "zustand";
 
 /* TYPES */
-import { Column } from "@/constants/types";
+import { Column } from "@/types";
 
 interface ColumnStore {
 	selected_column: Column | null;

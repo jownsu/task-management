@@ -21,7 +21,7 @@ import { board_schema, BoardSchemaType } from "@/schema/board-schema";
 import { useBoardStore } from "@/store/board.store";
 
 /* MUTATIONS */
-import { useEditBoard } from "@/mutations/edit-board.mutation";
+import { useEditBoard } from "@/hooks/mutations/edit-board.mutation";
 
 /* ICONS */
 import { FaPlus } from "react-icons/fa";
@@ -30,7 +30,7 @@ import { useGetActiveBoard } from "@/hooks/board.hook";
 import { MdDeleteOutline } from "react-icons/md";
 
 /* CONSTANTS */
-import { Column } from "@/constants/types";
+import { Column } from "@/types";
 
 const EditBoardmodal = () => {
 	const board_modals = useBoardStore((state) => state.modals);

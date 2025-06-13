@@ -1,5 +1,5 @@
 /* CONSTANTS */
-import { Task } from "@/constants/types";
+import { Task } from "@/types";
 
 interface Props {
 	task: Task;

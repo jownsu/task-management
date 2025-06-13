@@ -12,7 +12,7 @@ import {
 
 /* HOOKS */
 import { useGetActiveBoard } from "@/hooks/board.hook";
-import { useDeleteBoard } from "@/mutations/delete-board.mutation";
+import { useDeleteBoard } from "@/hooks/mutations/delete-board.mutation";
 
 /* STORE */
 import { useBoardStore } from "@/store/board.store";

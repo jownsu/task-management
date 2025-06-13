@@ -2,7 +2,7 @@
 import TaskItem from "@/components/columns/task-item";
 
 /* TYPES */
-import { ColumnWithTasks } from "@/constants/types";
+import { ColumnWithTasks } from "@/types";
 
 interface Props {
 	column: ColumnWithTasks;

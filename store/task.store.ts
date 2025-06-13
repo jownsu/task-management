@@ -2,7 +2,7 @@
 import { create } from "zustand";
 
 /* TYPES */
-import { Task } from "@/constants/types";
+import { Task } from "@/types";
 
 interface Modals {
 	add_task: boolean;
