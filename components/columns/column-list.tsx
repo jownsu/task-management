@@ -5,14 +5,46 @@ import ColumnItem from "@/components/columns/column-item";
 import EmptyBoard from "@/components/columns/empty-board";
 import CreateColumnItem from "@/components/columns/create-column-item";
 
-/* CONSTANTS */
-import { useGetColumn } from "@/queries/column.query";
-import { useParams } from "next/navigation";
+const columns = [
+	{
+		id: "1",
+		title: "Todo",
+		tasks: [
+			{
+				id: "1",
+				title: "Task 1",
+				total_subtask: 5,
+				completed_sub_task: 2
+			}
+		]
+	},
+	{
+		id: "2",
+		title: "Doing",
+		tasks: [
+			{
+				id: "1",
+				title: "Task 1",
+				total_subtask: 5,
+				completed_sub_task: 2
+			}
+		]
+	},
+	{
+		id: "3",
+		title: "Done",
+		tasks: [
+			{
+				id: "1",
+				title: "Task 1",
+				total_subtask: 5,
+				completed_sub_task: 2
+			}
+		]
+	}
+];
 
 const ColumnList = () => {
-	const { board_id } = useParams() as { board_id: string };
-
-    const { columns } = useGetColumn(board_id);
     
     if(!columns?.length){
         return <EmptyBoard />;

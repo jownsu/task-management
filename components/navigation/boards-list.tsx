@@ -18,16 +18,16 @@ import { useGetBoard } from "@/hooks/queries/board.query";
 
 const BoardsList = () => {
 
-	const { boards } = useGetBoard();
+	const { board } = useGetBoard();
 	const { board_id } = useParams();
 
 	return (
 		<div>
 			<h2 className="text-medium-grey uppercase t-[12] tracking-[2.4] px-[24] py-[16] font-bold">
-				All Boards ({boards?.length})
+				All Boards ({board?.all_boards?.length})
 			</h2>
 			<div className="flex flex-col pr-[24]">
-				{boards?.map((board) => (
+				{board?.all_boards?.map((board) => (
 					<Link
 						key={board.id}
 						href={`/${board.id}`}

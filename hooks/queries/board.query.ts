@@ -22,10 +22,10 @@ export const prefetchBoard = async (board_id?: string) => {
 };
 
 export const useGetBoard = (board_id?: string) => {
-    const {data: boards, ...rest} = useQuery({
+    const {data: board, ...rest} = useQuery({
         queryKey: CACHE_KEY_BOARDS,
         queryFn: () => boardService.getBoards(board_id)
     });
 
-    return { boards, ...rest}
+    return { board, ...rest}
 }
