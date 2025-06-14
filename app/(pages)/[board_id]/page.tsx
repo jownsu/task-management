@@ -1,6 +1,8 @@
 /* COMPONENTS */
 import ColumnList from "@/components/columns/column-list";
 import CreateTaskModal from "@/components/task/create-task-modal";
+import Navbar from "@/components/navigation/navbar";
+import MainContainer from "@/components/main-container";
 
 /* PLUGINS */
 import { HydrationBoundary } from "@tanstack/react-query";
@@ -19,14 +21,17 @@ const TaskPage = async ({ params }: Props) => {
 	const prefetched_board = await prefetchBoard(board_id);
 
 	return (
-		<div className="h-full overflow-auto p-[24]">
-			<HydrationBoundary state={prefetched_board}>
-				<ColumnList />
-			</HydrationBoundary>
+		<HydrationBoundary state={prefetched_board}>
+			<Navbar />
+			<MainContainer className="pt-[64] md:pt-[81] lg:pt-[96]">
+				<div className="h-full overflow-auto p-[24]">
+					<ColumnList />
 
-			{/* MODALS */}
-			<CreateTaskModal />
-		</div>
+					{/* MODALS */}
+					<CreateTaskModal />
+				</div>
+			</MainContainer>
+		</HydrationBoundary>
 	);
 };
 

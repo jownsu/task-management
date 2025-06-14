@@ -1,5 +1,8 @@
 "use client";
 
+/* NEXT */
+import { useParams } from "next/navigation";
+
 /* COMPONENTS */
 import ActionOptions from "@/components/actions-dropdown";
 import NavMobile from "@/components/navigation/nav-mobile";
@@ -14,6 +17,9 @@ import { useBoardStore } from "@/store/board.store";
 import { useTaskStore } from "@/store/task.store";
 import { useNavigationStore } from "@/store/navigation.store";
 
+/* QUERIES */
+import { useGetBoard } from "@/hooks/queries/board.query";
+
 /* UTILITIES */
 import { cn } from "@/lib/utils";
 
@@ -21,7 +27,10 @@ const Navbar = () => {
 	const is_sidebar_open = useNavigationStore((state) => state.is_sidebar_open);
 	const setBoardModal = useBoardStore((state) => state.setModal);
 	const setTaskModal = useTaskStore((state) => state.setModal);
-	
+
+	const { board_id } = useParams() as { board_id: string };
+	const { board } = useGetBoard(board_id);
+
 	return (
 		<nav className="flex bg-foreground h-[64] md:h-[81] lg:h-[96] px-[24] justify-between z-[99] fixed w-full">
 			<div className="gap-[24] hidden md:flex">
@@ -36,7 +45,7 @@ const Navbar = () => {
 				>
 					<IconKanban />
 				</div>
-				<h1 className="self-center !text-h-xl">Active Board Title</h1> {/* TODO: Get active board title */}
+				<h1 className="self-center !text-h-xl">{board?.title}</h1>
 			</div>
 
 			<NavMobile />

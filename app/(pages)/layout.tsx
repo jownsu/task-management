@@ -1,10 +1,8 @@
 /* COMPONENTS */
-import Navbar from "@/components/navigation/navbar";
-import SideNav from "@/components/navigation/side-nav";
-import MainContainer from "@/components/main-container";
 import CreateBoardmodal from "@/components/board/create-board-modal";
 import DeleteBoardmodal from "@/components/board/delete-board-modal";
 import EditBoardmodal from "@/components/board/edit-board-modal";
+import SideNav from "@/components/navigation/side-nav";
 
 /* PLUGINS */
 import { HydrationBoundary } from "@tanstack/react-query";
@@ -21,10 +19,9 @@ export default async function RootLayout({
 
 	return (
 		<HydrationBoundary state={prefetched_boards}>
-			<Navbar />
 			<div className="flex h-full flex-1">
 				<SideNav />
-				<MainContainer>{children}</MainContainer>
+				{children}
 			</div>
 
 			{/* MODALS */}

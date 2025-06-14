@@ -2,18 +2,19 @@
 
 /* COMPONENTS */
 import { Button } from "@/components/ui/button";
+import MainContainer from "@/components/main-container";
 
 const HomePage = () => {
 
 	return (
-		<div className="container">
+		<MainContainer>
 			<p>Home Page</p>
 			<Button
 				variant="destructive"
 			>
 				Logout
 			</Button>
-		</div>
+		</MainContainer>
 	);
 };
 
