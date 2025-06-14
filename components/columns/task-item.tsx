@@ -14,7 +14,7 @@ const TaskItem = ({ task }: Props) => {
 			<p className="text-h-md text-black dark:text-white group-hover:text-primary dark:group-hover:text-primary">
 				{task.title}
 			</p>
-			<p className="text-b-md text-medium-grey">0 of 3 subtasks</p>
+			<p className="text-b-md text-medium-grey">{task.completed_sub_task} of {task.total_subtask} subtasks</p>
 		</button>
 	);
 };
