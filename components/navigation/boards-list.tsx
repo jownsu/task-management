@@ -14,7 +14,7 @@ import IconBoardLink from "@/public/icon-board-link.svg";
 import { cn } from "@/lib/utils";
 
 /* QUERIES */
-import { useGetAllBoards } from "@/hooks/queries/board.query";
+import { useGetAllBoards } from "@/hooks/queries/all_boards.query";
 
 const BoardsList = () => {
 

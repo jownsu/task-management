@@ -25,7 +25,7 @@ class BoardService extends APIClient{
     };
 
     getBoard = async (board_id?: string) => {
-        const response = await this.get<Board>("/", { params: { board_id } })
+        const response = await this.get<Board>(`/${board_id}`)
             .then((res) => {
                 if(!res.status){
                     throw res.error;
