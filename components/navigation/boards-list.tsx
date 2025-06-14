@@ -14,20 +14,20 @@ import IconBoardLink from "@/public/icon-board-link.svg";
 import { cn } from "@/lib/utils";
 
 /* QUERIES */
-import { useGetBoard } from "@/hooks/queries/board.query";
+import { useGetAllBoards } from "@/hooks/queries/board.query";
 
 const BoardsList = () => {
 
-	const { board } = useGetBoard();
+	const { boards } = useGetAllBoards();
 	const { board_id } = useParams();
 
 	return (
 		<div>
 			<h2 className="text-medium-grey uppercase t-[12] tracking-[2.4] px-[24] py-[16] font-bold">
-				All Boards ({board?.all_boards?.length})
+				All Boards ({boards?.length})
 			</h2>
 			<div className="flex flex-col pr-[24]">
-				{board?.all_boards?.map((board) => (
+				{boards?.map((board) => (
 					<Link
 						key={board.id}
 						href={`/${board.id}`}

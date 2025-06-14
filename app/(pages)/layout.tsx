@@ -10,14 +10,14 @@ import EditBoardmodal from "@/components/board/edit-board-modal";
 import { HydrationBoundary } from "@tanstack/react-query";
 
 /* QUERIES */
-import { prefetchBoard } from "@/hooks/queries/board.query";
+import { prefetchAllBoards } from "@/hooks/queries/board.query";
 
 export default async function RootLayout({
 	children
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
-	const prefetched_boards = await prefetchBoard();
+	const prefetched_boards = await prefetchAllBoards();
 
 	return (
 		<HydrationBoundary state={prefetched_boards}>

@@ -31,6 +31,7 @@ const SideNav = () => {
 			<div className="h-[81] flex px-[24] mb-[7]">
 				<KanbanIcon />
 			</div>
+			
 			<BoardsList />
 			<ThemeSwitch className="mt-auto mx-[24] mb-[8]" />
 
