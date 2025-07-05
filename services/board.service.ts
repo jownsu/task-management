@@ -1,3 +1,6 @@
+/* SCHEMA */
+import { AddBoardSchema } from "@/schema/board-schema";
+
 /* SERVICES */
 import APIClient from "@/services/apiClient";
 
@@ -38,6 +41,22 @@ class BoardService extends APIClient{
 
         return response;
     };
+
+    createBoard = async (payload: AddBoardSchema) => {
+        const response = await this.post<Board>("/", { ...payload })
+            .then((res) => {
+                if(!res.status){
+                    throw res.error;
+                }
+                return res.result;
+            })
+            .catch((error) => {
+                throw error;
+            });
+
+        return response;
+    };
 }
 
-export default new BoardService();
+const boardService = new BoardService();
+export default boardService;

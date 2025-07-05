@@ -2,7 +2,7 @@
 import { dehydrate, useQuery } from "@tanstack/react-query";
 
 /* CONSTANTS */
-import { CACHE_KEY_BOARD, CACHE_KEY_BOARDS } from "@/constants/query-keys";
+import { CACHE_KEY_BOARD } from "@/constants/query-keys";
 
 /* UTILITIES */
 import getQueryClient from "@/lib/get-query-client"

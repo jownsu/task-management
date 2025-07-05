@@ -1,12 +1,35 @@
 /* SCHEMA */
-import { BoardSchemaType } from "@/schema/board-schema";
+import { AddBoardSchema } from "@/schema/board-schema";
+
+/* SERVICES */
+import boardService from "@/services/board.service";
+
+/* TYPES */
+import { Board, CallbackResponse } from "@/types";
+
+/* CONSTANTS */
+import { CACHE_KEY_BOARDS } from "@/constants/query-keys";
 
 /* PLUGINS */
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-export const useCreateBoard = () => {
+export const useCreateBoard = (callback?: CallbackResponse) => {
+
+	const queryClient = useQueryClient();
+
 	const { mutate: createBoard, ...rest } = useMutation({
-		mutationFn: async (payload: BoardSchemaType) => payload
+		mutationFn: async (payload: AddBoardSchema) => boardService.createBoard(payload),
+		onSuccess: (response) => {
+			if(response){
+				queryClient.setQueryData<Board[]>(CACHE_KEY_BOARDS, (boards) => {
+					if(boards){
+						return [...boards, response];
+					}
+				});
+
+				callback?.onSuccess?.();
+			}
+		}
 	});
 
 	return { createBoard, ...rest };

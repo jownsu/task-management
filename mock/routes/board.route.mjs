@@ -37,4 +37,27 @@ export default function boardRoutes(app) {
 			message: null
 		});
 	});
+
+	app.post("/api/boards", (req, res) => {
+		const { title, columns } = req.body;
+
+		const new_board = {
+			id: faker.string.uuid(),
+			title,
+			columns: columns.map(column => ({
+				id: faker.string.uuid(),
+				title: column.title,
+				tasks: []
+			}))
+		}
+
+		board_list.push(new_board);
+
+		res.jsonp({
+			status: true,
+			result: new_board,
+			error: null,
+			message: null
+		});
+	});
 }

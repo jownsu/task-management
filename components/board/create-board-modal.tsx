@@ -14,7 +14,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 
 /* SCHEMA */
-import { board_schema, BoardSchemaType } from "@/schema/board-schema";
+import { AddBoardSchema, add_board_schema } from "@/schema/board-schema";
 
 /* STORE */
 import { useBoardStore } from "@/store/board.store";
@@ -30,17 +30,13 @@ const CreateBoardmodal = () => {
 	const setModal = useBoardStore((state) => state.setModal);
 	const modals = useBoardStore((state) => state.modals);
 
-	const form = useForm<BoardSchemaType>({
-		resolver: zodResolver(board_schema),
+	const form = useForm<AddBoardSchema>({
+		resolver: zodResolver(add_board_schema),
 		defaultValues: {
 			title: "",
 			columns: [
-				{
-					title: "Todo"
-				},
-				{
-					title: "Doing"
-				}
+				{ title: "Todo" },
+				{ title: "Doing" }
 			]
 		}
 	});
@@ -54,9 +50,13 @@ const CreateBoardmodal = () => {
 		name: "columns"
 	});
 
-	const { createBoard, isPending } = useCreateBoard();
+	const { createBoard, isPending } = useCreateBoard({
+		onSuccess: () => {
+			setModal("add_board", false);
+		}
+	});
 
-	const onCreateBoardSubmit: SubmitHandler<BoardSchemaType> = (data) => {
+	const onCreateBoardSubmit: SubmitHandler<AddBoardSchema> = (data) => {
 		createBoard(data);
 	};
 
