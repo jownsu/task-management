@@ -2,6 +2,7 @@
 
 /* NEXT */
 import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
 
 /* COMPONENTS */
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -15,13 +16,16 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 
 /* SCHEMA */
-import { board_schema, BoardSchemaType } from "@/schema/board-schema";
+import { edit_board_schema, EditBoardSchema } from "@/schema/board-schema";
 
 /* STORE */
 import { useBoardStore } from "@/store/board.store";
 
 /* MUTATIONS */
 import { useEditBoard } from "@/hooks/mutations/edit-board.mutation";
+
+/* QUERIES */
+import { useGetBoard } from "@/hooks/queries/board.query";
 
 /* ICONS */
 import { FaPlus } from "react-icons/fa";
@@ -32,13 +36,16 @@ import { MdDeleteOutline } from "react-icons/md";
 import { Column } from "@/types";
 
 const EditBoardmodal = () => {
+	const { board_id } = useParams() as { board_id: string };
 	const board_modals = useBoardStore((state) => state.modals);
-	const setBoardModal = useBoardStore((state) => state.setModal);
+	const setModal = useBoardStore((state) => state.setModal);
 	const [selected_column, setSelectedColumn] = useState<Column & { index: number }>()
 	const [open_delete_column_modal, setDeleteColumnModal] = useState(false)
+	const { board } = useGetBoard(board_id);
 
-	const form = useForm<BoardSchemaType>({
-		resolver: zodResolver(board_schema)
+
+	const form = useForm<EditBoardSchema>({
+		resolver: zodResolver(edit_board_schema)
 	});
 
 	const {
@@ -47,41 +54,37 @@ const EditBoardmodal = () => {
 		remove
 	} = useFieldArray({
 		control: form.control,
-		name: "columns",
-		keyName: "generated_id"
+		name: "columns"
 	});
 
-	const { editBoard, isPending } = useEditBoard();
+	const { editBoard, isPending } = useEditBoard({
+		onSuccess: () => {
+			setModal("edit_board", false);
+		}
+	});
 
-	const onEditBoardSubmit: SubmitHandler<BoardSchemaType> = (data) => {
+	const onEditBoardSubmit: SubmitHandler<EditBoardSchema> = (data) => {
 		editBoard(data);
 	};
 
 	useEffect(() => {
-
-		/* TODO: Get the active board then setup the form */
-		if(board_modals.edit_board){
+		if(board && board_modals.edit_board){
 			form.reset({
-				id: crypto.randomUUID(),
-				title: "Board title here",
-				columns: [
-					{
-						id: crypto.randomUUID(),
-						title: "Todo",
-					},
-					{
-						id: crypto.randomUUID(),
-						title: "Doing",
-					}
-				],
+				id: board.id,
+				title: board.title,
+				columns: board.columns?.map(column => ({ 
+					id: column.id, 
+					title: column.title, 
+					is_new: false 
+				}))
 			});
 		}
-	}, [form, board_modals.edit_board]);
+	}, [form, board_modals.edit_board, board]);
 
 	return (
 		<Dialog
 			open={board_modals.edit_board && !open_delete_column_modal}
-			onOpenChange={(value) => setBoardModal("edit_board", value)}
+			onOpenChange={(value) => setModal("edit_board", value)}
 		>
 			<DialogContent>
 				<DialogHeader>
@@ -161,7 +164,7 @@ const EditBoardmodal = () => {
 								<Button
 									type="button"
 									variant="secondary"
-									onClick={() => append({ title: "", id: crypto.randomUUID(), is_new: true })}
+									onClick={() => append({ title: "", is_new: true })}
 									disabled={isPending}
 								>
 									<FaPlus /> Add New Column

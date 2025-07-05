@@ -1,5 +1,5 @@
 /* SCHEMA */
-import { AddBoardSchema } from "@/schema/board-schema";
+import { AddBoardSchema, EditBoardSchema } from "@/schema/board-schema";
 
 /* SERVICES */
 import APIClient from "@/services/apiClient";
@@ -44,6 +44,21 @@ class BoardService extends APIClient{
 
     createBoard = async (payload: AddBoardSchema) => {
         const response = await this.post<Board>("/", { ...payload })
+            .then((res) => {
+                if(!res.status){
+                    throw res.error;
+                }
+                return res.result;
+            })
+            .catch((error) => {
+                throw error;
+            });
+
+        return response;
+    };
+
+    editBoard = async (payload: EditBoardSchema) => {
+        const response = await this.put<Board>("/", { ...payload })
             .then((res) => {
                 if(!res.status){
                     throw res.error;

@@ -48,4 +48,58 @@ export default function boardRoutes(app) {
 			message: null
 		});
 	});
+
+	app.put("/api/boards", (req, res) => {
+		const { id, title, columns } = req.body;
+
+		let updated_board = {};
+
+		board_list = board_list.map(board => {
+			if(board.id === id){
+				
+				let existing_columns = [];
+				let new_columns = [];
+
+				columns.map(column => {
+					if(column.is_new){
+						new_columns.push({
+							...column,
+							id: faker.string.uuid(),
+							tasks: []
+						});
+						return;
+					}
+					existing_columns.push(column);
+				});
+
+				let updated_columns = existing_columns.map(existing_column => ({
+					...existing_column,
+					tasks: board.columns.find(column => column.id === existing_column.id)?.tasks || []
+				}));
+
+				updated_columns = [...updated_columns, ...new_columns];
+
+				updated_board = {
+					...board,
+					title,
+					columns: updated_columns
+				}
+
+				return {
+					id: board.id,
+					title,
+					columns: updated_columns
+				}
+			}
+
+			return board;
+		})
+
+		res.jsonp({
+			status: true,
+			result: updated_board,
+			error: null,
+			message: null
+		});
+	});
 }
