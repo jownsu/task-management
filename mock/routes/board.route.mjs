@@ -1,20 +1,8 @@
 /* eslint-disable no-magic-numbers */
 import { faker } from "@faker-js/faker";
+import { board_list_data } from "../data.mjs";
 
-export const board_list = Array.from({ length: 7 }, () => ({
-	id: faker.string.uuid(),
-	title: faker.lorem.word(),
-	columns: Array.from({ length: 3 }, () => ({
-		id: faker.string.uuid(),
-		title: faker.lorem.word(),	
-		tasks: Array.from({ length: 7 }, () => ({
-			id: faker.string.uuid(),
-			title: faker.lorem.word(),
-			total_subtask: 5,
-			completed_sub_task: faker.number.int({ min: 1, max: 3 }),
-		}))
-	}))
-}))
+let board_list = [...board_list_data];
 
 export default function boardRoutes(app) {
 
