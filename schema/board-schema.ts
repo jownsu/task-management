@@ -23,4 +23,4 @@ export const delete_board_schema = z.object({
 
 export type AddBoardSchema = z.infer<typeof add_board_schema>;
 export type EditBoardSchema = z.infer<typeof edit_board_schema>;
-export type DeleteBoardSchemaType = z.infer<typeof delete_board_schema>;
+export type DeleteBoardSchema = z.infer<typeof delete_board_schema>;

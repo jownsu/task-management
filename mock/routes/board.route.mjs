@@ -125,4 +125,17 @@ export default function boardRoutes(app) {
 			message: "Column deleted successfully"
 		});
 	});
+
+	app.delete("/api/boards/:board_id", (req, res) => {
+		const { board_id } = req.params;
+
+		board_list = board_list.filter(board => board.id !== board_id);
+
+		res.jsonp({
+			status: true,
+			result: null,
+			error: null,
+			message: "Board deleted successfully"
+		});
+	});
 }

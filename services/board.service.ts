@@ -1,5 +1,5 @@
 /* SCHEMA */
-import { AddBoardSchema, EditBoardSchema } from "@/schema/board-schema";
+import { AddBoardSchema, DeleteBoardSchema, EditBoardSchema } from "@/schema/board-schema";
 
 /* SERVICES */
 import APIClient from "@/services/apiClient";
@@ -75,6 +75,26 @@ class BoardService extends APIClient{
 	 */
     editBoard = async (payload: EditBoardSchema) => {
         const response = await this.put<Board>(`/${payload.id}`, { ...payload })
+            .then((res) => {
+                if(!res.status){
+                    throw res.error;
+                }
+                return res.result;
+            })
+            .catch((error) => {
+                throw error;
+            });
+
+        return response;
+    };
+
+    
+    /**
+	 * DOCU: Will delete the selected board. <br>
+	 * Triggered: On submission of delete board form. <br>
+	 */
+    deleteBoard = async (payload: DeleteBoardSchema) => {
+        const response = await this.delete(`/${payload.id}`)
             .then((res) => {
                 if(!res.status){
                     throw res.error;

@@ -1,6 +1,5 @@
 /* COMPONENTS */
 import CreateBoardmodal from "@/components/board/create-board-modal";
-import DeleteBoardmodal from "@/components/board/delete-board-modal";
 import SideNav from "@/components/navigation/side-nav";
 
 /* PLUGINS */
@@ -25,7 +24,6 @@ export default async function RootLayout({
 
 			{/* MODALS */}
 			<CreateBoardmodal />
-			<DeleteBoardmodal />
 		</HydrationBoundary>
 	);
 }

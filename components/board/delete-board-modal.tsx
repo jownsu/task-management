@@ -1,5 +1,8 @@
 "use client";
 
+/* NEXT */
+import { useParams } from "next/navigation";
+
 /* COMPONENTS */
 import { Button } from "@/components/ui/button";
 import {
@@ -17,9 +20,15 @@ import { useDeleteBoard } from "@/hooks/mutations/delete-board.mutation";
 import { useBoardStore } from "@/store/board.store";
 
 const DeleteBoardmodal = () => {
+	const { board_id } = useParams() as { board_id: string };
+	
 	const setModal = useBoardStore((state) => state.setModal);
 	const modals = useBoardStore((state) => state.modals);
-	const { deleteBoard, isPending } = useDeleteBoard();
+	const { deleteBoard, isPending } = useDeleteBoard({
+		onSuccess: () => {
+			setModal("delete_board", false);
+		}
+	});
 
 	return (
 		<Dialog
@@ -55,7 +64,7 @@ const DeleteBoardmodal = () => {
 						type="button"
 						variant="destructive"
 						className="flex-1"
-						onClick={() => deleteBoard({ id: "1" })} /* TODO: Active board title */
+						onClick={() => deleteBoard({ id: board_id })}
 						disabled={isPending}
 					>
 						{isPending ? "Deleting..." : "Delete"}
