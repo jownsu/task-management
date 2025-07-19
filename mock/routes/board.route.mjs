@@ -102,4 +102,26 @@ export default function boardRoutes(app) {
 			message: null
 		});
 	});
+
+	app.delete("/api/boards/:board_id/columns/:column_id", (req, res) => {
+		const { board_id, column_id } = req.params;
+
+		board_list = board_list.map(board => {
+			if(board.id === board_id){
+				return {
+					...board,
+					columns: board.columns.filter(column => column.id !== column_id)
+				}
+			}
+
+			return board;
+		})
+
+		res.jsonp({
+			status: true,
+			result: null,
+			error: null,
+			message: "Column deleted successfully"
+		});
+	});
 }

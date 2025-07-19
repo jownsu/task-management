@@ -1,16 +1,32 @@
 /* SCHEMA */
+import { CACHE_KEY_BOARD } from "@/constants/query-keys";
 import { DeleteColumnSchemaType } from "@/schema/column-schema";
 
+/* SERVICES */
+import columnService from "@/services/column.service";
+
 /* TYPES */
-import { CallbackResponse } from "@/types";
+import { Board, CallbackResponse } from "@/types";
 
 /* PLUGINS */
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-export const useDeleteColumn = (board_id: string, callback?: CallbackResponse) => {
+export const useDeleteColumn = (callback?: CallbackResponse) => {
+
+	const queryClient = useQueryClient();
+
 	const { mutate: deleteColumn, ...rest } = useMutation({
-		mutationFn: async (payload: DeleteColumnSchemaType) => payload,
-		onSuccess: () => callback?.onSuccess?.()
+		mutationFn: async (payload: DeleteColumnSchemaType) => columnService.deleteColumn(payload),
+		onSuccess: (_, payload) => {
+			queryClient.setQueryData<Board>([...CACHE_KEY_BOARD, payload.board_id], (board) => {
+				if (board) {
+					board.columns = board?.columns?.filter(column => column.id != payload.column_id);
+				}
+				return board;
+			});
+
+			callback?.onSuccess?.();
+		}
 	});
 
 	return { deleteColumn, ...rest };

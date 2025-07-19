@@ -43,7 +43,6 @@ const EditBoardmodal = () => {
 	const [open_delete_column_modal, setDeleteColumnModal] = useState(false)
 	const { board } = useGetBoard(board_id);
 
-
 	const form = useForm<EditBoardSchema>({
 		resolver: zodResolver(edit_board_schema)
 	});
@@ -54,7 +53,8 @@ const EditBoardmodal = () => {
 		remove
 	} = useFieldArray({
 		control: form.control,
-		name: "columns"
+		name: "columns",
+		keyName: "temp_id"
 	});
 
 	const { editBoard, isPending } = useEditBoard({
@@ -116,7 +116,7 @@ const EditBoardmodal = () => {
 							<div className="flex flex-col gap-[12]">
 								{columns.map((column, index) => (
 									<FormField
-										key={column.id}
+										key={column.temp_id}
 										control={form.control}
 										name={`columns.${index}.title`}
 										render={({ field }) => (

@@ -29,7 +29,7 @@ interface Props {
 
 const DeleteColumnModal = ({ open, onOpenChange, selected_column, onDeleteColumn }: Props) => {
 	const { board_id } = useParams() as { board_id: string };
-	const { deleteColumn, isPending } = useDeleteColumn(board_id, {
+	const { deleteColumn, isPending } = useDeleteColumn({
 		onSuccess: () => {
 			onDeleteColumn?.();
 		}
@@ -69,9 +69,11 @@ const DeleteColumnModal = ({ open, onOpenChange, selected_column, onDeleteColumn
 						type="button"
 						variant="destructive"
 						className="flex-1"
-						onClick={() =>
-							selected_column?.id && deleteColumn({ id: selected_column?.id })
-						}
+						onClick={() => {
+							if(selected_column?.id){
+								deleteColumn({ board_id, column_id: selected_column?.id });
+							}
+						}}
 						disabled={isPending}
 					>
 						{isPending ? "Deleting..." : "Delete"}
