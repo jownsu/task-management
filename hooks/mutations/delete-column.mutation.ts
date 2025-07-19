@@ -11,6 +11,10 @@ import { Board, CallbackResponse } from "@/types";
 /* PLUGINS */
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
+/**
+ * DOCU: Will delete the selected column. <br>
+ * Triggered: On submission of delete column form. <br>
+ */
 export const useDeleteColumn = (callback?: CallbackResponse) => {
 
 	const queryClient = useQueryClient();

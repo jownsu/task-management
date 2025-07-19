@@ -13,6 +13,10 @@ import { CACHE_KEY_BOARDS } from "@/constants/query-keys";
 /* PLUGINS */
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
+/**
+ * DOCU: Will create a new board. <br>
+ * Triggered: On submission of new board form. <br>
+ */
 export const useCreateBoard = (callback?: CallbackResponse) => {
 
 	const queryClient = useQueryClient();
