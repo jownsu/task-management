@@ -9,6 +9,10 @@ class ColumnService extends APIClient{
         super("/");
     }
 
+    /**
+	 * DOCU: Will delete the selected column. <br>
+	 * Triggered: On submission of delete column form. <br>
+	 */
     deleteColumn = async (payload: DeleteColumnSchemaType) => {
         const response = await this.delete(`boards/${payload.board_id}/columns/${payload.column_id}`)
             .then((res) => {
