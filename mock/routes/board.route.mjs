@@ -49,13 +49,14 @@ export default function boardRoutes(app) {
 		});
 	});
 
-	app.put("/api/boards", (req, res) => {
-		const { id, title, columns } = req.body;
+	app.put("/api/boards/:board_id", (req, res) => {
+		const { board_id } = req.params;
+		const { title, columns } = req.body;
 
 		let updated_board = {};
 
 		board_list = board_list.map(board => {
-			if(board.id === id){
+			if(board.id === board_id){
 				
 				let existing_columns = [];
 				let new_columns = [];

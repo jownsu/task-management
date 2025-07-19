@@ -58,7 +58,7 @@ class BoardService extends APIClient{
     };
 
     editBoard = async (payload: EditBoardSchema) => {
-        const response = await this.put<Board>("/", { ...payload })
+        const response = await this.put<Board>(`/${payload.id}`, { ...payload })
             .then((res) => {
                 if(!res.status){
                     throw res.error;
