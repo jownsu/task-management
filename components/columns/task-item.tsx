@@ -1,3 +1,8 @@
+"use client";
+
+/* STORE */
+import { useTaskStore } from "@/store/task.store";
+
 /* CONSTANTS */
 import { Task } from "@/types";
 
@@ -6,10 +11,13 @@ interface Props {
 }
 
 const TaskItem = ({ task }: Props) => {
+	const setModal = useTaskStore((state) => state.setModal);
+	
 	return (
 		<button
 			className="bg-foreground rounded-lg px-[16] py-[24] text-left flex flex-col gap-[8] drop-shadow-md cursor-pointer group"
 			type="button"
+			onClick={() => setModal("view_task", true)}
 		>
 			<p className="text-h-md text-black dark:text-white group-hover:text-primary dark:group-hover:text-primary">
 				{task.title}

@@ -18,10 +18,10 @@ interface Props {
 const ActionOptions = ({ onEditClick, onDeleteClick, name }: Props) => {
 	return (
 		<DropdownMenu>
-			<DropdownMenuTrigger className="size-[25] grid place-items-center cursor-pointer">
+			<DropdownMenuTrigger className="size-[25] grid place-items-center cursor-pointer shrink-0">
 				<Ellipsis />
 			</DropdownMenuTrigger>
-			<DropdownMenuContent className="w-[192]" align="end" sideOffset={15}>
+			<DropdownMenuContent className="w-[192] z-[300]" align="end" sideOffset={15}>
 				<DropdownMenuItem
 					className="text-medium-grey"
 					onClick={() => onEditClick?.()}
