@@ -1,5 +1,8 @@
 "use client";
 
+/* NEXT */
+import { useState } from "react";
+
 /* COMPONENTS */
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import {
@@ -9,13 +12,16 @@ import {
 	SelectTrigger,
 	SelectValue
 } from "@/components/ui/select";
-import { cn } from "@/lib/utils";
+import ActionOptions from "@/components/actions-dropdown";
+import { Checkbox } from "@/components/ui/checkbox";
+import { DialogDescription } from "@/components/ui/dialog";
 
 /* STORE */
 import { useTaskStore } from "@/store/task.store";
-import { DialogDescription } from "@radix-ui/react-dialog";
-import { useState } from "react";
-import ActionOptions from "../actions-dropdown";
+
+/* UTILITIES */
+import { cn } from "@/lib/utils";
+
 
 const ViewTaskModal = () => {
 	const setModal = useTaskStore((state) => state.setModal);
@@ -38,6 +44,7 @@ const ViewTaskModal = () => {
 			is_completed: false
 		}
 	])
+	const [current_status, setCurrentStatus] = useState("1")
 
 	return (
 		<Dialog
@@ -63,23 +70,18 @@ const ViewTaskModal = () => {
 						<label className="text-medium-grey t-[12] font-bold leading-none">Subtasks ({sub_tasks.filter(subtask => subtask.is_completed).length}/{sub_tasks.length})</label>
 						<div className="flex flex-col gap-2">
 							{sub_tasks.map((subtask) => (
-								<label 
+								<button 
 									key={subtask.id} 
-									htmlFor={`subtask_${subtask.id}`}
-									className={"px-[12] py-[16] bg-background flex gap-[16]"}
+									className={"px-[12] py-[16] bg-background flex gap-[16] cursor-pointer"}
+									onClick={() => {
+										setSubTasks((prev_tasks) => 
+											prev_tasks.map((prev_task) => 
+												prev_task.id === subtask.id ? { ...prev_task, is_completed: !prev_task.is_completed } : prev_task
+											)
+										);
+									}}
 								>
-									<input 
-										type="checkbox" 
-										id={`subtask_${subtask.id}`} 
-										checked={subtask.is_completed}
-										onChange={() => {
-											setSubTasks((prev) => 
-												prev.map((task) => 
-													task.id === subtask.id ? { ...task, is_completed: !task.is_completed } : task
-												)
-											);
-										}}
-									/>
+									<Checkbox checked={subtask.is_completed} />
 									<span 
 										className={cn("t-[12] font-bold dark:text-white", {
 											["line-through opacity-50"]: subtask.is_completed,
@@ -87,19 +89,19 @@ const ViewTaskModal = () => {
 									>
 										{subtask.title}
 									</span>
-								</label>
+								</button>
 							))}
 						</div>
 					</div>
 
 					<div className="grid gap-2">
 						<label className="text-medium-grey t-[12] font-bold leading-none">Current Status</label>
-						<Select value={"1"}>
+						<Select value={current_status} onValueChange={(value) => setCurrentStatus(value)}>
 							<SelectTrigger className="w-full">
 								<SelectValue placeholder="Select Status" />
 							</SelectTrigger>
 
-							<SelectContent className="">
+							<SelectContent>
 								<SelectItem value="1">Todo</SelectItem>
 								<SelectItem value="2">Doing</SelectItem>
 							</SelectContent>
