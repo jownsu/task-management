@@ -70,15 +70,29 @@ const ViewTaskModal = () => {
 						<label className="text-medium-grey t-[12] font-bold leading-none">Subtasks ({sub_tasks.filter(subtask => subtask.is_completed).length}/{sub_tasks.length})</label>
 						<div className="flex flex-col gap-2">
 							{sub_tasks.map((subtask) => (
-								<button 
+								<label 
 									key={subtask.id} 
 									className={"px-[12] py-[16] bg-background flex gap-[16] cursor-pointer"}
-									onClick={() => {
+									tabIndex={0}
+									aria-label={subtask.title}
+									onClick={(event) => {
+										event.preventDefault();
+										event.stopPropagation();
 										setSubTasks((prev_tasks) => 
 											prev_tasks.map((prev_task) => 
 												prev_task.id === subtask.id ? { ...prev_task, is_completed: !prev_task.is_completed } : prev_task
 											)
 										);
+									}}
+									onKeyDown={(event) => {
+										if (event.key === "Enter" || event.key === " ") {
+											event.preventDefault();
+											setSubTasks((prev_tasks) => 
+												prev_tasks.map((prev_task) => 
+													prev_task.id === subtask.id ? { ...prev_task, is_completed: !prev_task.is_completed } : prev_task
+												)
+											);
+										}
 									}}
 								>
 									<Checkbox checked={subtask.is_completed} />
@@ -89,7 +103,7 @@ const ViewTaskModal = () => {
 									>
 										{subtask.title}
 									</span>
-								</button>
+								</label>
 							))}
 						</div>
 					</div>
