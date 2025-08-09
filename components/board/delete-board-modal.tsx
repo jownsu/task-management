@@ -1,8 +1,5 @@
 "use client";
 
-/* NEXT */
-import { useParams } from "next/navigation";
-
 /* COMPONENTS */
 import { Button } from "@/components/ui/button";
 import {
@@ -19,11 +16,11 @@ import { useDeleteBoard } from "@/hooks/mutations/delete-board.mutation";
 /* STORE */
 import { useBoardStore } from "@/store/board.store";
 
-const DeleteBoardmodal = () => {
-	const { board_id } = useParams() as { board_id: string };
-	
+const DeleteBoardModal = () => {
 	const setModal = useBoardStore((state) => state.setModal);
 	const modals = useBoardStore((state) => state.modals);
+	const selected_board = useBoardStore((state) => state.selected_board);
+
 	const { deleteBoard, isPending } = useDeleteBoard({
 		onSuccess: () => {
 			setModal("delete_board", false);
@@ -43,9 +40,8 @@ const DeleteBoardmodal = () => {
 					</DialogTitle>
 				</DialogHeader>
 
-				{/* TODO: Active board title */}
 				<DialogDescription>
-					Are you sure you want to delete the &apos;Board title here&apos;
+					Are you sure you want to delete the &apos;{selected_board?.title}&apos;
 					board? This action will remove all columns and tasks and cannot be
 					reversed.
 				</DialogDescription>
@@ -64,7 +60,11 @@ const DeleteBoardmodal = () => {
 						type="button"
 						variant="destructive"
 						className="flex-1"
-						onClick={() => deleteBoard({ id: board_id })}
+						onClick={() => {
+							if(selected_board){
+								deleteBoard({ id: selected_board.id })
+							}
+						}}
 						disabled={isPending}
 					>
 						{isPending ? "Deleting..." : "Delete"}
@@ -75,4 +75,4 @@ const DeleteBoardmodal = () => {
 	);
 };
 
-export default DeleteBoardmodal;
+export default DeleteBoardModal;

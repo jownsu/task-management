@@ -2,7 +2,6 @@
 
 /* NEXT */
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
 
 /* COMPONENTS */
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -24,9 +23,6 @@ import { useBoardStore } from "@/store/board.store";
 /* MUTATIONS */
 import { useEditBoard } from "@/hooks/mutations/edit-board.mutation";
 
-/* QUERIES */
-import { useGetBoard } from "@/hooks/queries/board.query";
-
 /* ICONS */
 import { FaPlus } from "react-icons/fa";
 import { IoIosClose } from "react-icons/io";
@@ -36,12 +32,11 @@ import { MdDeleteOutline } from "react-icons/md";
 import { Column } from "@/types";
 
 const EditBoardmodal = () => {
-	const { board_id } = useParams() as { board_id: string };
 	const board_modals = useBoardStore((state) => state.modals);
 	const setModal = useBoardStore((state) => state.setModal);
+	const selected_board = useBoardStore((state) => state.selected_board);
 	const [selected_column, setSelectedColumn] = useState<Column & { index: number }>()
 	const [open_delete_column_modal, setDeleteColumnModal] = useState(false)
-	const { board } = useGetBoard(board_id);
 
 	const form = useForm<EditBoardSchema>({
 		resolver: zodResolver(edit_board_schema)
@@ -68,18 +63,18 @@ const EditBoardmodal = () => {
 	};
 
 	useEffect(() => {
-		if(board && board_modals.edit_board){
+		if(selected_board && board_modals.edit_board){
 			form.reset({
-				id: board.id,
-				title: board.title,
-				columns: board.columns?.map(column => ({ 
+				id: selected_board.id,
+				title: selected_board.title,
+				columns: selected_board.columns?.map(column => ({ 
 					id: column.id, 
 					title: column.title, 
 					is_new: false 
 				}))
 			});
 		}
-	}, [form, board_modals.edit_board, board]);
+	}, [form, board_modals.edit_board, selected_board]);
 
 	return (
 		<Dialog

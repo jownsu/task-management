@@ -14,6 +14,7 @@ interface BoardStore {
 	modals: Modals;
 	selected_board: Board | null;
 	setModal: (modal: keyof Modals, value: boolean) => void;
+	setSelectedBoard: (board: Board | null) => void;
 }
 
 export const useBoardStore = create<BoardStore>()((set) => ({
@@ -29,5 +30,6 @@ export const useBoardStore = create<BoardStore>()((set) => ({
 				...state.modals,
 				[modal]: value
 			}
-		}))
+		})),
+	setSelectedBoard: (selected_board) => set({ selected_board })
 }));

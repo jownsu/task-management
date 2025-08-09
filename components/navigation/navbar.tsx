@@ -26,6 +26,7 @@ import { cn } from "@/lib/utils";
 const Navbar = () => {
 	const is_sidebar_open = useNavigationStore((state) => state.is_sidebar_open);
 	const setBoardModal = useBoardStore((state) => state.setModal);
+	const setSelectedBoard = useBoardStore((state) => state.setSelectedBoard);
 	const setTaskModal = useTaskStore((state) => state.setModal);
 
 	const { board_id } = useParams() as { board_id: string };
@@ -61,8 +62,18 @@ const Navbar = () => {
 				</Button>
 				<ActionOptions 
 					name="Board" 
-					onDeleteClick={() => setBoardModal("delete_board", true)}
-					onEditClick={() => setBoardModal("edit_board", true)}
+					onDeleteClick={() => {
+						if(board){
+							setBoardModal("delete_board", true);
+							setSelectedBoard(board);
+						}
+					}}
+					onEditClick={() => {
+						if(board){
+							setBoardModal("edit_board", true);
+							setSelectedBoard(board);
+						}
+					}}
 				/>
 			</div>
 		</nav>
