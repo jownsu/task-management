@@ -8,6 +8,7 @@ interface Modals {
 	add_task: boolean;
 	edit_task: boolean;
 	view_task: boolean;
+	delete_task: boolean;
 }
 
 interface TaskStore {
@@ -21,7 +22,8 @@ export const useTaskStore = create<TaskStore>()((set) => ({
 	modals: {
 		add_task: false,
 		edit_task: false,
-		view_task: false
+		view_task: false,
+		delete_task: false
 	},
 	selected_task: null,
 	setModal: (modal, value) =>

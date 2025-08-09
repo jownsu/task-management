@@ -75,7 +75,7 @@ const EditTaskModal = () => {
 
 	return (
 		<Dialog
-			open={modals.edit_task && modals.view_task}
+			open={modals.edit_task}
 			onOpenChange={(value) => setModal("edit_task", value)}
 		>
 			<DialogContent>
