@@ -6,6 +6,7 @@ import MainContainer from "@/components/main-container";
 import EditBoardmodal from "@/components/board/edit-board-modal";
 import DeleteBoardmodal from "@/components/board/delete-board-modal";
 import ViewTaskModal from "@/components/task/view-task-modal";
+import EditTaskModal from "@/components/task/edit-task-modal";
 
 /* PLUGINS */
 import { HydrationBoundary } from "@tanstack/react-query";
@@ -35,6 +36,7 @@ const TaskPage = async ({ params }: Props) => {
 					<EditBoardmodal />
 					<DeleteBoardmodal />
 					<ViewTaskModal />
+					<EditTaskModal />
 				</div>
 			</MainContainer>
 		</HydrationBoundary>

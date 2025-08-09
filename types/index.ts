@@ -13,12 +13,26 @@ export interface Column {
     id: string;
     title: string;
     is_new?: boolean;
-    tasks?: Task[];
+    tasks?: TaskItem[];
+}
+
+export interface TaskItem {
+    id: string;
+    title: string;
+    total_subtask: number;
+    completed_sub_task: number;
+}
+
+export interface SubTask {
+    id: string;
+    title: string;
+    is_completed: boolean;
 }
 
 export interface Task {
     id: string;
     title: string;
-    total_subtask: number;
-    completed_sub_task: number;
+    description: string;
+    sub_tasks: SubTask[];
+    column_id: string;
 }

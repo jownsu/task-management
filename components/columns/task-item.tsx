@@ -4,10 +4,10 @@
 import { useTaskStore } from "@/store/task.store";
 
 /* CONSTANTS */
-import { Task } from "@/types";
+import { TaskItem as TaskItemType } from "@/types";
 
 interface Props {
-	task: Task;
+	task: TaskItemType;
 }
 
 const TaskItem = ({ task }: Props) => {

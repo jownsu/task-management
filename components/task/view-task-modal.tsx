@@ -26,6 +26,7 @@ import { cn } from "@/lib/utils";
 const ViewTaskModal = () => {
 	const setModal = useTaskStore((state) => state.setModal);
 	const modals = useTaskStore((state) => state.modals);
+	const setSelectedTask = useTaskStore((state) => state.setSelectedTask);
 
 	const [sub_tasks, setSubTasks] = useState([
 		{
@@ -48,7 +49,7 @@ const ViewTaskModal = () => {
 
 	return (
 		<Dialog
-			open={modals.view_task}
+			open={modals.view_task && !modals.edit_task}
 			onOpenChange={(value) => setModal("view_task", value)}
 		>
 			<DialogContent>
@@ -58,7 +59,16 @@ const ViewTaskModal = () => {
 						<ActionOptions 
 							name="Task" 
 							onDeleteClick={() => {}}
-							onEditClick={() => {}}
+							onEditClick={() => {
+								setModal("edit_task", true);
+								setSelectedTask({
+									id: "1",
+									title: "Research pricing points of various competitors and trial different business models",
+									description: "We know what we're planning to build for version one. Now we need to finalise the first pricing model we'll use. Keep iterating the subtasks until we have a coherent proposition.",
+									sub_tasks: sub_tasks,
+									column_id: "1"
+								});
+							}}
 						/>
 					</div>
 
