@@ -2,6 +2,7 @@
 
 /* NEXT */
 import { useState } from "react";
+import { useParams } from "next/navigation";
 
 /* COMPONENTS */
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
@@ -19,14 +20,19 @@ import { DialogDescription } from "@/components/ui/dialog";
 /* STORE */
 import { useTaskStore } from "@/store/task.store";
 
+/* QUERIES */
+import { useGetBoard } from "@/hooks/queries/board.query";
+
 /* UTILITIES */
 import { cn } from "@/lib/utils";
 
-
 const ViewTaskModal = () => {
+	const { board_id } = useParams() as { board_id: string };
+	
 	const setModal = useTaskStore((state) => state.setModal);
 	const modals = useTaskStore((state) => state.modals);
 	const setSelectedTask = useTaskStore((state) => state.setSelectedTask);
+	const { board } = useGetBoard(board_id);
 
 	const [sub_tasks, setSubTasks] = useState([
 		{
@@ -135,8 +141,16 @@ const ViewTaskModal = () => {
 							</SelectTrigger>
 
 							<SelectContent>
-								<SelectItem value="1">Todo</SelectItem>
-								<SelectItem value="2">Doing</SelectItem>
+								{
+									board?.columns?.map((column) => (
+										<SelectItem
+											key={column.id}
+											value={column.id}
+										>
+											{column.title}
+										</SelectItem>
+									))
+								}
 							</SelectContent>
 						</Select>
 					</div>
