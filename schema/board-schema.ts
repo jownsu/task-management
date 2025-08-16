@@ -1,9 +1,9 @@
 import { z } from "zod";
 
 export const add_board_schema = z.object({
-	title: z.string(),
+	title: z.string().min(1, "Title is required"),
 	columns: z.array(z.object({
-		title: z.string(),
+		title: z.string().min(1, "Can't be empty"),
 	}))
 });
 

@@ -41,6 +41,8 @@ const CreateBoardmodal = () => {
 		}
 	});
 
+	const errors = form.formState.errors;
+
 	const {
 		fields: columns,
 		append,
@@ -91,6 +93,7 @@ const CreateBoardmodal = () => {
 										{...field}
 										type="text"
 										placeholder="e.g. Web Design"
+										error={errors.title?.message}
 									/>
 								</FormItem>
 							)}
@@ -110,6 +113,8 @@ const CreateBoardmodal = () => {
 													{...field}
 													type="text"
 													placeholder="e.g. Done"
+													error={errors.columns?.[index]?.title?.message}
+													floating_error
 												/>
 												<button
 													type="button"
