@@ -2,6 +2,7 @@
 
 /* NEXT */
 import { useEffect } from "react";
+import { useParams } from "next/navigation";
 
 /* COMPONENTS */
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -21,6 +22,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 
+/* QUERIES */
+import { useGetBoard } from "@/hooks/queries/board.query";
+
 /* SCHEMA */
 import { task_schema, TaskSchemaType } from "@/schema/task-schema";
 
@@ -32,14 +36,19 @@ import { FaPlus } from "react-icons/fa";
 import { IoIosClose } from "react-icons/io";
 
 const EditTaskModal = () => {
+
+	const { board_id } = useParams() as { board_id: string };
+
 	const setModal = useTaskStore((state) => state.setModal);
 	const modals = useTaskStore((state) => state.modals);
 	const selected_task = useTaskStore((state) => state.selected_task);
+	const { board } = useGetBoard(board_id);
 
 	const form = useForm<TaskSchemaType>({
 		resolver: zodResolver(task_schema),
 		defaultValues: {
 			title: "",
+			description: "",
 			sub_tasks: [
 				{
 					id: crypto.randomUUID(),
@@ -53,6 +62,8 @@ const EditTaskModal = () => {
 			column_id: "1"
 		}
 	});
+
+	const errors = form.formState.errors;
 
 	const {
 		fields: sub_tasks,
@@ -98,6 +109,7 @@ const EditTaskModal = () => {
 										{...field}
 										type="text"
 										placeholder="e.g. Take coffee break"
+										error={errors.title?.message}
 									/>
 								</FormItem>
 							)}
@@ -113,6 +125,7 @@ const EditTaskModal = () => {
 										{...field}
 										placeholder="e.g. It's always good to take a break. This 15 minute break will  recharge the batteries a little."
 										className="h-[112]"
+										error={errors.description?.message}
 									/>
 								</FormItem>
 							)}
@@ -132,6 +145,8 @@ const EditTaskModal = () => {
 													{...field}
 													type="text"
 													placeholder="e.g. Done"
+													error={errors.sub_tasks?.[index]?.title?.message}
+													floating_error
 												/>
 												<button
 													type="button"
@@ -170,8 +185,16 @@ const EditTaskModal = () => {
 										</SelectTrigger>
 
 										<SelectContent className="">
-											<SelectItem value="1">Todo</SelectItem>
-											<SelectItem value="2">Doing</SelectItem>
+											{
+												board?.columns?.map((column) => (
+													<SelectItem
+														key={column.id}
+														value={column.id}
+													>
+														{column.title}
+													</SelectItem>
+												))
+											}
 										</SelectContent>
 									</Select>
 								)}
