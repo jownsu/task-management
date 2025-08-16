@@ -9,10 +9,10 @@ export const add_board_schema = z.object({
 
 export const edit_board_schema = z.object({
 	id: z.string().optional(),
-	title: z.string(),
+	title: z.string().min(1, "Title is required"),
 	columns: z.array(z.object({
 		id: z.string().optional(),
-		title: z.string(),
+		title: z.string().min(1, "Can't be empty"),
 		is_new: z.boolean().default(false).optional()
 	}))
 });

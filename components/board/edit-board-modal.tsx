@@ -42,6 +42,8 @@ const EditBoardmodal = () => {
 		resolver: zodResolver(edit_board_schema)
 	});
 
+	const errors = form.formState.errors;
+
 	const {
 		fields: columns,
 		append,
@@ -101,6 +103,7 @@ const EditBoardmodal = () => {
 										{...field}
 										type="text"
 										placeholder="e.g. Web Design"
+										error={errors.title?.message}
 									/>
 								</FormItem>
 							)}
@@ -120,6 +123,8 @@ const EditBoardmodal = () => {
 													{...field}
 													type="text"
 													placeholder="e.g. Done"
+													error={errors.columns?.[index]?.title?.message}
+													floating_error
 												/>
 												{
 													column.is_new 
