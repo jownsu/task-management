@@ -2,12 +2,12 @@ import { z } from "zod";
 
 export const task_schema = z.object({
     id: z.string().optional(),
-    title: z.string(),
-    description: z.string(),
+    title: z.string().min(1, "Title is required"),
+    description: z.string().min(1, "Description is required"),
     column_id: z.string(),
     sub_tasks: z.array(z.object({
         id: z.string().optional(),
-        title: z.string(),
+        title: z.string().min(1, "Can't be empty"),
         is_new: z.boolean().default(false).optional()
     }))
 });

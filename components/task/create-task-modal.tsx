@@ -47,6 +47,7 @@ const CreateTaskModal = () => {
 		resolver: zodResolver(task_schema),
 		defaultValues: {
 			title: "",
+			description: "",
 			sub_tasks: [
 				{
 					id: crypto.randomUUID(),
@@ -60,6 +61,8 @@ const CreateTaskModal = () => {
 			column_id: "1"
 		}
 	});
+
+	const errors = form.formState.errors;
 
 	const {
 		fields: sub_tasks,
@@ -105,6 +108,7 @@ const CreateTaskModal = () => {
 										{...field}
 										type="text"
 										placeholder="e.g. Take coffee break"
+										error={errors.title?.message}
 									/>
 								</FormItem>
 							)}
@@ -120,6 +124,7 @@ const CreateTaskModal = () => {
 										{...field}
 										placeholder="e.g. It's always good to take a break. This 15 minute break will  recharge the batteries a little."
 										className="h-[112]"
+										error={errors.description?.message}
 									/>
 								</FormItem>
 							)}
@@ -139,6 +144,8 @@ const CreateTaskModal = () => {
 													{...field}
 													type="text"
 													placeholder="e.g. Done"
+													error={errors.sub_tasks?.[index]?.title?.message}
+													floating_error
 												/>
 												<button
 													type="button"
