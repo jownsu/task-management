@@ -88,7 +88,6 @@ class BoardService extends APIClient{
         return response;
     };
 
-    
     /**
 	 * DOCU: Will delete the selected board. <br>
 	 * Triggered: On submission of delete board form. <br>

@@ -13,9 +13,9 @@ interface Modals {
 
 interface TaskStore {
 	modals: Modals;
-	selected_task: Task | null;
+	selected_task: Task & { column_id: string } | null;
 	setModal: (modal: keyof Modals, value: boolean) => void;
-	setSelectedTask: (task: Task | null) => void;
+	setSelectedTask: (task: Task & { column_id: string } | null) => void;
 }
 
 export const useTaskStore = create<TaskStore>()((set) => ({

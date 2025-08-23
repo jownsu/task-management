@@ -16,17 +16,17 @@ export const board_list_data = [
                             {
                                 id: "1",
                                 title: "Sign up page",
-                                isCompleted: true
+                                is_completed: true
                             },
                             {
                                 id: "2",
                                 title: "Sign in page",
-                                isCompleted: false
+                                is_completed: false
                             },
                             {
                                 id: "3",
                                 title: "Welcome page",
-                                isCompleted: false
+                                is_completed: false
                             }
                         ]
                     },
@@ -39,7 +39,7 @@ export const board_list_data = [
                             {
                                 id: "1",
                                 title: "Search page",
-                                isCompleted: false
+                                is_completed: false
                             }
                         ]
                     },
@@ -52,12 +52,12 @@ export const board_list_data = [
                             {
                                 id: "1",
                                 title: "Account page",
-                                isCompleted: false
+                                is_completed: false
                             },
                             {
                                 id: "2",
                                 title: "Billing page",
-                                isCompleted: false
+                                is_completed: false
                             }
                         ]
                     },
@@ -70,12 +70,12 @@ export const board_list_data = [
                             {
                                 id: "1",
                                 title: "Internal testing",
-                                isCompleted: false
+                                is_completed: false
                             },
                             {
                                 id: "2",
                                 title: "External testing",
-                                isCompleted: false
+                                is_completed: false
                             }
                         ]
                     }
@@ -94,17 +94,17 @@ export const board_list_data = [
                             {
                                 id: "1",
                                 title: "Settings - Account page",
-                                isCompleted: true
+                                is_completed: true
                             },
                             {
                                 id: "2",
                                 title: "Settings - Billing page",
-                                isCompleted: true
+                                is_completed: true
                             },
                             {
                                 id: "3",
                                 title: "Search page",
-                                isCompleted: false
+                                is_completed: false
                             }
                         ]
                     },
@@ -117,17 +117,17 @@ export const board_list_data = [
                             {
                                 id: "1",
                                 title: "Upgrade plan",
-                                isCompleted: true
+                                is_completed: true
                             },
                             {
                                 id: "2",
                                 title: "Cancel plan",
-                                isCompleted: true
+                                is_completed: true
                             },
                             {
                                 id: "3",
                                 title: "Update payment method",
-                                isCompleted: false
+                                is_completed: false
                             }
                         ]
                     },
@@ -140,17 +140,17 @@ export const board_list_data = [
                             {
                                 id: "1",
                                 title: "Sign up page",
-                                isCompleted: true
+                                is_completed: true
                             },
                             {
                                 id: "2",
                                 title: "Sign in page",
-                                isCompleted: false
+                                is_completed: false
                             },
                             {
                                 id: "3",
                                 title: "Welcome page",
-                                isCompleted: false
+                                is_completed: false
                             }
                         ]
                     },
@@ -163,12 +163,12 @@ export const board_list_data = [
                             {
                                 id: "1",
                                 title: "Add search endpoint",
-                                isCompleted: true
+                                is_completed: true
                             },
                             {
                                 id: "2",
                                 title: "Define search filters",
-                                isCompleted: false
+                                is_completed: false
                             }
                         ]
                     },
@@ -181,12 +181,12 @@ export const board_list_data = [
                             {
                                 id: "1",
                                 title: "Define user model",
-                                isCompleted: true
+                                is_completed: true
                             },
                             {
                                 id: "2",
                                 title: "Add auth endpoints",
-                                isCompleted: false
+                                is_completed: false
                             }
                         ]
                     },
@@ -199,17 +199,17 @@ export const board_list_data = [
                             {
                                 id: "1",
                                 title: "Research competitor pricing and business models",
-                                isCompleted: true
+                                is_completed: true
                             },
                             {
                                 id: "2",
                                 title: "Outline a business model that works for our solution",
-                                isCompleted: false
+                                is_completed: false
                             },
                             {
                                 id: "3",
                                 title: "Talk to potential customers about our proposed solution and ask for fair price expectancy",
-                                isCompleted: false
+                                is_completed: false
                             }
                         ]
                     }
@@ -228,7 +228,7 @@ export const board_list_data = [
                             {
                                 id: "1",
                                 title: "Complete 5 wireframe prototype tests",
-                                isCompleted: true
+                                is_completed: true
                             }
                         ]
                     },
@@ -241,7 +241,7 @@ export const board_list_data = [
                             {
                                 id: "1",
                                 title: "Create clickable wireframe prototype in Balsamiq",
-                                isCompleted: true
+                                is_completed: true
                             }
                         ]
                     },
@@ -254,17 +254,17 @@ export const board_list_data = [
                             {
                                 id: "1",
                                 title: "Meet to review notes from previous tests and plan changes",
-                                isCompleted: true
+                                is_completed: true
                             },
                             {
                                 id: "2",
                                 title: "Make changes to paper prototypes",
-                                isCompleted: true
+                                is_completed: true
                             },
                             {
                                 id: "3",
                                 title: "Conduct 5 usability tests",
-                                isCompleted: true
+                                is_completed: true
                             }
                         ]
                     },
@@ -277,12 +277,12 @@ export const board_list_data = [
                             {
                                 id: "1",
                                 title: "Create paper prototypes for version one",
-                                isCompleted: true
+                                is_completed: true
                             },
                             {
                                 id: "2",
                                 title: "Complete 10 usability tests",
-                                isCompleted: true
+                                is_completed: true
                             }
                         ]
                     },
@@ -295,7 +295,7 @@ export const board_list_data = [
                             {
                                 id: "1",
                                 title: "Interview 10 prospective customers",
-                                isCompleted: true
+                                is_completed: true
                             }
                         ]
                     },
@@ -308,12 +308,12 @@ export const board_list_data = [
                             {
                                 id: "1",
                                 title: "Find direct and indirect competitors",
-                                isCompleted: true
+                                is_completed: true
                             },
                             {
                                 id: "2",
                                 title: "SWOT analysis for each competitor",
-                                isCompleted: true
+                                is_completed: true
                             }
                         ]
                     },
@@ -326,12 +326,12 @@ export const board_list_data = [
                             {
                                 id: "1",
                                 title: "Write up research analysis",
-                                isCompleted: true
+                                is_completed: true
                             },
                             {
                                 id: "2",
                                 title: "Calculate TAM",
-                                isCompleted: true
+                                is_completed: true
                             }
                         ]
                     }
@@ -344,7 +344,7 @@ export const board_list_data = [
         title: "Marketing Plan",
         columns: [
             {
-                id: "1",
+                id: "4",
                 title: "Todo",
                 tasks: [
                     {
@@ -356,32 +356,32 @@ export const board_list_data = [
                             {
                                 id: "1",
                                 title: "Find hunter",
-                                isCompleted: false
+                                is_completed: false
                             },
                             {
                                 id: "2",
                                 title: "Gather assets",
-                                isCompleted: false
+                                is_completed: false
                             },
                             {
                                 id: "3",
                                 title: "Draft product page",
-                                isCompleted: false
+                                is_completed: false
                             },
                             {
                                 id: "4",
                                 title: "Notify customers",
-                                isCompleted: false
+                                is_completed: false
                             },
                             {
                                 id: "5",
                                 title: "Notify network",
-                                isCompleted: false
+                                is_completed: false
                             },
                             {
                                 id: "6",
                                 title: "Launch!",
-                                isCompleted: false
+                                is_completed: false
                             }
                         ]
                     },
@@ -394,17 +394,17 @@ export const board_list_data = [
                             {
                                 id: "1",
                                 title: "Draft out HN post",
-                                isCompleted: false
+                                is_completed: false
                             },
                             {
                                 id: "2",
                                 title: "Get feedback and refine",
-                                isCompleted: false
+                                is_completed: false
                             },
                             {
                                 id: "3",
                                 title: "Publish post",
-                                isCompleted: false
+                                is_completed: false
                             }
                         ]
                     },
@@ -417,34 +417,34 @@ export const board_list_data = [
                             {
                                 id: "1",
                                 title: "Write article",
-                                isCompleted: false
+                                is_completed: false
                             },
                             {
                                 id: "2",
                                 title: "Publish on LinkedIn",
-                                isCompleted: false
+                                is_completed: false
                             },
                             {
                                 id: "3",
                                 title: "Publish on Inndie Hackers",
-                                isCompleted: false
+                                is_completed: false
                             },
                             {
                                 id: "4",
                                 title: "Publish on Medium",
-                                isCompleted: false
+                                is_completed: false
                             }
                         ]
                     }
                 ]
             },
             {
-                id: "2",
+                id: "5",
                 title: "Doing",
                 tasks: []
             },
             {
-                id: "3",
+                id: "6",
                 title: "Done",
                 tasks: []
             }
@@ -455,7 +455,7 @@ export const board_list_data = [
         title: "Roadmap",
         columns: [
             {
-                id: "1",
+                id: "7",
                 title: "Now",
                 tasks: [
                     {
@@ -467,12 +467,12 @@ export const board_list_data = [
                             {
                                 id: "1",
                                 title: "Launch privately to our waitlist",
-                                isCompleted: false
+                                is_completed: false
                             },
                             {
                                 id: "2",
                                 title: "Launch publicly on PH, HN, etc.",
-                                isCompleted: false
+                                is_completed: false
                             }
                         ]
                     },
@@ -485,29 +485,29 @@ export const board_list_data = [
                             {
                                 id: "1",
                                 title: "Interview 10 customers",
-                                isCompleted: false
+                                is_completed: false
                             },
                             {
                                 id: "2",
                                 title: "Review common customer pain points and suggestions",
-                                isCompleted: false
+                                is_completed: false
                             },
                             {
                                 id: "3",
                                 title: "Outline next steps for our roadmap",
-                                isCompleted: false
+                                is_completed: false
                             }
                         ]
                     }
                 ]
             },
             {
-                id: "2",
+                id: "8",
                 title: "Next",
                 tasks: []
             },
             {
-                id: "3",
+                id: "9",
                 title: "Later",
                 tasks: []
             }

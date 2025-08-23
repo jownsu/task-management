@@ -1,7 +1,7 @@
 "use client";
 
 /* NEXT */
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 
 /* COMPONENTS */
@@ -20,6 +20,9 @@ import { DialogDescription } from "@/components/ui/dialog";
 /* STORE */
 import { useTaskStore } from "@/store/task.store";
 
+/* ENTITIES */
+import { SubTask } from "@/types";
+
 /* QUERIES */
 import { useGetBoard } from "@/hooks/queries/board.query";
 
@@ -31,27 +34,18 @@ const ViewTaskModal = () => {
 	
 	const setModal = useTaskStore((state) => state.setModal);
 	const modals = useTaskStore((state) => state.modals);
-	const setSelectedTask = useTaskStore((state) => state.setSelectedTask);
+	const selected_task = useTaskStore((state) => state.selected_task);
 	const { board } = useGetBoard(board_id);
 
-	const [sub_tasks, setSubTasks] = useState([
-		{
-			id: "1",
-			title: "Subtask 1",
-			is_completed: true
-		},
-		{
-			id: "2",
-			title: "Subtask 2",
-			is_completed: true
-		},
-		{
-			id: "3",
-			title: "Subtask 3",
-			is_completed: false
+	const [sub_tasks, setSubTasks] = useState<SubTask[]>([]);
+	const [current_status, setCurrentStatus] = useState<string>("");
+
+	useEffect(() => {
+		if(selected_task){
+			setSubTasks(selected_task.subtasks);
+			setCurrentStatus(selected_task.column_id);
 		}
-	])
-	const [current_status, setCurrentStatus] = useState("1")
+	}, [selected_task])
 
 	return (
 		<Dialog
@@ -61,34 +55,20 @@ const ViewTaskModal = () => {
 			<DialogContent>
 				<div className="flex flex-col gap-[24]">
 					<div className="flex">
-						<DialogTitle className="text-h-lg">Research pricing points of various competitors and trial different business models</DialogTitle>
+						<DialogTitle className="text-h-lg flex-1">{selected_task?.title}</DialogTitle>
 						<ActionOptions 
 							name="Task" 
 							onDeleteClick={() => {
 								setModal("delete_task", true);
-								setSelectedTask({
-									id: "1",
-									title: "Research pricing points of various competitors and trial different business models",
-									description: "We know what we're planning to build for version one. Now we need to finalise the first pricing model we'll use. Keep iterating the subtasks until we have a coherent proposition.",
-									sub_tasks: sub_tasks,
-									column_id: "1"
-								});
 							}}
 							onEditClick={() => {
 								setModal("edit_task", true);
-								setSelectedTask({
-									id: "1",
-									title: "Research pricing points of various competitors and trial different business models",
-									description: "We know what we're planning to build for version one. Now we need to finalise the first pricing model we'll use. Keep iterating the subtasks until we have a coherent proposition.",
-									sub_tasks: sub_tasks,
-									column_id: "1"
-								});
 							}}
 						/>
 					</div>
 
 					<DialogDescription className="!text-b-lg text-medium-grey">
-						We know what we&apos;re planning to build for version one. Now we need to finalise the first pricing model we&apos;ll use. Keep iterating the subtasks until we have a coherent proposition.
+						{selected_task?.description}
 					</DialogDescription>
 					
 					<div className="grid gap-4">

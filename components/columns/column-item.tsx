@@ -20,7 +20,11 @@ const ColumnItem = ({ column }: Props) => {
 
 			<div className="flex flex-col gap-[20]">
 				{column?.tasks?.map((task) => (
-					<TaskItem key={task.id} task={task} />
+					<TaskItem 
+						key={task.id} 
+						task={task} 
+						column_id={column.id} 
+					/>
 				))}
 			</div>
 		</div>
