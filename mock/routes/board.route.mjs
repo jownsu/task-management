@@ -5,6 +5,70 @@ import { board_list_data } from "../data.mjs";
 let board_list = [...board_list_data];
 
 export default function boardRoutes(app) {
+	
+	app.post("/api/update_subtask", (req, res) => {
+		const {
+			board_id,
+			column_id,
+			task_id,
+			subtask_id,
+			is_completed
+		} = req.body;
+
+		// Find the board
+		const board = board_list.find(board => board.id === board_id);
+		if (!board) {
+			return res.status(404).jsonp({
+				status: false,
+				result: null,
+				error: 'Board not found',
+				message: 'The specified board was not found'
+			});
+		}
+
+		// Find the column
+		const column = board.columns.find(col => col.id === column_id);
+		if (!column) {
+			return res.status(404).jsonp({
+				status: false,
+				result: null,
+				error: 'Column not found',
+				message: 'The specified column was not found in this board'
+			});
+		}
+
+		// Find the task
+		const task = column.tasks.find(t => t.id === task_id);
+		if (!task) {
+			return res.status(404).jsonp({
+				status: false,
+				result: null,
+				error: 'Task not found',
+				message: 'The specified task was not found in this column'
+			});
+		}
+
+		// Find and update the subtask
+		const subtaskIndex = task.subtasks.findIndex(st => st.id === subtask_id);
+		if (subtaskIndex === -1) {
+			return res.status(404).jsonp({
+				status: false,
+				result: null,
+				error: 'Subtask not found',
+				message: 'The specified subtask was not found in this task'
+			});
+		}
+
+		// Update the subtask's completion status
+		task.subtasks[subtaskIndex].is_completed = is_completed;
+
+		res.jsonp({
+			status: true,
+			result: true,
+			error: null,
+			message: 'Subtask updated successfully'
+		});
+	});
 
 	app.get("/api/boards", (req, res) => {
 		res.jsonp({

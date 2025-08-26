@@ -28,3 +28,11 @@ export interface Task {
     description: string;
     subtasks: SubTask[];
 }
+
+export interface UpdateSubTaskPayload {
+    board_id: string;
+    column_id: string;
+    task_id: string;
+    subtask_id: string;
+    is_completed: boolean;
+}

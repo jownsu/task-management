@@ -26,6 +26,9 @@ import { SubTask } from "@/types";
 /* QUERIES */
 import { useGetBoard } from "@/hooks/queries/board.query";
 
+/* MUTATIONS */
+import { useUpdateSubtask } from "@/hooks/mutations/update-subtask.mutation";
+
 /* UTILITIES */
 import { cn } from "@/lib/utils";
 
@@ -40,12 +43,36 @@ const ViewTaskModal = () => {
 	const [sub_tasks, setSubTasks] = useState<SubTask[]>([]);
 	const [current_status, setCurrentStatus] = useState<string>("");
 
+	const { updateSubtask } = useUpdateSubtask()
+
 	useEffect(() => {
 		if(selected_task){
 			setSubTasks(selected_task.subtasks);
 			setCurrentStatus(selected_task.column_id);
 		}
-	}, [selected_task])
+	}, [selected_task]);
+
+	/**
+	 * DOCU: Updates the subtasks and current status when the selected task changes. <br>
+	 * Triggered: When the selected task changes. <br>
+	 */
+	const onToggleSubtask = (subtask: SubTask) => {
+		setSubTasks((prev_tasks) => 
+			prev_tasks.map((prev_task) => 
+				prev_task.id === subtask.id ? { ...prev_task, is_completed: !prev_task.is_completed } : prev_task
+			)
+		);
+
+		if(selected_task){
+			updateSubtask({
+				board_id,
+				column_id: selected_task.column_id,
+				task_id: selected_task.id,
+				subtask_id: subtask.id,
+				is_completed: !subtask.is_completed
+			})
+		}
+	}
 
 	return (
 		<Dialog
@@ -83,20 +110,12 @@ const ViewTaskModal = () => {
 									onClick={(event) => {
 										event.preventDefault();
 										event.stopPropagation();
-										setSubTasks((prev_tasks) => 
-											prev_tasks.map((prev_task) => 
-												prev_task.id === subtask.id ? { ...prev_task, is_completed: !prev_task.is_completed } : prev_task
-											)
-										);
+										onToggleSubtask(subtask);
 									}}
 									onKeyDown={(event) => {
 										if (event.key === "Enter" || event.key === " ") {
 											event.preventDefault();
-											setSubTasks((prev_tasks) => 
-												prev_tasks.map((prev_task) => 
-													prev_task.id === subtask.id ? { ...prev_task, is_completed: !prev_task.is_completed } : prev_task
-												)
-											);
+											onToggleSubtask(subtask);
 										}
 									}}
 								>
