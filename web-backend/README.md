@@ -49,26 +49,30 @@ web-backend/
 ## 🛠️ Installation
 
 1. **Install dependencies:**
-   ```bash
-   npm install
-   ```
+
+    ```bash
+    npm install
+    ```
 
 2. **Set up environment variables:**
-   ```bash
-   cp env.example .env
-   ```
-   Edit `.env` file with your configuration.
+
+    ```bash
+    cp env.example .env
+    ```
+
+    Edit `.env` file with your configuration.
 
 3. **Development:**
-   ```bash
-   npm run dev
-   ```
+
+    ```bash
+    npm run dev
+    ```
 
 4. **Build for production:**
-   ```bash
-   npm run build
-   npm start
-   ```
+    ```bash
+    npm run build
+    npm start
+    ```
 
 ## 🔧 Available Scripts
 
@@ -80,10 +84,12 @@ web-backend/
 ## 🌐 API Endpoints
 
 ### Health Check
+
 - `GET /health` - Health check endpoint
 - `GET /ready` - Readiness check endpoint
 
 ### API Routes
+
 - `GET /api` - API information
 - More routes will be added as the application grows
 

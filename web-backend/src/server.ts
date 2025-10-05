@@ -1,101 +1,94 @@
-import express from 'express';
-import helmet from 'helmet';
-import compression from 'compression';
-import { config } from '@/config/environment';
+import express from "express";
+import helmet from "helmet";
+import compression from "compression";
+import { config } from "@/config/environment";
 import {
-  corsMiddleware,
-  rateLimiter,
-  errorHandler,
-  notFoundHandler,
-  logger,
-  requestId,
-} from '@/middleware';
-import routes from '@/routes';
+	corsMiddleware,
+	rateLimiter,
+	errorHandler,
+	notFoundHandler,
+	logger,
+	requestId,
+} from "@/middleware";
+import routes from "@/routes";
 
-class Server {
-  private app: express.Application;
-  private port: number;
+// Initialize Express app
+const app = express();
+const port = Number(config.port);
 
-  constructor() {
-    this.app = express();
-    this.port = Number(config.port);
-    this.initializeMiddlewares();
-    this.initializeRoutes();
-    this.initializeErrorHandling();
-  }
+// Initialize middlewares
+function initializeMiddlewares(): void {
+	// Security middleware
+	app.use(helmet());
 
-  private initializeMiddlewares(): void {
-    // Security middleware
-    this.app.use(helmet());
-    
-    // Request ID middleware
-    this.app.use(requestId);
-    
-    // Logging middleware
-    this.app.use(logger);
-    
-    // CORS middleware
-    this.app.use(corsMiddleware);
-    
-    // Rate limiting middleware
-    this.app.use(rateLimiter);
-    
-    // Compression middleware
-    this.app.use(compression());
-    
-    // Body parsing middleware
-    this.app.use(express.json({ limit: '10mb' }));
-    this.app.use(express.urlencoded({ extended: true, limit: '10mb' }));
-  }
+	// Request ID middleware
+	app.use(requestId);
 
-  private initializeRoutes(): void {
-    // Root route
-    this.app.get('/', (req, res) => {
-      res.json({
-        success: true,
-        message: 'Task Management API Server',
-        version: config.api.version,
-        timestamp: new Date().toISOString(),
-        endpoints: {
-          health: '/health',
-          readiness: '/ready',
-          api: config.api.prefix,
-        },
-      });
-    });
+	// Logging middleware
+	app.use(logger);
 
-    // API routes
-    this.app.use(config.api.prefix, routes);
-  }
+	// CORS middleware
+	app.use(corsMiddleware);
 
-  private initializeErrorHandling(): void {
-    // 404 handler
-    this.app.use(notFoundHandler);
-    
-    // Global error handler
-    this.app.use(errorHandler);
-  }
+	// Rate limiting middleware
+	app.use(rateLimiter);
 
-  public start(): void {
-    this.app.listen(this.port, () => {
-      console.log(`
-🚀 Server is running!
-📍 Port: ${this.port}
-🌍 Environment: ${config.nodeEnv}
-🔗 API Base URL: http://localhost:${this.port}${config.api.prefix}
-📊 Health Check: http://localhost:${this.port}/health
-✅ Readiness Check: http://localhost:${this.port}/ready
-      `);
-    });
-  }
+	// Compression middleware
+	app.use(compression());
 
-  public getApp(): express.Application {
-    return this.app;
-  }
+	// Body parsing middleware
+	app.use(express.json({ limit: "10mb" }));
+	app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 }
 
-// Create and start server
-const server = new Server();
-server.start();
+// Initialize routes
+function initializeRoutes(): void {
+	// Root route
+	app.get("/", (req, res) => {
+		res.json({
+			success: true,
+			message: "Task Management API Server",
+			version: config.api.version,
+			timestamp: new Date().toISOString(),
+			endpoints: {
+				health: "/health",
+				readiness: "/ready",
+				api: config.api.prefix,
+			},
+		});
+	});
 
-export default server;
+	// API routes
+	app.use(config.api.prefix, routes);
+}
+
+// Initialize error handling
+function initializeErrorHandling(): void {
+	// 404 handler
+	app.use(notFoundHandler);
+
+	// Global error handler
+	app.use(errorHandler);
+}
+
+// Start server
+function startServer(): void {
+	app.listen(port, () => {
+		console.log(`
+🚀 Server is running!
+📍 Port: ${port}
+🌍 Environment: ${config.nodeEnv}
+🔗 API Base URL: http://localhost:${port}${config.api.prefix}
+📊 Health Check: http://localhost:${port}/health
+✅ Readiness Check: http://localhost:${port}/ready
+      `);
+	});
+}
+
+// Initialize and start the server
+initializeMiddlewares();
+initializeRoutes();
+initializeErrorHandling();
+startServer();
+
+export default app;
