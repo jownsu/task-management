@@ -38,6 +38,23 @@ export const config = {
 		secret: process.env.JWT_SECRET || "your-secret-key",
 		expiresIn: process.env.JWT_EXPIRES_IN || "7d",
 	},
+
+	google: {
+		clientId: process.env.GOOGLE_CLIENT_ID!,
+		clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+		redirectUri: process.env.GOOGLE_REDIRECT_URI || "http://localhost:8000/api/auth/google/callback",
+	},
+
+	/* Auth Configuration */
+	auth: {
+		bypass: process.env.AUTH_BYPASS === "true",
+		bypassUserId: process.env.DEV_BYPASS_USER_ID,
+	},
+
+	/* Helper to check environment */
+	isDevelopment: process.env.NODE_ENV === "development",
+	isProduction: process.env.NODE_ENV === "production",
+	isStaging: process.env.NODE_ENV === "staging",
 } as const;
 
 export default config;

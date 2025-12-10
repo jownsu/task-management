@@ -17,12 +17,13 @@ export interface ApiResponse<T = any> {
 	};
 }
 
-// Request with user (for future authentication)
+/* Request with user (for authenticated routes) */
 export interface AuthenticatedRequest extends Request {
 	user?: {
 		id: string;
 		email: string;
-		name: string;
+		name: string | null;
+		image: string | null;
 	};
 }
 
