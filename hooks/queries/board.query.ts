@@ -3,6 +3,7 @@ import { dehydrate, useQuery } from "@tanstack/react-query";
 
 /* CONSTANTS */
 import { CACHE_KEY_BOARD } from "@/constants/query-keys";
+import { STALE_TIME } from "@/constants";
 
 /* UTILITIES */
 import getQueryClient from "@/lib/get-query-client";
@@ -21,7 +22,8 @@ export const prefetchBoard = async (board_id: string) => {
 
 	await queryClient.prefetchQuery({
 		queryKey: [...CACHE_KEY_BOARD, board_id],
-		queryFn: () => getBoardById(board_id)
+		queryFn: () => getBoardById(board_id),
+		staleTime: STALE_TIME
 	});
 
 	return dehydrate(queryClient);
@@ -36,7 +38,8 @@ export const prefetchBoard = async (board_id: string) => {
 export const useGetBoard = (board_id: string) => {
 	const { data: board, ...rest } = useQuery({
 		queryKey: [...CACHE_KEY_BOARD, board_id],
-		queryFn: () => getBoardById(board_id)
+		queryFn: () => getBoardById(board_id),
+		staleTime: STALE_TIME
 	});
 
 	return { board, ...rest };

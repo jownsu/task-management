@@ -1,5 +1,5 @@
-import { getStaleTimeMins } from "@/lib/utils";
 import { isServer, QueryClient } from "@tanstack/react-query";
+import { STALE_TIME } from "@/constants";
 
 /**
  * This function creates a new instance of QueryClient with default options for queries and mutations. <br>
@@ -10,7 +10,7 @@ function makeQueryClient() {
 		defaultOptions: {
 			queries: {
 				refetchOnWindowFocus: false,
-				staleTime: getStaleTimeMins(5),
+				staleTime: STALE_TIME,
 
 			}
 		}
