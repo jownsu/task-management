@@ -33,10 +33,10 @@ const CreateBoardmodal = () => {
 	const form = useForm<AddBoardSchema>({
 		resolver: zodResolver(add_board_schema),
 		defaultValues: {
-			title: "",
+			name: "",
 			columns: [
-				{ title: "Todo" },
-				{ title: "Doing" }
+				{ name: "Todo" },
+				{ name: "Doing" }
 			]
 		}
 	});
@@ -85,7 +85,7 @@ const CreateBoardmodal = () => {
 					>
 						<FormField
 							control={form.control}
-							name="title"
+							name="name"
 							render={({ field }) => (
 								<FormItem>
 									<FormLabel>Board Name</FormLabel>
@@ -93,7 +93,7 @@ const CreateBoardmodal = () => {
 										{...field}
 										type="text"
 										placeholder="e.g. Web Design"
-										error={errors.title?.message}
+										error={errors.name?.message}
 									/>
 								</FormItem>
 							)}
@@ -106,14 +106,14 @@ const CreateBoardmodal = () => {
 									<FormField
 										key={column.id}
 										control={form.control}
-										name={`columns.${index}.title`}
+										name={`columns.${index}.name`}
 										render={({ field }) => (
 											<div className="flex items-center">
 												<Input
 													{...field}
 													type="text"
 													placeholder="e.g. Done"
-													error={errors.columns?.[index]?.title?.message}
+													error={errors.columns?.[index]?.name?.message}
 													floating_error
 												/>
 												<button
@@ -131,7 +131,7 @@ const CreateBoardmodal = () => {
 								<Button
 									type="button"
 									variant="secondary"
-									onClick={() => append({ title: "" })}
+									onClick={() => append({ name: "" })}
 								>
 									<FaPlus /> Add New Column
 								</Button>

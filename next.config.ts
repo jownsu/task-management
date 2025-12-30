@@ -1,17 +1,6 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  experimental: {
-    turbo: {
-      rules: {
-        '*.svg': {
-          loaders: ['@svgr/webpack'],
-          as: '*.js',
-        },
-      },
-    },
-  },
-
   webpack(config) {
     // Grab the existing rule that handles SVG imports
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -49,7 +38,23 @@ const nextConfig: NextConfig = {
         hostname: "avatars.githubusercontent.com"
       }
     ]
-  }
+  },
+  turbopack: {
+		rules: {
+			"*.svg": {
+				loaders: [
+					{
+						loader: "@svgr/webpack",
+						options: {
+							icon: true,
+						},
+					},
+				],
+
+				as: "*.tsx",
+			},
+		},
+	},
 };
 
 export default nextConfig;

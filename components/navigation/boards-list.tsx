@@ -39,7 +39,7 @@ const BoardsList = () => {
 							}
 						)}
 					>
-						<IconBoardLink /> {board.title}
+						<IconBoardLink /> {board.name}
 					</Link>
 				))}
 

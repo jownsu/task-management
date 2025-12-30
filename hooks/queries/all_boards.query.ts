@@ -5,22 +5,24 @@ import { dehydrate, useQuery } from "@tanstack/react-query";
 import { CACHE_KEY_BOARDS } from "@/constants/query-keys";
 
 /* UTILITIES */
-import getQueryClient from "@/lib/get-query-client"
+import getQueryClient from "@/lib/get-query-client";
 
 /* ACTIONS */
-import boardService from "@/services/board.service";
+import { getAllBoards } from "@/actions/board.actions";
 
 /**
  * DOCU: Will prefetch all boards for sidebar. <br>
  * Triggered: On load of the page. <br>
+ * Last Updated: December 30, 2024
+ * @author Jhones
  */
 export const prefetchAllBoards = async () => {
-    const queryClient = getQueryClient();
+	const queryClient = getQueryClient();
 
-    await queryClient.prefetchQuery({
-        queryKey: CACHE_KEY_BOARDS,
-        queryFn: () => boardService.getAllBoards()
-    });
+	await queryClient.prefetchQuery({
+		queryKey: CACHE_KEY_BOARDS,
+		queryFn: () => getAllBoards()
+	});
 
 	return dehydrate(queryClient);
 };
@@ -28,12 +30,14 @@ export const prefetchAllBoards = async () => {
 /**
  * DOCU: Will get all boards for sidebar. <br>
  * Triggered: On load of the page. <br>
+ * Last Updated: December 30, 2024
+ * @author Jhones
  */
 export const useGetAllBoards = () => {
-    const {data: boards, ...rest} = useQuery({
-        queryKey: CACHE_KEY_BOARDS,
-        queryFn: () => boardService.getAllBoards()
-    });
+	const { data: boards, ...rest } = useQuery({
+		queryKey: CACHE_KEY_BOARDS,
+		queryFn: () => getAllBoards()
+	});
 
-    return { boards, ...rest}
-}
+	return { boards, ...rest };
+};

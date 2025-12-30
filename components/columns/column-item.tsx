@@ -14,7 +14,7 @@ const ColumnItem = ({ column }: Props) => {
 			<div className="flex items-center gap-[12]">
 				<span className="size-[15] rounded-full bg-blue-500 block"></span>
 				<span className="text-h-sm text-medium-grey uppercase">
-					{column.title} ({column?.tasks?.length})
+					{column.name} ({column?.tasks?.length})
 				</span>
 			</div>
 

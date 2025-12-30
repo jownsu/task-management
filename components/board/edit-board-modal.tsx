@@ -68,10 +68,10 @@ const EditBoardmodal = () => {
 		if(selected_board && board_modals.edit_board){
 			form.reset({
 				id: selected_board.id,
-				title: selected_board.title,
+				name: selected_board.name,
 				columns: selected_board.columns?.map(column => ({ 
 					id: column.id, 
-					title: column.title, 
+					name: column.name, 
 					is_new: false 
 				}))
 			});
@@ -95,7 +95,7 @@ const EditBoardmodal = () => {
 					>
 						<FormField
 							control={form.control}
-							name="title"
+							name="name"
 							render={({ field }) => (
 								<FormItem>
 									<FormLabel>Board Name</FormLabel>
@@ -103,7 +103,7 @@ const EditBoardmodal = () => {
 										{...field}
 										type="text"
 										placeholder="e.g. Web Design"
-										error={errors.title?.message}
+										error={errors.name?.message}
 									/>
 								</FormItem>
 							)}
@@ -116,14 +116,14 @@ const EditBoardmodal = () => {
 									<FormField
 										key={column.temp_id}
 										control={form.control}
-										name={`columns.${index}.title`}
+										name={`columns.${index}.name`}
 										render={({ field }) => (
 											<div className="flex items-center">
 												<Input
 													{...field}
 													type="text"
 													placeholder="e.g. Done"
-													error={errors.columns?.[index]?.title?.message}
+													error={errors.columns?.[index]?.name?.message}
 													floating_error
 												/>
 												{
@@ -146,7 +146,8 @@ const EditBoardmodal = () => {
 																	setDeleteColumnModal(true);
 																	setSelectedColumn({
 																		id: column.id,
-																		title: column.title,
+																		name: column.name,
+																		order: 0,
 																		index
 																	});
 																}
@@ -164,7 +165,7 @@ const EditBoardmodal = () => {
 								<Button
 									type="button"
 									variant="secondary"
-									onClick={() => append({ title: "", is_new: true })}
+									onClick={() => append({ name: "", is_new: true })}
 									disabled={isPending}
 								>
 									<FaPlus /> Add New Column

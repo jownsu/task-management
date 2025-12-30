@@ -40,7 +40,7 @@ export const useUpdateSubtask = (callback?: CallbackResponse) => {
 													subtask.id === payload.subtask_id
 														? {
 															...subtask,
-															is_completed: payload.is_completed,
+															isCompleted: payload.isCompleted,
 														}
 														: subtask,
 											),

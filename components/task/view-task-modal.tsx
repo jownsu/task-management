@@ -21,7 +21,7 @@ import { DialogDescription } from "@/components/ui/dialog";
 import { useTaskStore } from "@/store/task.store";
 
 /* ENTITIES */
-import { SubTask } from "@/types";
+import { Subtask } from "@/types";
 
 /* QUERIES */
 import { useGetBoard } from "@/hooks/queries/board.query";
@@ -40,7 +40,7 @@ const ViewTaskModal = () => {
 	const selected_task = useTaskStore((state) => state.selected_task);
 	const { board } = useGetBoard(board_id);
 
-	const [sub_tasks, setSubTasks] = useState<SubTask[]>([]);
+	const [sub_tasks, setSubTasks] = useState<Subtask[]>([]);
 	const [current_status, setCurrentStatus] = useState<string>("");
 
 	const { updateSubtask } = useUpdateSubtask()
@@ -56,10 +56,10 @@ const ViewTaskModal = () => {
 	 * DOCU: Updates the subtasks and current status when the selected task changes. <br>
 	 * Triggered: When the selected task changes. <br>
 	 */
-	const onToggleSubtask = (subtask: SubTask) => {
+	const onToggleSubtask = (subtask: Subtask) => {
 		setSubTasks((prev_tasks) => 
 			prev_tasks.map((prev_task) => 
-				prev_task.id === subtask.id ? { ...prev_task, is_completed: !prev_task.is_completed } : prev_task
+				prev_task.id === subtask.id ? { ...prev_task, isCompleted: !prev_task.isCompleted } : prev_task
 			)
 		);
 
@@ -69,7 +69,7 @@ const ViewTaskModal = () => {
 				column_id: selected_task.column_id,
 				task_id: selected_task.id,
 				subtask_id: subtask.id,
-				is_completed: !subtask.is_completed
+				isCompleted: !subtask.isCompleted
 			})
 		}
 	}
@@ -99,7 +99,7 @@ const ViewTaskModal = () => {
 					</DialogDescription>
 					
 					<div className="grid gap-4">
-						<label className="text-medium-grey t-[12] font-bold leading-none">Subtasks ({sub_tasks.filter(subtask => subtask.is_completed).length}/{sub_tasks.length})</label>
+						<label className="text-medium-grey t-[12] font-bold leading-none">Subtasks ({sub_tasks.filter(subtask => subtask.isCompleted).length}/{sub_tasks.length})</label>
 						<div className="flex flex-col gap-2">
 							{sub_tasks.map((subtask) => (
 								<label 
@@ -119,10 +119,10 @@ const ViewTaskModal = () => {
 										}
 									}}
 								>
-									<Checkbox checked={subtask.is_completed} />
+									<Checkbox checked={subtask.isCompleted} />
 									<span 
 										className={cn("t-[12] font-bold dark:text-white", {
-											["line-through opacity-50"]: subtask.is_completed,
+											["line-through opacity-50"]: subtask.isCompleted,
 										})}
 									>
 										{subtask.title}
@@ -146,7 +146,7 @@ const ViewTaskModal = () => {
 											key={column.id}
 											value={column.id}
 										>
-											{column.title}
+											{column.name}
 										</SelectItem>
 									))
 								}

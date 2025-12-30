@@ -41,7 +41,7 @@ const DeleteBoardModal = () => {
 				</DialogHeader>
 
 				<DialogDescription>
-					Are you sure you want to delete the &apos;{selected_board?.title}&apos;
+					Are you sure you want to delete the &apos;{selected_board?.name}&apos;
 					board? This action will remove all columns and tasks and cannot be
 					reversed.
 				</DialogDescription>

@@ -1,18 +1,18 @@
 import { z } from "zod";
 
 export const add_board_schema = z.object({
-	title: z.string().min(1, "Title is required"),
+	name: z.string().min(1, "Name is required"),
 	columns: z.array(z.object({
-		title: z.string().min(1, "Can't be empty"),
+		name: z.string().min(1, "Can't be empty"),
 	}))
 });
 
 export const edit_board_schema = z.object({
 	id: z.string().optional(),
-	title: z.string().min(1, "Title is required"),
+	name: z.string().min(1, "Name is required"),
 	columns: z.array(z.object({
 		id: z.string().optional(),
-		title: z.string().min(1, "Can't be empty"),
+		name: z.string().min(1, "Can't be empty"),
 		is_new: z.boolean().default(false).optional()
 	}))
 });

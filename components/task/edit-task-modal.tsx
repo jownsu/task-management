@@ -191,7 +191,7 @@ const EditTaskModal = () => {
 														key={column.id}
 														value={column.id}
 													>
-														{column.title}
+														{column.name}
 													</SelectItem>
 												))
 											}

@@ -48,7 +48,7 @@ const DeleteColumnModal = ({ open, onOpenChange, selected_column, onDeleteColumn
 				</DialogHeader>
 
 				<DialogDescription>
-					Are you sure you want to delete the &apos;{selected_column?.title}&apos;
+					Are you sure you want to delete the &apos;{selected_column?.name}&apos;
 					column? This action will remove all tasks and cannot be
 					reversed.
 				</DialogDescription>

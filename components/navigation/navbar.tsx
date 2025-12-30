@@ -46,7 +46,7 @@ const Navbar = () => {
 				>
 					<IconKanban />
 				</div>
-				<h1 className="self-center !text-h-xl">{board?.title}</h1>
+				<h1 className="self-center !text-h-xl">{board?.name}</h1>
 			</div>
 
 			<NavMobile />

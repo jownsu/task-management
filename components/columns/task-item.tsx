@@ -27,7 +27,7 @@ const TaskItem = ({ task, column_id }: Props) => {
 			<p className="text-h-md text-black dark:text-white group-hover:text-primary dark:group-hover:text-primary">
 				{task.title}
 			</p>
-			<p className="text-b-md text-medium-grey">{task?.subtasks.filter(subtask => subtask.is_completed).length} of {task?.subtasks?.length} subtasks</p>
+			<p className="text-b-md text-medium-grey">{task?.subtasks.filter(subtask => subtask.isCompleted).length} of {task?.subtasks?.length} subtasks</p>
 		</button>
 	);
 };
