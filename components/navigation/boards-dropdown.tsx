@@ -1,5 +1,8 @@
 "use client";
 
+/* NEXT */
+import { useParams } from "next/navigation";
+
 /* COMPONENTS */
 import BoardsList from "@/components/navigation/boards-list";
 import ThemeSwitch from "@/components/navigation/theme-switch";
@@ -18,11 +21,16 @@ import { useMediaQuery } from "react-responsive";
 /* ICONS */
 import { FaChevronDown } from "react-icons/fa";
 
+/* QUERIES */
+import { useGetBoard } from "@/hooks/queries/board.query";
+
 /* CONSTANTS */
 import { BREAKPOINTS } from "@/constants";
 
 const BoardsDropdown = () => {
 	const is_mobile = useMediaQuery({ maxWidth: BREAKPOINTS.mobile });
+	const { board_id } = useParams() as { board_id: string };
+	const { board } = useGetBoard(board_id);
 
 	if (!is_mobile) {
 		return null;
@@ -31,7 +39,7 @@ const BoardsDropdown = () => {
 	return (
 		<Sheet>
 			<SheetTrigger className="flex items-center gap-[4] group cursor-pointer">
-				<h1 className="text-h-lg">Active Board Title</h1> {/* TODO: Get active board title */}
+				<h1 className="text-h-lg">{board?.name}</h1>
 				<FaChevronDown className="text-primary size-[12] group-data-[state=open]:-rotate-180 duration-200" />
 			</SheetTrigger>
 			<SheetContent side="top" className="pt-[80] px-[65]">
