@@ -7,6 +7,7 @@ import { useParams } from "next/navigation";
 import ActionOptions from "@/components/actions-dropdown";
 import NavMobile from "@/components/navigation/nav-mobile";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 
 /* ICONS */
 import IconKanban from "@/components/kanban-icon";
@@ -30,46 +31,37 @@ const Navbar = () => {
 	const setTaskModal = useTaskStore((state) => state.setModal);
 
 	const { board_id } = useParams() as { board_id: string };
-	const { board } = useGetBoard(board_id);
+	const { board, isLoading } = useGetBoard(board_id);
 
 	return (
-		<nav className="flex bg-foreground h-[64] md:h-[81] lg:h-[96] px-[24] justify-between z-[99] fixed w-full">
-			<div className="gap-[24] hidden md:flex">
+		<nav className="bg-foreground fixed z-[99] flex h-[64] w-full justify-between px-[24] md:h-[81] lg:h-[96]">
+			<div className="hidden gap-[24] md:flex items-center">
 				<div
-					className={cn(
-						"border-r-2 border-background pr-[24] flex duration-500 delay-0",
-						{
-							["pr-[109] duration-300 delay-200 lg:pr-[149]"]:
-								is_sidebar_open
-						}
-					)}
+					className={cn("border-background flex border-r-2 pr-[24] delay-0 duration-500", {
+						["pr-[109] delay-200 duration-300 lg:pr-[149]"]: is_sidebar_open,
+					})}
 				>
 					<IconKanban />
 				</div>
-				<h1 className="self-center !text-h-xl">{board?.name}</h1>
+				{isLoading ? <Skeleton className="w-64 h-8" /> : <h1 className="!text-h-xl self-center">{board?.name}</h1>}
 			</div>
 
 			<NavMobile />
 
-			<div className="self-center flex items-center gap-[8] md:gap-[16]">
-				<Button
-					type="button"
-					className="text-md h-[32] w-[48] md:w-fit md:h-[48] md:!px-[24]"
-					onClick={() => setTaskModal("add_task", true)}
-				>
-					<FaPlus className="size-[12]" />{" "}
-					<span className="hidden md:block">Add New Task</span>
+			<div className="flex items-center gap-[8] self-center md:gap-[16]">
+				<Button type="button" className="text-md h-[32] w-[48] md:h-[48] md:w-fit md:!px-[24]" onClick={() => setTaskModal("add_task", true)}>
+					<FaPlus className="size-[12]" /> <span className="hidden md:block">Add New Task</span>
 				</Button>
-				<ActionOptions 
-					name="Board" 
+				<ActionOptions
+					name="Board"
 					onDeleteClick={() => {
-						if(board){
+						if (board) {
 							setBoardModal("delete_board", true);
 							setSelectedBoard(board);
 						}
 					}}
 					onEditClick={() => {
-						if(board){
+						if (board) {
 							setBoardModal("edit_board", true);
 							setSelectedBoard(board);
 						}

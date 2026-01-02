@@ -1,41 +1,33 @@
-import { isServer, QueryClient } from "@tanstack/react-query";
-import { STALE_TIME } from "@/constants";
+import { QueryClient, defaultShouldDehydrateQuery, isServer } from "@tanstack/react-query";
 
-/**
- * This function creates a new instance of QueryClient with default options for queries and mutations. <br>
- * It sets a default staleTime to avoid immediate refetching on the client and defines retry logic for specific errors. <br>
- */
 function makeQueryClient() {
 	return new QueryClient({
 		defaultOptions: {
 			queries: {
+				staleTime: 60 * 1000,
+				refetchOnMount: false,
 				refetchOnWindowFocus: false,
-				staleTime: STALE_TIME,
-
-			}
-		}
+			},
+			dehydrate: {
+				// include pending queries in dehydration
+				shouldDehydrateQuery: (query) => defaultShouldDehydrateQuery(query) || query.state.status === "pending",
+			},
+		},
 	});
 }
 
 let browserQueryClient: QueryClient | undefined = undefined;
 
-const getQueryClient = () => {
+export default function getQueryClient() {
 	if (isServer) {
-		/* Server: always make a new query client */
+		// Server: always make a new query client
 		return makeQueryClient();
-	} 
-	else {
-		if (!browserQueryClient) {
-			/*
-			 * Browser: make a new query client if we don't already have one
-			 * This is very important, so we don't re-make a new client if React
-			 * suspends during the initial render. This may not be needed if we
-			 * have a suspense boundary BELOW the creation of the query client
-			 */
-			browserQueryClient = makeQueryClient();
-		}
+	} else {
+		// Browser: make a new query client if we don't already have one
+		// This is very important, so we don't re-make a new client if React
+		// suspends during the initial render. This may not be needed if we
+		// have a suspense boundary BELOW the creation of the query client
+		if (!browserQueryClient) browserQueryClient = makeQueryClient();
 		return browserQueryClient;
 	}
-};
-
-export default getQueryClient;
+}
