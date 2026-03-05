@@ -5,12 +5,16 @@ import KanbanIcon from "@/components/kanban-icon";
 import BoardsList from "@/components/navigation/boards-list";
 import ThemeSwitch from "@/components/navigation/theme-switch";
 
+/* PLUGINS */
+import { signOut } from "next-auth/react";
+
 /* STORE */
 import { useNavigationStore } from "@/store/navigation.store";
 
 /* ICONS */
 import IconEye from "@/public/icon-eye.svg";
 import IconHide from "@/public/icon-hide.svg";
+import { LuLogOut } from "react-icons/lu";
 
 /* UTILITIES */
 import { cn } from "@/lib/utils";
@@ -31,9 +35,18 @@ const SideNav = () => {
 			<div className="h-[81] flex px-[24] mb-[7]">
 				<KanbanIcon />
 			</div>
-			
+
 			<BoardsList />
 			<ThemeSwitch className="mt-auto mx-[24] mb-[8]" />
+
+			<button
+				type="button"
+				className="flex items-center gap-[12] h-[48] pl-[24] rounded-r-full text-medium-grey !text-h-md hover:bg-destructive/10 hover:text-destructive mr-[24] cursor-pointer"
+				onClick={() => signOut({ redirectTo: "/login" })}
+			>
+				<LuLogOut size={16} />
+				Logout
+			</button>
 
 			<button
 				type="button"
