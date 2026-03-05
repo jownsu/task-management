@@ -1,16 +1,31 @@
 "use server";
 
+/* UTILITIES */
 import prisma from "@/lib/prisma";
+
+/* PLUGINS */
+import { auth } from "@/lib/auth";
+
+/* TYPES */
 import { Board } from "@/types";
 
 /**
  * DOCU: Fetches all boards for the current user from the database. <br>
  * Triggered: When loading the sidebar or boards list. <br>
- * Last Updated: December 30, 2024
+ * Last Updated: March 06, 2026
  * @author Jhones
  */
 export async function getAllBoards(): Promise<Omit<Board, "columns">[]> {
+	const session = await auth();
+
+	if (!session?.user?.id) {
+		throw new Error("Unauthorized");
+	}
+
 	const boards = await prisma.board.findMany({
+		where: {
+			userId: session.user.id
+		},
 		select: {
 			id: true,
 			name: true
