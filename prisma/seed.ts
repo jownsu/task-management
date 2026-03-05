@@ -2,6 +2,7 @@ import { PrismaClient } from "@/lib/generated/prisma/client";
 import seedData from "./seed-data.json";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { ENV } from "@/constants/env";
+import bcrypt from "bcryptjs";
 
 const adapter = new PrismaPg({ connectionString: ENV.DATABASE_URL });
 const prisma = new PrismaClient({ adapter });
@@ -39,13 +40,17 @@ interface BoardData {
 async function main() {
 	console.log("🌱 Starting seed...");
 
+	/* Hash demo user password */
+	const hashed_password = await bcrypt.hash("Password@1", 10);
+
 	/* Create a demo user */
 	const user = await prisma.user.upsert({
-		where: { email: "jhonesdigno777@gmail.com" },
-		update: {},
+		where: { email: "demo@gmail.com" },
+		update: { password: hashed_password },
 		create: {
-			email: "jhonesdigno777@gmail.com",
-			name: "Jhones Digno",
+			email: "demo@gmail.com",
+			name: "Demo User",
+			password: hashed_password,
 		},
 	});
 

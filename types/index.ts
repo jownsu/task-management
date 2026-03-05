@@ -1,8 +1,8 @@
-import type { 
-    Board as PrismaBoard, 
-    Column as PrismaColumn, 
-    Task as PrismaTask, 
-    Subtask as PrismaSubtask 
+import type {
+    Board as PrismaBoard,
+    Column as PrismaColumn,
+    Task as PrismaTask,
+    Subtask as PrismaSubtask
 } from "@/lib/generated/prisma/client";
 
 export interface CallbackResponse<T = unknown> {
