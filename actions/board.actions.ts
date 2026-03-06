@@ -5,7 +5,7 @@ import prisma from "@/lib/prisma";
 import { authActionClient, getAuthUser } from "@/lib/safe-action";
 
 /* SCHEMA */
-import { add_board_schema } from "@/schema/board-schema";
+import { add_board_schema, delete_board_schema } from "@/schema/board-schema";
 
 /* TYPES */
 import { Board } from "@/types";
@@ -62,6 +62,23 @@ export const createBoardAction = authActionClient
 		});
 
 		return board;
+	});
+
+/**
+ * DOCU: Deletes a board owned by the current user. <br>
+ * Triggered: On submission of delete board form. <br>
+ * Last Updated: March 06, 2026
+ * @author Jhones
+ */
+export const deleteBoardAction = authActionClient
+	.schema(delete_board_schema)
+	.action(async ({ parsedInput, ctx }) => {
+		await prisma.board.delete({
+			where: {
+				id: parsedInput.id,
+				userId: ctx.userId
+			}
+		});
 	});
 
 /**
