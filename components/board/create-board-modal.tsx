@@ -1,6 +1,9 @@
 "use client";
 
 /* NEXT */
+import { useRouter } from "next/navigation";
+
+/* REACT */
 import { useEffect } from "react";
 
 /* COMPONENTS */
@@ -27,6 +30,7 @@ import { FaPlus } from "react-icons/fa";
 import { IoIosClose } from "react-icons/io";
 
 const CreateBoardmodal = () => {
+	const router = useRouter();
 	const setModal = useBoardStore((state) => state.setModal);
 	const modals = useBoardStore((state) => state.modals);
 
@@ -53,8 +57,11 @@ const CreateBoardmodal = () => {
 	});
 
 	const { createBoard, isPending } = useCreateBoard({
-		onSuccess: () => {
-			setModal("add_board", false);
+		onSuccess: (board) => {
+			if(board){
+				setModal("add_board", false);
+				router.push(`/${board.id}`);
+			}
 		}
 	});
 

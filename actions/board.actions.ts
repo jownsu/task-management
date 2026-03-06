@@ -2,9 +2,10 @@
 
 /* UTILITIES */
 import prisma from "@/lib/prisma";
+import { authActionClient, getAuthUser } from "@/lib/safe-action";
 
-/* PLUGINS */
-import { auth } from "@/lib/auth";
+/* SCHEMA */
+import { add_board_schema } from "@/schema/board-schema";
 
 /* TYPES */
 import { Board } from "@/types";
@@ -16,15 +17,11 @@ import { Board } from "@/types";
  * @author Jhones
  */
 export async function getAllBoards(): Promise<Omit<Board, "columns">[]> {
-	const session = await auth();
-
-	if (!session?.user?.id) {
-		throw new Error("Unauthorized");
-	}
+	const user = await getAuthUser();
 
 	const boards = await prisma.board.findMany({
 		where: {
-			userId: session.user.id
+			userId: user.id
 		},
 		select: {
 			id: true,
@@ -37,6 +34,35 @@ export async function getAllBoards(): Promise<Omit<Board, "columns">[]> {
 
 	return boards;
 }
+
+/**
+ * DOCU: Creates a new board with its columns for the current user. <br>
+ * Triggered: On submission of new board form. <br>
+ * Last Updated: March 06, 2026
+ * @author Jhones
+ */
+export const createBoardAction = authActionClient
+	.schema(add_board_schema)
+	.action(async ({ parsedInput, ctx }) => {
+		const board = await prisma.board.create({
+			data: {
+				name: parsedInput.name,
+				userId: ctx.userId,
+				columns: {
+					create: parsedInput.columns.map((column, index) => ({
+						name: column.name,
+						order: index
+					}))
+				}
+			},
+			select: {
+				id: true,
+				name: true
+			}
+		});
+
+		return board;
+	});
 
 /**
  * DOCU: Fetches a single board with all its columns, tasks, and subtasks. <br>
