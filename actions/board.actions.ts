@@ -5,7 +5,7 @@ import prisma from "@/lib/prisma";
 import { authActionClient, getAuthUser } from "@/lib/safe-action";
 
 /* SCHEMA */
-import { add_board_schema, delete_board_schema } from "@/schema/board-schema";
+import { add_board_schema, delete_board_schema, edit_board_schema } from "@/schema/board-schema";
 
 /* TYPES */
 import { Board } from "@/types";
@@ -62,6 +62,96 @@ export const createBoardAction = authActionClient
 		});
 
 		return board;
+	});
+
+/**
+ * DOCU: Edits a board and its columns (create, update, delete) for the current user. <br>
+ * Triggered: On submission of edit board form. <br>
+ * Last Updated: March 06, 2026
+ * @author Jhones
+ */
+export const editBoardAction = authActionClient
+	.schema(edit_board_schema)
+	.action(async ({ parsedInput, ctx }) => {
+		const { id, name, columns } = parsedInput;
+
+		/* Get existing column IDs to determine which ones to delete */
+		const existing_columns = await prisma.column.findMany({
+			where: { boardId: id },
+			select: { id: true }
+		});
+
+		const existing_column_ids = existing_columns.map((column) => column.id);
+		const payload_column_ids = columns.filter((column) => column.id && !column.is_new).map((column) => column.id!);
+		const columns_to_delete = existing_column_ids.filter((column_id) => !payload_column_ids.includes(column_id));
+
+		const board = await prisma.$transaction(async (tx) => {
+			/* Delete removed columns */
+			if (columns_to_delete.length > 0) {
+				await tx.column.deleteMany({
+					where: { id: { in: columns_to_delete } }
+				});
+			}
+
+			/* Update existing columns and create new ones */
+			for (let index = 0; index < columns.length; index++) {
+				const column = columns[index];
+
+				if (column.id && !column.is_new) {
+					await tx.column.update({
+						where: { id: column.id },
+						data: { name: column.name, order: index }
+					});
+				} else {
+					await tx.column.create({
+						data: { name: column.name, order: index, boardId: id }
+					});
+				}
+			}
+
+			/* Update board name and return full board */
+			return tx.board.update({
+				where: { id, userId: ctx.userId },
+				data: { name },
+				include: {
+					columns: {
+						orderBy: { order: "asc" },
+						include: {
+							tasks: {
+								orderBy: { order: "asc" },
+								include: {
+									subtasks: {
+										orderBy: { order: "asc" }
+									}
+								}
+							}
+						}
+					}
+				}
+			});
+		});
+
+		return {
+			id: board.id,
+			name: board.name,
+			columns: board.columns.map((column) => ({
+				id: column.id,
+				name: column.name,
+				order: column.order,
+				tasks: column.tasks.map((task) => ({
+					id: task.id,
+					title: task.title,
+					description: task.description || "",
+					order: task.order,
+					subtasks: task.subtasks.map((subtask) => ({
+						id: subtask.id,
+						title: subtask.title,
+						isCompleted: subtask.isCompleted,
+						order: subtask.order
+					}))
+				}))
+			}))
+		};
 	});
 
 /**

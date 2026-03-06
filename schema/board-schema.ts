@@ -8,7 +8,7 @@ export const add_board_schema = z.object({
 });
 
 export const edit_board_schema = z.object({
-	id: z.string().optional(),
+	id: z.string(),
 	name: z.string().min(1, "Name is required"),
 	columns: z.array(z.object({
 		id: z.string().optional(),

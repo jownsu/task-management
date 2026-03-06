@@ -2,7 +2,7 @@
 import { useRouter } from "next/navigation";
 
 /* ACTIONS */
-import { createBoardAction, deleteBoardAction } from "@/actions/board.actions";
+import { createBoardAction, deleteBoardAction, editBoardAction } from "@/actions/board.actions";
 
 /* UTILITIES */
 import { executeAction } from "@/lib/execute-action";
@@ -15,9 +15,6 @@ import { Board, CallbackResponse } from "@/types";
 
 /* CONSTANTS */
 import { CACHE_KEY_BOARD, CACHE_KEY_BOARDS } from "@/constants/query-keys";
-
-/* SERVICES */
-import boardService from "@/services/board.service";
 
 /* PLUGINS */
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -62,7 +59,7 @@ export const useEditBoard = (callback?: CallbackResponse) => {
 	const queryClient = useQueryClient();
 
 	const { mutate: editBoard, ...rest } = useMutation({
-		mutationFn: async (payload: EditBoardSchema) => boardService.editBoard(payload),
+		mutationFn: (payload: EditBoardSchema) => executeAction(editBoardAction(payload)),
 		onSuccess: (response) => {
 			if(response){
 				queryClient.setQueryData<Board[]>(CACHE_KEY_BOARDS, (boards) => {
