@@ -29,16 +29,21 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
  * @author Jhones
  */
 export const useCreateBoard = (callback?: CallbackResponse<Board>) => {
+	const router = useRouter();
 	const queryClient = useQueryClient();
 
 	const { mutate: createBoard, ...rest } = useMutation({
 		mutationFn: (payload: AddBoardSchema) => executeAction(createBoardAction(payload)),
 		onSuccess: (response) => {
-			queryClient.setQueryData<Board[]>(CACHE_KEY_BOARDS, (boards) => {
-				if (boards && response) {
-					return [...boards, response];
-				}
-			});
+			if (response) {
+				queryClient.setQueryData<Board[]>(CACHE_KEY_BOARDS, (boards) => {
+					if (boards) {
+						return [...boards, response];
+					}
+				});
+
+				router.push(`/${response.id}`);
+			}
 
 			callback?.onSuccess?.(response);
 		}
