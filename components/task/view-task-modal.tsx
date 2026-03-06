@@ -27,7 +27,7 @@ import { Subtask } from "@/types";
 import { useGetBoard } from "@/hooks/queries/board.query";
 
 /* MUTATIONS */
-import { useUpdateSubtask } from "@/hooks/mutations/update-subtask.mutation";
+import { useUpdateSubtask } from "@/hooks/mutations/subtask.mutation";
 
 /* UTILITIES */
 import { cn } from "@/lib/utils";

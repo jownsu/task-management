@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/dialog";
 
 /* HOOKS */
-import { useDeleteBoard } from "@/hooks/mutations/delete-board.mutation";
+import { useDeleteBoard } from "@/hooks/mutations/board.mutation";
 
 /* STORE */
 import { useBoardStore } from "@/store/board.store";

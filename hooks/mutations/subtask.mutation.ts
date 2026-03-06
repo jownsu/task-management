@@ -4,15 +4,17 @@ import taskService from "@/services/task.service";
 /* TYPES */
 import { Board, CallbackResponse, UpdateSubTaskPayload } from "@/types";
 
-/* PLUGINS */
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-
 /* CONSTANTS */
 import { CACHE_KEY_BOARD } from "@/constants/query-keys";
+
+/* PLUGINS */
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 /**
  * DOCU: Will update the status of subtask. <br>
  * Triggered: On submission of update subtask form. <br>
+ * Last Updated: March 06, 2026
+ * @author Jhones
  */
 export const useUpdateSubtask = (callback?: CallbackResponse) => {
 	const queryClient = useQueryClient();

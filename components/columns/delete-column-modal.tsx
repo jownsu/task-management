@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/dialog";
 
 /* HOOKS */
-import { useDeleteColumn } from "@/hooks/mutations/delete-column.mutation";
+import { useDeleteColumn } from "@/hooks/mutations/column.mutation";
 
 /* CONSTANTS */
 import { Column } from "@/types";

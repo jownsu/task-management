@@ -21,7 +21,7 @@ import { edit_board_schema, EditBoardSchema } from "@/schema/board-schema";
 import { useBoardStore } from "@/store/board.store";
 
 /* MUTATIONS */
-import { useEditBoard } from "@/hooks/mutations/edit-board.mutation";
+import { useEditBoard } from "@/hooks/mutations/board.mutation";
 
 /* ICONS */
 import { FaPlus } from "react-icons/fa";

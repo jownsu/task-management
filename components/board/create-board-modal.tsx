@@ -23,7 +23,7 @@ import { AddBoardSchema, add_board_schema } from "@/schema/board-schema";
 import { useBoardStore } from "@/store/board.store";
 
 /* MUTATIONS */
-import { useCreateBoard } from "@/hooks/mutations/create-board.mutation";
+import { useCreateBoard } from "@/hooks/mutations/board.mutation";
 
 /* ICONS */
 import { FaPlus } from "react-icons/fa";
