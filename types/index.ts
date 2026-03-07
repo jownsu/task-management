@@ -10,17 +10,17 @@ export interface CallbackResponse<T = unknown> {
 	onError?: (error_msg?: string) => void;
 }
 
-export type Board = Pick<PrismaBoard, "id" | "name"> & {
+export type Board = Pick<PrismaBoard, "id" | "name" | "columnOrder"> & {
 	columns?: Column[];
 };
 
-export type Column = Pick<PrismaColumn, "id" | "name" | "order"> & {
+export type Column = Pick<PrismaColumn, "id" | "name" | "taskOrder"> & {
 	tasks?: Task[];
 };
 
-export type Subtask = Pick<PrismaSubtask, "id" | "title" | "isCompleted" | "order">;
+export type Subtask = Pick<PrismaSubtask, "id" | "title" | "isCompleted">;
 
-export type Task = Pick<PrismaTask, "id" | "title" | "order"> & {
+export type Task = Pick<PrismaTask, "id" | "title" | "subtaskOrder"> & {
 	description: string;
 	subtasks: Subtask[];
 };

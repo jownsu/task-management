@@ -7,6 +7,9 @@ import { authActionClient } from "@/lib/safe-action";
 /* SCHEMA */
 import { create_task_schema } from "@/schema/task-schema";
 
+/* TYPES */
+import { Subtask } from "@/types";
+
 /**
  * DOCU: Creates a new task with its subtasks in a column. <br>
  * Triggered: On submission of new task form. <br>
@@ -30,44 +33,55 @@ export const createTaskAction = authActionClient
 			throw new Error("Column not found");
 		}
 
-		/* Get the highest task order in the column */
-		const { _max } = await prisma.task.aggregate({
-			where: { columnId: column_id },
-			_max: { order: true }
-		});
-
-		const next_order = (_max.order ?? -1) + 1;
-
-		const task = await prisma.task.create({
-			data: {
-				title,
-				description,
-				order: next_order,
-				columnId: column_id,
-				subtasks: {
-					create: sub_tasks.map((subtask, index) => ({
-						title: subtask.title,
-						order: index
-					}))
+		const result = await prisma.$transaction(async (tx) => {
+			/* Create the task */
+			const task = await tx.task.create({
+				data: {
+					title,
+					description,
+					columnId: column_id
 				}
-			},
-			include: {
-				subtasks: {
-					orderBy: { order: "asc" }
-				}
+			});
+
+			/* Create subtasks individually to guarantee order */
+			const subtask_ids: string[] = [];
+			const subtasks: Subtask[] = [];
+
+			for (const subtask_data of sub_tasks) {
+				const subtask = await tx.subtask.create({
+					data: {
+						title: subtask_data.title,
+						taskId: task.id
+					}
+				});
+				subtask_ids.push(subtask.id);
+				subtasks.push({
+					id: subtask.id,
+					title: subtask.title,
+					isCompleted: subtask.isCompleted
+				});
 			}
+
+			/* Set the subtask order on the task */
+			await tx.task.update({
+				where: { id: task.id },
+				data: { subtaskOrder: subtask_ids }
+			});
+
+			/* Append the task to the column's taskOrder */
+			await tx.column.update({
+				where: { id: column_id },
+				data: { taskOrder: { push: task.id } }
+			});
+
+			return {
+				id: task.id,
+				title: task.title,
+				description: task.description || "",
+				subtaskOrder: subtask_ids,
+				subtasks
+			};
 		});
 
-		return {
-			id: task.id,
-			title: task.title,
-			description: task.description || "",
-			order: task.order,
-			subtasks: task.subtasks.map((subtask) => ({
-				id: subtask.id,
-				title: subtask.title,
-				isCompleted: subtask.isCompleted,
-				order: subtask.order
-			}))
-		};
+		return result;
 	});

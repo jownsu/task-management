@@ -5,7 +5,6 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 model User {
@@ -82,19 +81,20 @@ model Authenticator {
 }
 
 model Board {
-  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  name      String
-  userId    String   @db.Uuid
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  columns   Column[]
-  createdAt DateTime @default(now()) @db.Timestamp(6)
-  updatedAt DateTime @updatedAt @db.Timestamp(6)
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name        String
+  columnOrder String[] @default([]) @db.Uuid
+  userId      String   @db.Uuid
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  columns     Column[]
+  createdAt   DateTime @default(now()) @db.Timestamp(6)
+  updatedAt   DateTime @updatedAt @db.Timestamp(6)
 }
 
 model Column {
   id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   name      String
-  order     Int
+  taskOrder String[] @default([]) @db.Uuid
   boardId   String   @db.Uuid
   board     Board    @relation(fields: [boardId], references: [id], onDelete: Cascade)
   tasks     Task[]
@@ -106,7 +106,6 @@ model Subtask {
   id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   title       String
   isCompleted Boolean  @default(false)
-  order       Int
   taskId      String   @db.Uuid
   task        Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
   createdAt   DateTime @default(now()) @db.Timestamp(6)
@@ -114,13 +113,13 @@ model Subtask {
 }
 
 model Task {
-  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  title       String
-  description String?
-  order       Int
-  columnId    String    @db.Uuid
-  column      Column    @relation(fields: [columnId], references: [id], onDelete: Cascade)
-  subtasks    Subtask[]
-  createdAt   DateTime  @default(now()) @db.Timestamp(6)
-  updatedAt   DateTime  @updatedAt @db.Timestamp(6)
+  id           String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title        String
+  description  String?
+  subtaskOrder String[]  @default([]) @db.Uuid
+  columnId     String    @db.Uuid
+  column       Column    @relation(fields: [columnId], references: [id], onDelete: Cascade)
+  subtasks     Subtask[]
+  createdAt    DateTime  @default(now()) @db.Timestamp(6)
+  updatedAt    DateTime  @updatedAt @db.Timestamp(6)
 }

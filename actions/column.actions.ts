@@ -16,13 +16,28 @@ import { delete_column_schema } from "@/schema/column-schema";
 export const deleteColumnAction = authActionClient
 	.schema(delete_column_schema)
 	.action(async ({ parsedInput, ctx }) => {
-		await prisma.column.delete({
-			where: {
-				id: parsedInput.column_id,
-				board: {
-					id: parsedInput.board_id,
-					userId: ctx.userId
+		await prisma.$transaction(async (tx) => {
+			await tx.column.delete({
+				where: {
+					id: parsedInput.column_id,
+					board: {
+						id: parsedInput.board_id,
+						userId: ctx.userId
+					}
 				}
-			}
+			});
+
+			/* Remove the column from the board's columnOrder */
+			const board = await tx.board.findUniqueOrThrow({
+				where: { id: parsedInput.board_id },
+				select: { columnOrder: true }
+			});
+
+			await tx.board.update({
+				where: { id: parsedInput.board_id },
+				data: {
+					columnOrder: board.columnOrder.filter((id) => id !== parsedInput.column_id)
+				}
+			});
 		});
 	});

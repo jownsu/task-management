@@ -147,7 +147,7 @@ const EditBoardmodal = () => {
 																	setSelectedColumn({
 																		id: column.id,
 																		name: column.name,
-																		order: 0,
+																		taskOrder: [],
 																		index
 																	});
 																}

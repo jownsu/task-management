@@ -3,6 +3,7 @@
 /* UTILITIES */
 import prisma from "@/lib/prisma";
 import { authActionClient, getAuthUser } from "@/lib/safe-action";
+import { sortByIdOrder } from "@/lib/helpers";
 
 /* SCHEMA */
 import { add_board_schema, delete_board_schema, edit_board_schema } from "@/schema/board-schema";
@@ -16,7 +17,7 @@ import { Board } from "@/types";
  * Last Updated: March 06, 2026
  * @author Jhones
  */
-export async function getAllBoards(): Promise<Omit<Board, "columns">[]> {
+export async function getAllBoards(): Promise<Omit<Board, "columns" | "columnOrder">[]> {
 	const user = await getAuthUser();
 
 	const boards = await prisma.board.findMany({
@@ -44,21 +45,31 @@ export async function getAllBoards(): Promise<Omit<Board, "columns">[]> {
 export const createBoardAction = authActionClient
 	.schema(add_board_schema)
 	.action(async ({ parsedInput, ctx }) => {
-		const board = await prisma.board.create({
-			data: {
-				name: parsedInput.name,
-				userId: ctx.userId,
-				columns: {
-					create: parsedInput.columns.map((column, index) => ({
-						name: column.name,
-						order: index
-					}))
+		const board = await prisma.$transaction(async (tx) => {
+			/* Create the board with its columns */
+			const new_board = await tx.board.create({
+				data: {
+					name: parsedInput.name,
+					userId: ctx.userId,
+					columns: {
+						create: parsedInput.columns.map((column) => ({ name: column.name }))
+					}
+				},
+				include: {
+					columns: { select: { id: true }, orderBy: { createdAt: "asc" } }
 				}
-			},
-			select: {
-				id: true,
-				name: true
-			}
+			});
+
+			/* Set the column order on the board */
+			return tx.board.update({
+				where: { id: new_board.id },
+				data: { columnOrder: new_board.columns.map((column) => column.id) },
+				select: {
+					id: true,
+					name: true,
+					columnOrder: true
+				}
+			});
 		});
 
 		return board;
@@ -93,36 +104,34 @@ export const editBoardAction = authActionClient
 				});
 			}
 
-			/* Update existing columns and create new ones */
-			for (let index = 0; index < columns.length; index++) {
-				const column = columns[index];
+			/* Update existing columns and create new ones, collect IDs for ordering */
+			const column_ids: string[] = [];
 
+			for (const column of columns) {
 				if (column.id && !column.is_new) {
 					await tx.column.update({
 						where: { id: column.id },
-						data: { name: column.name, order: index }
+						data: { name: column.name }
 					});
+					column_ids.push(column.id);
 				} else {
-					await tx.column.create({
-						data: { name: column.name, order: index, boardId: id }
+					const new_column = await tx.column.create({
+						data: { name: column.name, boardId: id }
 					});
+					column_ids.push(new_column.id);
 				}
 			}
 
-			/* Update board name and return full board */
+			/* Update board name, column order, and return full board */
 			return tx.board.update({
 				where: { id, userId: ctx.userId },
-				data: { name },
+				data: { name, columnOrder: column_ids },
 				include: {
 					columns: {
-						orderBy: { order: "asc" },
 						include: {
 							tasks: {
-								orderBy: { order: "asc" },
 								include: {
-									subtasks: {
-										orderBy: { order: "asc" }
-									}
+									subtasks: true
 								}
 							}
 						}
@@ -134,20 +143,20 @@ export const editBoardAction = authActionClient
 		return {
 			id: board.id,
 			name: board.name,
-			columns: board.columns.map((column) => ({
+			columnOrder: board.columnOrder,
+			columns: sortByIdOrder(board.columns, board.columnOrder).map((column) => ({
 				id: column.id,
 				name: column.name,
-				order: column.order,
-				tasks: column.tasks.map((task) => ({
+				taskOrder: column.taskOrder,
+				tasks: sortByIdOrder(column.tasks, column.taskOrder).map((task) => ({
 					id: task.id,
 					title: task.title,
 					description: task.description || "",
-					order: task.order,
-					subtasks: task.subtasks.map((subtask) => ({
+					subtaskOrder: task.subtaskOrder,
+					subtasks: sortByIdOrder(task.subtasks, task.subtaskOrder).map((subtask) => ({
 						id: subtask.id,
 						title: subtask.title,
-						isCompleted: subtask.isCompleted,
-						order: subtask.order
+						isCompleted: subtask.isCompleted
 					}))
 				}))
 			}))
@@ -182,14 +191,10 @@ export async function getBoardById(board_id: string): Promise<Board | null> {
 		where: { id: board_id },
 		include: {
 			columns: {
-				orderBy: { order: "asc" },
 				include: {
 					tasks: {
-						orderBy: { order: "asc" },
 						include: {
-							subtasks: {
-								orderBy: { order: "asc" }
-							}
+							subtasks: true
 						}
 					}
 				}
@@ -202,20 +207,20 @@ export async function getBoardById(board_id: string): Promise<Board | null> {
 	return {
 		id: board.id,
 		name: board.name,
-		columns: board.columns.map((column) => ({
+		columnOrder: board.columnOrder,
+		columns: sortByIdOrder(board.columns, board.columnOrder).map((column) => ({
 			id: column.id,
 			name: column.name,
-			order: column.order,
-			tasks: column.tasks.map((task) => ({
+			taskOrder: column.taskOrder,
+			tasks: sortByIdOrder(column.tasks, column.taskOrder).map((task) => ({
 				id: task.id,
 				title: task.title,
 				description: task.description || "",
-				order: task.order,
-				subtasks: task.subtasks.map((subtask) => ({
+				subtaskOrder: task.subtaskOrder,
+				subtasks: sortByIdOrder(task.subtasks, task.subtaskOrder).map((subtask) => ({
 					id: subtask.id,
 					title: subtask.title,
-					isCompleted: subtask.isCompleted,
-					order: subtask.order
+					isCompleted: subtask.isCompleted
 				}))
 			}))
 		}))

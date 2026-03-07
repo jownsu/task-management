@@ -36,7 +36,11 @@ export const useCreateTask = (callback?: CallbackResponse) => {
 						...board,
 						columns: board.columns?.map((column) =>
 							column.id === payload.column_id
-								? { ...column, tasks: [...(column.tasks || []), response] }
+								? {
+									...column,
+									taskOrder: [...column.taskOrder, response.id],
+									tasks: [...(column.tasks || []), response]
+								}
 								: column
 						)
 					};
