@@ -69,7 +69,8 @@ const EditTaskModal = () => {
 		remove
 	} = useFieldArray({
 		control: form.control,
-		name: "sub_tasks"
+		name: "sub_tasks",
+		keyName: "temp_id"
 	});
 
 	const onEditTaskSubmit: SubmitHandler<TaskSchemaType> = (data) => {
@@ -101,8 +102,9 @@ const EditTaskModal = () => {
 				}))
 			});
 		}
-	}, [modals.edit_task, form, selected_task]);
-
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [modals.edit_task]);
+	
 	return (
 		<Dialog
 			open={modals.edit_task}
@@ -155,13 +157,15 @@ const EditTaskModal = () => {
 							<div className="flex flex-col gap-[12]">
 								{sub_tasks.map((column, index) => (
 									<FormField
-										key={column.id}
+										key={column.temp_id}
 										control={form.control}
 										name={`sub_tasks.${index}.title`}
 										render={({ field }) => (
 											<div className="flex items-center">
 												<Input
 													{...field}
+													defaultValue={field.value}
+													value={undefined}
 													type="text"
 													placeholder="e.g. Done"
 													error={errors.sub_tasks?.[index]?.title?.message}

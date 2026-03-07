@@ -76,7 +76,7 @@ const CreateTaskModal = () => {
 		remove
 	} = useFieldArray({
 		control: form.control,
-		name: "sub_tasks"
+		name: "sub_tasks",
 	});
 
 	const onCreateTaskSubmit: SubmitHandler<TaskSchemaType> = (data) => {
@@ -162,6 +162,8 @@ const CreateTaskModal = () => {
 											<div className="flex items-center">
 												<Input
 													{...field}
+													defaultValue={field.value}
+													value={undefined}
 													type="text"
 													placeholder="e.g. Done"
 													error={errors.sub_tasks?.[index]?.title?.message}

@@ -111,6 +111,8 @@ const CreateBoardmodal = () => {
 											<div className="flex items-center">
 												<Input
 													{...field}
+													defaultValue={field.value}
+													value={undefined}
 													type="text"
 													placeholder="e.g. Done"
 													error={errors.columns?.[index]?.name?.message}
