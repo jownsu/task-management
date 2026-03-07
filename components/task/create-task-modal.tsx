@@ -23,7 +23,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 
 /* SCHEMA */
-import { task_schema, TaskSchemaType } from "@/schema/task-schema";
+import { task_schema, TaskSchemaType, MAX_SUBTASKS } from "@/schema/task-schema";
 
 /* STORE */
 import { useTaskStore } from "@/store/task.store";
@@ -179,13 +179,15 @@ const CreateTaskModal = () => {
 									/>
 								))}
 
-								<Button
-									type="button"
-									variant="secondary"
-									onClick={() => append({ title: "" })}
-								>
-									<FaPlus /> Add New Subtask
-								</Button>
+								{sub_tasks.length < MAX_SUBTASKS && (
+									<Button
+										type="button"
+										variant="secondary"
+										onClick={() => append({ title: "" })}
+									>
+										<FaPlus /> Add New Subtask
+									</Button>
+								)}
 							</div>
 						</FormItem>
 

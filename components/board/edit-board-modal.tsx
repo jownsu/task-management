@@ -15,7 +15,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 
 /* SCHEMA */
-import { edit_board_schema, EditBoardSchema } from "@/schema/board-schema";
+import { edit_board_schema, EditBoardSchema, MAX_COLUMNS } from "@/schema/board-schema";
 
 /* STORE */
 import { useBoardStore } from "@/store/board.store";
@@ -162,14 +162,16 @@ const EditBoardmodal = () => {
 									/>
 								))}
 
-								<Button
-									type="button"
-									variant="secondary"
-									onClick={() => append({ name: "", is_new: true })}
-									disabled={isPending}
-								>
-									<FaPlus /> Add New Column
-								</Button>
+								{columns.length < MAX_COLUMNS && (
+									<Button
+										type="button"
+										variant="secondary"
+										onClick={() => append({ name: "", is_new: true })}
+										disabled={isPending}
+									>
+										<FaPlus /> Add New Column
+									</Button>
+								)}
 							</div>
 						</FormItem>
 

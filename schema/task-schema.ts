@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+export const MAX_SUBTASKS = 10;
+
 export const task_schema = z.object({
     id: z.string().optional(),
     title: z.string().min(1, "Title is required"),
@@ -9,7 +11,7 @@ export const task_schema = z.object({
         id: z.string().optional(),
         title: z.string().min(1, "Can't be empty"),
         is_new: z.boolean().default(false).optional()
-    }))
+    })).max(MAX_SUBTASKS, `You can only have up to ${MAX_SUBTASKS} subtasks`)
 });
 
 export const view_task_schema = z.object({
@@ -29,7 +31,7 @@ export const create_task_schema = z.object({
 	board_id: z.string(),
 	sub_tasks: z.array(z.object({
 		title: z.string().min(1, "Can't be empty")
-	}))
+	})).max(MAX_SUBTASKS, `You can only have up to ${MAX_SUBTASKS} subtasks`)
 });
 
 export const delete_task_schema = z.object({
