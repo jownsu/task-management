@@ -1,8 +1,11 @@
+/* ACTIONS */
+import { deleteColumnAction } from "@/actions/column.actions";
+
+/* UTILITIES */
+import { executeAction } from "@/lib/execute-action";
+
 /* SCHEMA */
 import { DeleteColumnSchemaType } from "@/schema/column-schema";
-
-/* SERVICES */
-import columnService from "@/services/column.service";
 
 /* TYPES */
 import { Board, CallbackResponse } from "@/types";
@@ -16,14 +19,14 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 /**
  * DOCU: Will delete the selected column. <br>
  * Triggered: On submission of delete column form. <br>
- * Last Updated: March 06, 2026
+ * Last Updated: March 07, 2026
  * @author Jhones
  */
 export const useDeleteColumn = (callback?: CallbackResponse) => {
 	const queryClient = useQueryClient();
 
 	const { mutate: deleteColumn, ...rest } = useMutation({
-		mutationFn: async (payload: DeleteColumnSchemaType) => columnService.deleteColumn(payload),
+		mutationFn: (payload: DeleteColumnSchemaType) => executeAction(deleteColumnAction(payload)),
 		onSuccess: (_, payload) => {
 			queryClient.setQueryData<Board>([...CACHE_KEY_BOARD, payload.board_id], (board) => {
 				if (board) {
