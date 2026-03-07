@@ -31,6 +31,9 @@ import { useTaskStore } from "@/store/task.store";
 /* QUERIES */
 import { useGetBoard } from "@/hooks/queries/board.query";
 
+/* MUTATIONS */
+import { useCreateTask } from "@/hooks/mutations/task.mutation";
+
 /* ICONS */
 import { FaPlus } from "react-icons/fa";
 import { IoIosClose } from "react-icons/io";
@@ -42,6 +45,9 @@ const CreateTaskModal = () => {
 	const setModal = useTaskStore((state) => state.setModal);
 	const modals = useTaskStore((state) => state.modals);
 	const { board } = useGetBoard(board_id);
+	const { createTask, isPending } = useCreateTask({
+		onSuccess: () => setModal("add_task", false)
+	});
 
 	const form = useForm<TaskSchemaType>({
 		resolver: zodResolver(task_schema),
@@ -58,7 +64,7 @@ const CreateTaskModal = () => {
 					title: ""
 				}
 			],
-			column_id: "1"
+			column_id: board?.columns?.[0]?.id || ""
 		}
 	});
 
@@ -74,14 +80,28 @@ const CreateTaskModal = () => {
 	});
 
 	const onCreateTaskSubmit: SubmitHandler<TaskSchemaType> = (data) => {
-		console.log(data);
+		createTask({
+			title: data.title,
+			description: data.description,
+			column_id: data.column_id,
+			board_id,
+			sub_tasks: data.sub_tasks.map(({ title }) => ({ title }))
+		});
 	};
 
 	useEffect(() => {
 		if (modals.add_task) {
-			form.reset();
+			form.reset({
+				title: "",
+				description: "",
+				sub_tasks: [
+					{ id: crypto.randomUUID(), title: "" },
+					{ id: crypto.randomUUID(), title: "" }
+				],
+				column_id: board?.columns?.[0]?.id || ""
+			});
 		}
-	}, [modals.add_task, form]);
+	}, [modals.add_task, form, board]);
 
 	return (
 		<Dialog
@@ -200,8 +220,8 @@ const CreateTaskModal = () => {
 							/>
 						</FormItem>
 
-						<Button type="submit" className="w-full">
-							Create Task
+						<Button type="submit" className="w-full" disabled={isPending}>
+							{isPending ? "Creating..." : "Create Task"}
 						</Button>
 					</form>
 				</Form>
