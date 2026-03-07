@@ -1,18 +1,13 @@
 "use client";
 
 /* NEXT */
-import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
+
+/* REACT */
+import { useEffect, useState } from "react";
 
 /* COMPONENTS */
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue
-} from "@/components/ui/select";
 import ActionOptions from "@/components/actions-dropdown";
 import { Checkbox } from "@/components/ui/checkbox";
 import { DialogDescription } from "@/components/ui/dialog";
@@ -20,11 +15,11 @@ import { DialogDescription } from "@/components/ui/dialog";
 /* STORE */
 import { useTaskStore } from "@/store/task.store";
 
-/* ENTITIES */
-import { Subtask } from "@/types";
+/* HOOKS */
+import { useSelectedTask } from "@/hooks/use-selected-task";
 
-/* QUERIES */
-import { useGetBoard } from "@/hooks/queries/board.query";
+/* TYPES */
+import { Subtask } from "@/types";
 
 /* MUTATIONS */
 import { useUpdateSubtask } from "@/hooks/mutations/subtask.mutation";
@@ -34,21 +29,18 @@ import { cn } from "@/lib/utils";
 
 const ViewTaskModal = () => {
 	const { board_id } = useParams() as { board_id: string };
-	
+
 	const setModal = useTaskStore((state) => state.setModal);
 	const modals = useTaskStore((state) => state.modals);
-	const selected_task = useTaskStore((state) => state.selected_task);
-	const { board } = useGetBoard(board_id);
+	const selected_task = useSelectedTask();
 
 	const [sub_tasks, setSubTasks] = useState<Subtask[]>([]);
-	const [current_status, setCurrentStatus] = useState<string>("");
 
 	const { updateSubtask } = useUpdateSubtask()
 
 	useEffect(() => {
 		if(selected_task){
 			setSubTasks(selected_task.subtasks);
-			setCurrentStatus(selected_task.column_id);
 		}
 	}, [selected_task]);
 
@@ -57,8 +49,8 @@ const ViewTaskModal = () => {
 	 * Triggered: When the selected task changes. <br>
 	 */
 	const onToggleSubtask = (subtask: Subtask) => {
-		setSubTasks((prev_tasks) => 
-			prev_tasks.map((prev_task) => 
+		setSubTasks((prev_tasks) =>
+			prev_tasks.map((prev_task) =>
 				prev_task.id === subtask.id ? { ...prev_task, isCompleted: !prev_task.isCompleted } : prev_task
 			)
 		);
@@ -83,8 +75,8 @@ const ViewTaskModal = () => {
 				<div className="flex flex-col gap-[24]">
 					<div className="flex">
 						<DialogTitle className="text-h-lg flex-1">{selected_task?.title}</DialogTitle>
-						<ActionOptions 
-							name="Task" 
+						<ActionOptions
+							name="Task"
 							onDeleteClick={() => {
 								setModal("delete_task", true);
 							}}
@@ -97,13 +89,13 @@ const ViewTaskModal = () => {
 					<DialogDescription className="!text-b-lg text-medium-grey">
 						{selected_task?.description}
 					</DialogDescription>
-					
+
 					<div className="grid gap-4">
 						<label className="text-medium-grey t-[12] font-bold leading-none">Subtasks ({sub_tasks.filter(subtask => subtask.isCompleted).length}/{sub_tasks.length})</label>
 						<div className="flex flex-col gap-2">
 							{sub_tasks.map((subtask) => (
-								<label 
-									key={subtask.id} 
+								<label
+									key={subtask.id}
 									className={"px-[12] py-[16] bg-background flex gap-[16] cursor-pointer"}
 									tabIndex={0}
 									aria-label={subtask.title}
@@ -120,7 +112,7 @@ const ViewTaskModal = () => {
 									}}
 								>
 									<Checkbox checked={subtask.isCompleted} />
-									<span 
+									<span
 										className={cn("t-[12] font-bold dark:text-white", {
 											["line-through opacity-50"]: subtask.isCompleted,
 										})}
@@ -130,28 +122,6 @@ const ViewTaskModal = () => {
 								</label>
 							))}
 						</div>
-					</div>
-
-					<div className="grid gap-2">
-						<label className="text-medium-grey t-[12] font-bold leading-none">Current Status</label>
-						<Select value={current_status} onValueChange={(value) => setCurrentStatus(value)}>
-							<SelectTrigger className="w-full">
-								<SelectValue placeholder="Select Status" />
-							</SelectTrigger>
-
-							<SelectContent>
-								{
-									board?.columns?.map((column) => (
-										<SelectItem
-											key={column.id}
-											value={column.id}
-										>
-											{column.name}
-										</SelectItem>
-									))
-								}
-							</SelectContent>
-						</Select>
 					</div>
 				</div>
 			</DialogContent>

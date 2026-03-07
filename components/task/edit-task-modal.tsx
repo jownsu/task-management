@@ -18,6 +18,9 @@ import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 /* MUTATIONS */
 import { useEditTask } from "@/hooks/mutations/task.mutation";
 
+/* HOOKS */
+import { useSelectedTask } from "@/hooks/use-selected-task";
+
 /* SCHEMA */
 import { task_schema, TaskSchemaType, MAX_SUBTASKS } from "@/schema/task-schema";
 
@@ -34,7 +37,7 @@ const EditTaskModal = () => {
 
 	const setModal = useTaskStore((state) => state.setModal);
 	const modals = useTaskStore((state) => state.modals);
-	const selected_task = useTaskStore((state) => state.selected_task);
+	const selected_task = useSelectedTask();
 	const { editTask, isPending } = useEditTask({
 		onSuccess: () => setModal("edit_task", false)
 	});

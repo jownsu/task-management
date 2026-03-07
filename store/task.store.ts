@@ -1,9 +1,6 @@
 /* PLUGINS */
 import { create } from "zustand";
 
-/* TYPES */
-import { Task } from "@/types";
-
 interface Modals {
 	add_task: boolean;
 	edit_task: boolean;
@@ -13,9 +10,10 @@ interface Modals {
 
 interface TaskStore {
 	modals: Modals;
-	selected_task: Task & { column_id: string } | null;
+	selected_task_id: string | null;
+	selected_column_id: string | null;
 	setModal: (modal: keyof Modals, value: boolean) => void;
-	setSelectedTask: (task: Task & { column_id: string } | null) => void;
+	setSelectedTask: (task_id: string, column_id: string) => void;
 }
 
 export const useTaskStore = create<TaskStore>()((set) => ({
@@ -25,7 +23,8 @@ export const useTaskStore = create<TaskStore>()((set) => ({
 		view_task: false,
 		delete_task: false
 	},
-	selected_task: null,
+	selected_task_id: null,
+	selected_column_id: null,
 	setModal: (modal, value) =>
 		set((state) => ({
 			modals: {
@@ -33,5 +32,5 @@ export const useTaskStore = create<TaskStore>()((set) => ({
 				[modal]: value
 			}
 		})),
-	setSelectedTask: (selected_task) => set({ selected_task })
+	setSelectedTask: (selected_task_id, selected_column_id) => set({ selected_task_id, selected_column_id })
 }));

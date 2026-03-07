@@ -3,7 +3,7 @@
 /* STORE */
 import { useTaskStore } from "@/store/task.store";
 
-/* ENTITIES */
+/* TYPES */
 import { Task } from "@/types";
 
 interface Props {
@@ -21,7 +21,7 @@ const TaskItem = ({ task, column_id }: Props) => {
 			type="button"
 			onClick={() => {
 				setModal("view_task", true);
-				setSelectedTask({...task, column_id});
+				setSelectedTask(task.id, column_id);
 			}}
 		>
 			<p className="text-h-md text-black dark:text-white group-hover:text-primary dark:group-hover:text-primary">

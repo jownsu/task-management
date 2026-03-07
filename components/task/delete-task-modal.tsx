@@ -10,13 +10,16 @@ import {
 	DialogTitle
 } from "@/components/ui/dialog";
 
+/* HOOKS */
+import { useSelectedTask } from "@/hooks/use-selected-task";
+
 /* STORE */
 import { useTaskStore } from "@/store/task.store";
 
 const DeleteTaskModal = () => {
 	const setModal = useTaskStore((state) => state.setModal);
 	const modals = useTaskStore((state) => state.modals);
-	const selected_task = useTaskStore((state) => state.selected_task);
+	const selected_task = useSelectedTask();
 
 	return (
 		<Dialog
