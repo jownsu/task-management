@@ -5,7 +5,7 @@ import prisma from "@/lib/prisma";
 import { authActionClient } from "@/lib/safe-action";
 
 /* SCHEMA */
-import { create_task_schema } from "@/schema/task-schema";
+import { create_task_schema, edit_task_schema } from "@/schema/task-schema";
 
 /* TYPES */
 import { Subtask } from "@/types";
@@ -78,6 +78,99 @@ export const createTaskAction = authActionClient
 				id: task.id,
 				title: task.title,
 				description: task.description || "",
+				subtaskOrder: subtask_ids,
+				subtasks
+			};
+		});
+
+		return result;
+	});
+
+/**
+ * DOCU: Edits an existing task and its subtasks (create, update, delete). <br>
+ * Triggered: On submission of edit task form. <br>
+ * Last Updated: March 07, 2026
+ * @author Jhones
+ */
+export const editTaskAction = authActionClient
+	.schema(edit_task_schema)
+	.action(async ({ parsedInput, ctx }) => {
+		const { id, board_id, title, description, sub_tasks } = parsedInput;
+
+		/* Verify the task belongs to a board owned by the current user */
+		const task = await prisma.task.findFirst({
+			where: {
+				id,
+				column: { board: { id: board_id, userId: ctx.userId } }
+			},
+			select: { id: true }
+		});
+
+		if (!task) {
+			throw new Error("Task not found");
+		}
+
+		/* Get existing subtask IDs to determine which ones to delete */
+		const existing_subtasks = await prisma.subtask.findMany({
+			where: { taskId: id },
+			select: { id: true }
+		});
+
+		const existing_subtask_ids = existing_subtasks.map((subtask) => subtask.id);
+		const payload_subtask_ids = sub_tasks.filter((subtask) => subtask.id && !subtask.is_new).map((subtask) => subtask.id!);
+		const subtasks_to_delete = existing_subtask_ids.filter((subtask_id) => !payload_subtask_ids.includes(subtask_id));
+
+		const result = await prisma.$transaction(async (tx) => {
+			/* Delete removed subtasks */
+			if (subtasks_to_delete.length > 0) {
+				await tx.subtask.deleteMany({
+					where: { id: { in: subtasks_to_delete } }
+				});
+			}
+
+			/* Update existing subtasks and create new ones, collect IDs for ordering */
+			const subtask_ids: string[] = [];
+			const subtasks: Subtask[] = [];
+
+			for (const subtask_data of sub_tasks) {
+				if (subtask_data.id && !subtask_data.is_new) {
+					const updated = await tx.subtask.update({
+						where: { id: subtask_data.id },
+						data: { title: subtask_data.title },
+						select: { id: true, title: true, isCompleted: true }
+					});
+					subtask_ids.push(updated.id);
+					subtasks.push(updated);
+				} else {
+					const new_subtask = await tx.subtask.create({
+						data: {
+							title: subtask_data.title,
+							taskId: id
+						}
+					});
+					subtask_ids.push(new_subtask.id);
+					subtasks.push({
+						id: new_subtask.id,
+						title: new_subtask.title,
+						isCompleted: new_subtask.isCompleted
+					});
+				}
+			}
+
+			/* Update the task */
+			const updated_task = await tx.task.update({
+				where: { id },
+				data: {
+					title,
+					description,
+					subtaskOrder: subtask_ids
+				}
+			});
+
+			return {
+				id: updated_task.id,
+				title: updated_task.title,
+				description: updated_task.description || "",
 				subtaskOrder: subtask_ids,
 				subtasks
 			};

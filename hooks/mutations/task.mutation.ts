@@ -1,11 +1,11 @@
 /* ACTIONS */
-import { createTaskAction } from "@/actions/task.actions";
+import { createTaskAction, editTaskAction } from "@/actions/task.actions";
 
 /* UTILITIES */
 import { executeAction } from "@/lib/execute-action";
 
 /* SCHEMA */
-import { CreateTaskSchemaType } from "@/schema/task-schema";
+import { CreateTaskSchemaType, EditTaskSchemaType } from "@/schema/task-schema";
 
 /* TYPES */
 import { Board, CallbackResponse } from "@/types";
@@ -52,4 +52,47 @@ export const useCreateTask = (callback?: CallbackResponse) => {
 	});
 
 	return { createTask, ...rest };
+};
+
+/**
+ * DOCU: Will edit an existing task and its subtasks. <br>
+ * Triggered: On submission of edit task form. <br>
+ * Last Updated: March 07, 2026
+ * @author Jhones
+ */
+export const useEditTask = (callback?: CallbackResponse) => {
+	const queryClient = useQueryClient();
+
+	const { mutate: editTask, ...rest } = useMutation({
+		mutationFn: (payload: EditTaskSchemaType) => executeAction(editTaskAction(payload)),
+		onSuccess: (response, payload) => {
+			if (response) {
+				queryClient.setQueryData<Board>([...CACHE_KEY_BOARD, payload.board_id], (board) => {
+					if (!board) return board;
+
+					return {
+						...board,
+						columns: board.columns?.map((column) => ({
+							...column,
+							tasks: column.tasks?.map((task) =>
+								task.id === payload.id
+									? {
+										id: response.id,
+										title: response.title,
+										description: response.description,
+										subtaskOrder: response.subtaskOrder,
+										subtasks: response.subtasks
+									}
+									: task
+							)
+						}))
+					};
+				});
+			}
+
+			callback?.onSuccess?.();
+		}
+	});
+
+	return { editTask, ...rest };
 };

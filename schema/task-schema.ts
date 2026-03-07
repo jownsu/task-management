@@ -34,12 +34,25 @@ export const create_task_schema = z.object({
 	})).max(MAX_SUBTASKS, `You can only have up to ${MAX_SUBTASKS} subtasks`)
 });
 
+export const edit_task_schema = z.object({
+	id: z.string(),
+	board_id: z.string(),
+	title: z.string().min(1, "Title is required"),
+	description: z.string().min(1, "Description is required"),
+	sub_tasks: z.array(z.object({
+		id: z.string().optional(),
+		title: z.string().min(1, "Can't be empty"),
+		is_new: z.boolean().default(false).optional()
+	})).max(MAX_SUBTASKS, `You can only have up to ${MAX_SUBTASKS} subtasks`)
+});
+
 export const delete_task_schema = z.object({
 	id: z.string()
 });
 
 export type TaskSchemaType = z.infer<typeof task_schema>;
 export type CreateTaskSchemaType = z.infer<typeof create_task_schema>;
+export type EditTaskSchemaType = z.infer<typeof edit_task_schema>;
 export type DeleteTaskSchemaType = z.infer<typeof delete_task_schema>;
 export type ViewTaskSchemaType = z.infer<typeof view_task_schema>;
 

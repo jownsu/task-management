@@ -9,21 +9,14 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Form, FormField, FormItem, FormLabel } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue
-} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 
 /* PLUGINS */
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 
-/* QUERIES */
-import { useGetBoard } from "@/hooks/queries/board.query";
+/* MUTATIONS */
+import { useEditTask } from "@/hooks/mutations/task.mutation";
 
 /* SCHEMA */
 import { task_schema, TaskSchemaType, MAX_SUBTASKS } from "@/schema/task-schema";
@@ -42,7 +35,9 @@ const EditTaskModal = () => {
 	const setModal = useTaskStore((state) => state.setModal);
 	const modals = useTaskStore((state) => state.modals);
 	const selected_task = useTaskStore((state) => state.selected_task);
-	const { board } = useGetBoard(board_id);
+	const { editTask, isPending } = useEditTask({
+		onSuccess: () => setModal("edit_task", false)
+	});
 
 	const form = useForm<TaskSchemaType>({
 		resolver: zodResolver(task_schema),
@@ -75,12 +70,33 @@ const EditTaskModal = () => {
 	});
 
 	const onEditTaskSubmit: SubmitHandler<TaskSchemaType> = (data) => {
-		console.log(data);
+		if (!selected_task) return;
+
+		editTask({
+			id: selected_task.id,
+			board_id,
+			title: data.title,
+			description: data.description,
+			sub_tasks: data.sub_tasks.map((subtask) => ({
+				id: subtask.id,
+				title: subtask.title,
+				is_new: subtask.is_new
+			}))
+		});
 	};
 
 	useEffect(() => {
 		if (selected_task && modals.edit_task) {
-			form.reset(selected_task);
+			form.reset({
+				id: selected_task.id,
+				title: selected_task.title,
+				description: selected_task.description,
+				column_id: selected_task.column_id,
+				sub_tasks: selected_task.subtasks.map((subtask) => ({
+					id: subtask.id,
+					title: subtask.title
+				}))
+			});
 		}
 	}, [modals.edit_task, form, selected_task]);
 
@@ -172,39 +188,8 @@ const EditTaskModal = () => {
 							</div>
 						</FormItem>
 
-						<FormItem>
-							<FormLabel>Column</FormLabel>
-							<FormField
-								control={form.control}
-								name="column_id"
-								render={({ field: { value, onChange } }) => (
-									<Select
-										value={value}
-										onValueChange={(value) => onChange(value)}
-									>
-										<SelectTrigger className="w-full">
-											<SelectValue placeholder="Select Status" />
-										</SelectTrigger>
-
-										<SelectContent className="">
-											{
-												board?.columns?.map((column) => (
-													<SelectItem
-														key={column.id}
-														value={column.id}
-													>
-														{column.name}
-													</SelectItem>
-												))
-											}
-										</SelectContent>
-									</Select>
-								)}
-							/>
-						</FormItem>
-
-						<Button type="submit" className="w-full">
-							Save Changes
+						<Button type="submit" className="w-full" disabled={isPending}>
+							{isPending ? "Saving..." : "Save Changes"}
 						</Button>
 					</form>
 				</Form>
