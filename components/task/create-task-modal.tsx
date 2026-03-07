@@ -192,7 +192,7 @@ const CreateTaskModal = () => {
 						</FormItem>
 
 						<FormItem>
-							<FormLabel>Status</FormLabel>
+							<FormLabel>Column</FormLabel>
 							<FormField
 								control={form.control}
 								name="column_id"
