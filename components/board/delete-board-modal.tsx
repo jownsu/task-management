@@ -27,6 +27,18 @@ const DeleteBoardModal = () => {
 		}
 	});
 
+	/**
+	 * DOCU: Handles the delete board action. <br>
+	 * Triggered: When the user clicks the delete button. <br>
+	 * Last Updated: March 07, 2026
+	 * @author Jhones
+	 */
+	const handleDeleteBoard = () => {
+		if (!selected_board) return;
+
+		deleteBoard({ id: selected_board.id });
+	};
+
 	return (
 		<Dialog
 			open={modals.delete_board}
@@ -60,11 +72,7 @@ const DeleteBoardModal = () => {
 						type="button"
 						variant="destructive"
 						className="flex-1"
-						onClick={() => {
-							if(selected_board){
-								deleteBoard({ id: selected_board.id })
-							}
-						}}
+						onClick={handleDeleteBoard}
 						disabled={isPending}
 					>
 						{isPending ? "Deleting..." : "Delete"}

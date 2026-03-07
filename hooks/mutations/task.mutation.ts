@@ -1,11 +1,11 @@
 /* ACTIONS */
-import { createTaskAction, editTaskAction } from "@/actions/task.actions";
+import { createTaskAction, deleteTaskAction, editTaskAction } from "@/actions/task.actions";
 
 /* UTILITIES */
 import { executeAction } from "@/lib/execute-action";
 
 /* SCHEMA */
-import { CreateTaskSchemaType, EditTaskSchemaType } from "@/schema/task-schema";
+import { CreateTaskSchemaType, DeleteTaskSchemaType, EditTaskSchemaType } from "@/schema/task-schema";
 
 /* TYPES */
 import { Board, CallbackResponse } from "@/types";
@@ -95,4 +95,40 @@ export const useEditTask = (callback?: CallbackResponse) => {
 	});
 
 	return { editTask, ...rest };
+};
+
+/**
+ * DOCU: Will delete the selected task and its subtasks. <br>
+ * Triggered: On submission of delete task form. <br>
+ * Last Updated: March 07, 2026
+ * @author Jhones
+ */
+export const useDeleteTask = (callback?: CallbackResponse) => {
+	const queryClient = useQueryClient();
+
+	const { mutate: deleteTask, ...rest } = useMutation({
+		mutationFn: (payload: DeleteTaskSchemaType & { board_id: string; column_id: string }) => executeAction(deleteTaskAction({ id: payload.id })),
+		onSuccess: (_, payload) => {
+			queryClient.setQueryData<Board>([...CACHE_KEY_BOARD, payload.board_id], (board) => {
+				if (!board) return board;
+
+				return {
+					...board,
+					columns: board.columns?.map((column) =>
+						column.id === payload.column_id
+							? {
+								...column,
+								taskOrder: column.taskOrder.filter((task_id) => task_id !== payload.id),
+								tasks: column.tasks?.filter((task) => task.id !== payload.id)
+							}
+							: column
+					)
+				};
+			});
+
+			callback?.onSuccess?.();
+		}
+	});
+
+	return { deleteTask, ...rest };
 };

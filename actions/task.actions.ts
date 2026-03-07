@@ -5,7 +5,7 @@ import prisma from "@/lib/prisma";
 import { authActionClient } from "@/lib/safe-action";
 
 /* SCHEMA */
-import { create_task_schema, edit_task_schema } from "@/schema/task-schema";
+import { create_task_schema, delete_task_schema, edit_task_schema } from "@/schema/task-schema";
 
 /* TYPES */
 import { Subtask } from "@/types";
@@ -177,4 +177,42 @@ export const editTaskAction = authActionClient
 		});
 
 		return result;
+	});
+
+/**
+ * DOCU: Deletes a task and its subtasks from a column. <br>
+ * Triggered: On submission of delete task form. <br>
+ * Last Updated: March 07, 2026
+ * @author Jhones
+ */
+export const deleteTaskAction = authActionClient
+	.schema(delete_task_schema)
+	.action(async ({ parsedInput, ctx }) => {
+		const { id } = parsedInput;
+
+		/* Verify the task belongs to a board owned by the current user */
+		const task = await prisma.task.findFirst({
+			where: {
+				id,
+				column: { board: { userId: ctx.userId } }
+			},
+			select: { id: true, columnId: true, column: { select: { taskOrder: true } } }
+		});
+
+		if (!task) {
+			throw new Error("Task not found");
+		}
+
+		await prisma.$transaction(async (tx) => {
+			/* Delete the task (subtasks cascade) */
+			await tx.task.delete({
+				where: { id }
+			});
+
+			/* Remove the task from the column's taskOrder */
+			await tx.column.update({
+				where: { id: task.columnId },
+				data: { taskOrder: task.column.taskOrder.filter((task_id) => task_id !== id) }
+			});
+		});
 	});
