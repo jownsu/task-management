@@ -20,7 +20,7 @@ import { useGetBoard } from "@/hooks/queries/board.query";
 import { useSelectedTask } from "@/hooks/use-selected-task";
 
 /* MUTATIONS */
-import { useUpdateSubtask, useUpdateTaskStatus } from "@/hooks/mutations/task.mutation";
+import { useUpdateSubtask, useUpdateTaskColumn } from "@/hooks/mutations/task.mutation";
 
 /* UTILITIES */
 import { cn } from "@/lib/utils";
@@ -36,17 +36,17 @@ const ViewTaskModal = () => {
 	const { board } = useGetBoard(board_id);
 
 	const { updateSubtask } = useUpdateSubtask();
-	const { updateTaskStatus } = useUpdateTaskStatus();
+	const { updateTaskColumn } = useUpdateTaskColumn();
 
 	/**
 	 * DOCU: Moves the task to a different column. <br>
-	 * Triggered: When the status dropdown value is changed. <br>
+	 * Triggered: When the column dropdown value is changed. <br>
 	 * Last Updated: March 09, 2026
 	 * @author Jhones
 	 */
-	const onStatusChange = (new_column_id: string) => {
+	const onColumnChange = (new_column_id: string) => {
 		if (selected_task && new_column_id !== selected_task.column_id) {
-			updateTaskStatus({
+			updateTaskColumn({
 				board_id,
 				task_id: selected_task.id,
 				old_column_id: selected_task.column_id,
@@ -133,9 +133,9 @@ const ViewTaskModal = () => {
 
 					<div className="grid gap-2">
 						<label className="text-medium-grey t-[12] font-bold leading-none">Column</label>
-						<Select value={selected_task?.column_id} onValueChange={onStatusChange}>
+						<Select value={selected_task?.column_id} onValueChange={onColumnChange}>
 							<SelectTrigger className="w-full">
-								<SelectValue placeholder="Select Status" />
+								<SelectValue placeholder="Select Column" />
 							</SelectTrigger>
 							<SelectContent>
 								{board?.columns?.map((column) => (

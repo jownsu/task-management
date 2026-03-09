@@ -65,12 +65,12 @@ export type DeleteTaskSchemaType = z.infer<typeof delete_task_schema>;
 export type ViewTaskSchemaType = z.infer<typeof view_task_schema>;
 export type UpdateSubtaskSchemaType = z.infer<typeof update_subtask_schema>;
 
-export const update_task_status_schema = z.object({
+export const update_task_column_schema = z.object({
 	board_id: z.string(),
 	task_id: z.string(),
 	old_column_id: z.string(),
 	new_column_id: z.string()
 });
 
-export type UpdateTaskStatusSchemaType = z.infer<typeof update_task_status_schema>;
+export type UpdateTaskColumnSchemaType = z.infer<typeof update_task_column_schema>;
 

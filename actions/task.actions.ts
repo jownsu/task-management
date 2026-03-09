@@ -5,7 +5,7 @@ import prisma from "@/lib/prisma";
 import { authActionClient } from "@/lib/safe-action";
 
 /* SCHEMA */
-import { create_task_schema, delete_task_schema, edit_task_schema, update_subtask_schema, update_task_status_schema } from "@/schema/task-schema";
+import { create_task_schema, delete_task_schema, edit_task_schema, update_subtask_schema, update_task_column_schema } from "@/schema/task-schema";
 
 /* TYPES */
 import { Subtask } from "@/types";
@@ -253,12 +253,12 @@ export const updateSubtaskAction = authActionClient
 
 /**
  * DOCU: Moves a task from one column to another. <br>
- * Triggered: On changing the status dropdown in view task modal. <br>
+ * Triggered: On changing the column dropdown in view task modal. <br>
  * Last Updated: March 09, 2026
  * @author Jhones
  */
-export const updateTaskStatusAction = authActionClient
-	.schema(update_task_status_schema)
+export const updateTaskColumnAction = authActionClient
+	.schema(update_task_column_schema)
 	.action(async ({ parsedInput, ctx }) => {
 		const { task_id, board_id, old_column_id, new_column_id } = parsedInput;
 

@@ -1,11 +1,11 @@
 /* ACTIONS */
-import { createTaskAction, deleteTaskAction, editTaskAction, updateSubtaskAction, updateTaskStatusAction } from "@/actions/task.actions";
+import { createTaskAction, deleteTaskAction, editTaskAction, updateSubtaskAction, updateTaskColumnAction } from "@/actions/task.actions";
 
 /* UTILITIES */
 import { executeAction } from "@/lib/execute-action";
 
 /* SCHEMA */
-import { CreateTaskSchemaType, DeleteTaskSchemaType, EditTaskSchemaType, UpdateSubtaskSchemaType, UpdateTaskStatusSchemaType } from "@/schema/task-schema";
+import { CreateTaskSchemaType, DeleteTaskSchemaType, EditTaskSchemaType, UpdateSubtaskSchemaType, UpdateTaskColumnSchemaType } from "@/schema/task-schema";
 
 /* TYPES */
 import { Board, CallbackResponse } from "@/types";
@@ -191,15 +191,15 @@ export const useUpdateSubtask = (callback?: CallbackResponse) => {
 
 /**
  * DOCU: Will move a task from one column to another. <br>
- * Triggered: On changing the status dropdown in view task modal. <br>
+ * Triggered: On changing the column dropdown in view task modal. <br>
  * Last Updated: March 09, 2026
  * @author Jhones
  */
-export const useUpdateTaskStatus = (callback?: CallbackResponse) => {
+export const useUpdateTaskColumn = (callback?: CallbackResponse) => {
 	const queryClient = useQueryClient();
 
-	const { mutate: updateTaskStatus, ...rest } = useMutation({
-		mutationFn: (payload: UpdateTaskStatusSchemaType) => executeAction(updateTaskStatusAction(payload)),
+	const { mutate: updateTaskColumn, ...rest } = useMutation({
+		mutationFn: (payload: UpdateTaskColumnSchemaType) => executeAction(updateTaskColumnAction(payload)),
 		onMutate: async (payload) => {
 			await queryClient.cancelQueries({ queryKey: [...CACHE_KEY_BOARD, payload.board_id] });
 
@@ -248,5 +248,5 @@ export const useUpdateTaskStatus = (callback?: CallbackResponse) => {
 		}
 	});
 
-	return { updateTaskStatus, ...rest };
+	return { updateTaskColumn, ...rest };
 };
