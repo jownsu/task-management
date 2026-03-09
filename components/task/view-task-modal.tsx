@@ -29,7 +29,6 @@ const ViewTaskModal = () => {
 	const { board_id } = useParams() as { board_id: string };
 
 	const setModal = useTaskStore((state) => state.setModal);
-	const setSelectedTask = useTaskStore((state) => state.setSelectedTask);
 	const modals = useTaskStore((state) => state.modals);
 	const selected_task = useSelectedTask();
 	const sub_tasks = selected_task?.subtasks ?? [];
@@ -52,8 +51,6 @@ const ViewTaskModal = () => {
 				old_column_id: selected_task.column_id,
 				new_column_id
 			});
-
-			setSelectedTask(selected_task.id, new_column_id);
 		}
 	};
 

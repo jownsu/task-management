@@ -20,17 +20,18 @@ export const useSelectedTask = () => {
 	const params = useParams();
 	const board_id = params.board_id as string | undefined;
 	const selected_task_id = useTaskStore((state) => state.selected_task_id);
-	const selected_column_id = useTaskStore((state) => state.selected_column_id);
 	const { board } = useGetBoard(board_id ?? "", { enabled: !!board_id });
 
 	return useMemo(() => {
-		if (!board || !selected_task_id || !selected_column_id) return null;
+		if (!board || !selected_task_id) return null;
 
-		const column = board.columns?.find((col) => col.id === selected_column_id);
-		const task = column?.tasks?.find((t) => t.id === selected_task_id);
+		for (const column of board.columns ?? []) {
+			const task = column.tasks?.find((t) => t.id === selected_task_id);
+			if (task) {
+				return { ...task, column_id: column.id };
+			}
+		}
 
-		if (!task) return null;
-
-		return { ...task, column_id: selected_column_id };
-	}, [board, selected_task_id, selected_column_id]);
+		return null;
+	}, [board, selected_task_id]);
 };
