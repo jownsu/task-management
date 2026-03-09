@@ -5,7 +5,7 @@ import prisma from "@/lib/prisma";
 import { authActionClient } from "@/lib/safe-action";
 
 /* SCHEMA */
-import { create_task_schema, delete_task_schema, edit_task_schema, update_subtask_schema } from "@/schema/task-schema";
+import { create_task_schema, delete_task_schema, edit_task_schema, update_subtask_schema, update_task_status_schema } from "@/schema/task-schema";
 
 /* TYPES */
 import { Subtask } from "@/types";
@@ -249,4 +249,66 @@ export const updateSubtaskAction = authActionClient
 		});
 
 		return updated_subtask;
+	});
+
+/**
+ * DOCU: Moves a task from one column to another. <br>
+ * Triggered: On changing the status dropdown in view task modal. <br>
+ * Last Updated: March 09, 2026
+ * @author Jhones
+ */
+export const updateTaskStatusAction = authActionClient
+	.schema(update_task_status_schema)
+	.action(async ({ parsedInput, ctx }) => {
+		const { task_id, board_id, old_column_id, new_column_id } = parsedInput;
+
+		if (old_column_id === new_column_id) return;
+
+		/* Verify ownership and fetch source column's taskOrder in parallel */
+		const [task, target_column] = await Promise.all([
+			prisma.task.findFirst({
+				where: {
+					id: task_id,
+					columnId: old_column_id,
+					column: { board: { id: board_id, userId: ctx.userId } }
+				},
+				select: { id: true, column: { select: { taskOrder: true } } }
+			}),
+			prisma.column.findFirst({
+				where: {
+					id: new_column_id,
+					boardId: board_id,
+					board: { userId: ctx.userId }
+				},
+				select: { id: true }
+			})
+		]);
+
+		if (!task) {
+			throw new Error("Task not found");
+		}
+
+		if (!target_column) {
+			throw new Error("Target column not found");
+		}
+
+		await prisma.$transaction(async (tx) => {
+			/* Move the task to the new column */
+			await tx.task.update({
+				where: { id: task_id },
+				data: { columnId: new_column_id }
+			});
+
+			/* Remove task from old column's taskOrder */
+			await tx.column.update({
+				where: { id: old_column_id },
+				data: { taskOrder: task.column.taskOrder.filter((id) => id !== task_id) }
+			});
+
+			/* Append task to new column's taskOrder */
+			await tx.column.update({
+				where: { id: new_column_id },
+				data: { taskOrder: { push: task_id } }
+			});
+		});
 	});

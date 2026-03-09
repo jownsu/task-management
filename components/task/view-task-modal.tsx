@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 
 /* COMPONENTS */
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import ActionOptions from "@/components/actions-dropdown";
 import { Checkbox } from "@/components/ui/checkbox";
 import { DialogDescription } from "@/components/ui/dialog";
@@ -12,11 +13,14 @@ import { DialogDescription } from "@/components/ui/dialog";
 /* STORE */
 import { useTaskStore } from "@/store/task.store";
 
+/* QUERIES */
+import { useGetBoard } from "@/hooks/queries/board.query";
+
 /* HOOKS */
 import { useSelectedTask } from "@/hooks/use-selected-task";
 
 /* MUTATIONS */
-import { useUpdateSubtask } from "@/hooks/mutations/task.mutation";
+import { useUpdateSubtask, useUpdateTaskStatus } from "@/hooks/mutations/task.mutation";
 
 /* UTILITIES */
 import { cn } from "@/lib/utils";
@@ -25,11 +29,33 @@ const ViewTaskModal = () => {
 	const { board_id } = useParams() as { board_id: string };
 
 	const setModal = useTaskStore((state) => state.setModal);
+	const setSelectedTask = useTaskStore((state) => state.setSelectedTask);
 	const modals = useTaskStore((state) => state.modals);
 	const selected_task = useSelectedTask();
 	const sub_tasks = selected_task?.subtasks ?? [];
+	const { board } = useGetBoard(board_id);
 
 	const { updateSubtask } = useUpdateSubtask();
+	const { updateTaskStatus } = useUpdateTaskStatus();
+
+	/**
+	 * DOCU: Moves the task to a different column. <br>
+	 * Triggered: When the status dropdown value is changed. <br>
+	 * Last Updated: March 09, 2026
+	 * @author Jhones
+	 */
+	const onStatusChange = (new_column_id: string) => {
+		if (selected_task && new_column_id !== selected_task.column_id) {
+			updateTaskStatus({
+				board_id,
+				task_id: selected_task.id,
+				old_column_id: selected_task.column_id,
+				new_column_id
+			});
+
+			setSelectedTask(selected_task.id, new_column_id);
+		}
+	};
 
 	/**
 	 * DOCU: Toggles the completion status of a subtask. <br>
@@ -103,6 +129,22 @@ const ViewTaskModal = () => {
 								</label>
 							))}
 						</div>
+					</div>
+
+					<div className="grid gap-2">
+						<label className="text-medium-grey t-[12] font-bold leading-none">Column</label>
+						<Select value={selected_task?.column_id} onValueChange={onStatusChange}>
+							<SelectTrigger className="w-full">
+								<SelectValue placeholder="Select Status" />
+							</SelectTrigger>
+							<SelectContent>
+								{board?.columns?.map((column) => (
+									<SelectItem key={column.id} value={column.id}>
+										{column.name}
+									</SelectItem>
+								))}
+							</SelectContent>
+						</Select>
 					</div>
 				</div>
 			</DialogContent>

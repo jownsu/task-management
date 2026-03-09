@@ -1,11 +1,11 @@
 /* ACTIONS */
-import { createTaskAction, deleteTaskAction, editTaskAction, updateSubtaskAction } from "@/actions/task.actions";
+import { createTaskAction, deleteTaskAction, editTaskAction, updateSubtaskAction, updateTaskStatusAction } from "@/actions/task.actions";
 
 /* UTILITIES */
 import { executeAction } from "@/lib/execute-action";
 
 /* SCHEMA */
-import { CreateTaskSchemaType, DeleteTaskSchemaType, EditTaskSchemaType, UpdateSubtaskSchemaType } from "@/schema/task-schema";
+import { CreateTaskSchemaType, DeleteTaskSchemaType, EditTaskSchemaType, UpdateSubtaskSchemaType, UpdateTaskStatusSchemaType } from "@/schema/task-schema";
 
 /* TYPES */
 import { Board, CallbackResponse } from "@/types";
@@ -187,4 +187,66 @@ export const useUpdateSubtask = (callback?: CallbackResponse) => {
 	});
 
 	return { updateSubtask, ...rest };
+};
+
+/**
+ * DOCU: Will move a task from one column to another. <br>
+ * Triggered: On changing the status dropdown in view task modal. <br>
+ * Last Updated: March 09, 2026
+ * @author Jhones
+ */
+export const useUpdateTaskStatus = (callback?: CallbackResponse) => {
+	const queryClient = useQueryClient();
+
+	const { mutate: updateTaskStatus, ...rest } = useMutation({
+		mutationFn: (payload: UpdateTaskStatusSchemaType) => executeAction(updateTaskStatusAction(payload)),
+		onMutate: async (payload) => {
+			await queryClient.cancelQueries({ queryKey: [...CACHE_KEY_BOARD, payload.board_id] });
+
+			const previous_board = queryClient.getQueryData<Board>([...CACHE_KEY_BOARD, payload.board_id]);
+
+			queryClient.setQueryData<Board>([...CACHE_KEY_BOARD, payload.board_id], (board) => {
+				if (!board) return board;
+
+				/* Find the task being moved */
+				const source_column = board.columns?.find((col) => col.id === payload.old_column_id);
+				const task = source_column?.tasks?.find((t) => t.id === payload.task_id);
+
+				if (!task) return board;
+
+				return {
+					...board,
+					columns: board.columns?.map((column) => {
+						if (column.id === payload.old_column_id) {
+							return {
+								...column,
+								taskOrder: column.taskOrder.filter((id) => id !== payload.task_id),
+								tasks: column.tasks?.filter((t) => t.id !== payload.task_id)
+							};
+						}
+						if (column.id === payload.new_column_id) {
+							return {
+								...column,
+								taskOrder: [...column.taskOrder, payload.task_id],
+								tasks: [...(column.tasks || []), task]
+							};
+						}
+						return column;
+					})
+				};
+			});
+
+			return { previous_board };
+		},
+		onError: (_, payload, context) => {
+			if (context?.previous_board) {
+				queryClient.setQueryData<Board>([...CACHE_KEY_BOARD, payload.board_id], context.previous_board);
+			}
+		},
+		onSuccess: () => {
+			callback?.onSuccess?.();
+		}
+	});
+
+	return { updateTaskStatus, ...rest };
 };
