@@ -1,11 +1,11 @@
 /* ACTIONS */
-import { createTaskAction, deleteTaskAction, editTaskAction } from "@/actions/task.actions";
+import { createTaskAction, deleteTaskAction, editTaskAction, updateSubtaskAction } from "@/actions/task.actions";
 
 /* UTILITIES */
 import { executeAction } from "@/lib/execute-action";
 
 /* SCHEMA */
-import { CreateTaskSchemaType, DeleteTaskSchemaType, EditTaskSchemaType } from "@/schema/task-schema";
+import { CreateTaskSchemaType, DeleteTaskSchemaType, EditTaskSchemaType, UpdateSubtaskSchemaType } from "@/schema/task-schema";
 
 /* TYPES */
 import { Board, CallbackResponse } from "@/types";
@@ -131,4 +131,60 @@ export const useDeleteTask = (callback?: CallbackResponse) => {
 	});
 
 	return { deleteTask, ...rest };
+};
+
+/**
+ * DOCU: Will update the completion status of a subtask. <br>
+ * Triggered: On toggling a subtask checkbox in view task modal. <br>
+ * Last Updated: March 09, 2026
+ * @author Jhones
+ */
+export const useUpdateSubtask = (callback?: CallbackResponse) => {
+	const queryClient = useQueryClient();
+
+	const { mutate: updateSubtask, ...rest } = useMutation({
+		mutationFn: (payload: UpdateSubtaskSchemaType) => executeAction(updateSubtaskAction(payload)),
+		onMutate: async (payload) => {
+			await queryClient.cancelQueries({ queryKey: [...CACHE_KEY_BOARD, payload.board_id] });
+
+			const previous_board = queryClient.getQueryData<Board>([...CACHE_KEY_BOARD, payload.board_id]);
+
+			queryClient.setQueryData<Board>([...CACHE_KEY_BOARD, payload.board_id], (board) => {
+				if (!board) return board;
+
+				return {
+					...board,
+					columns: board.columns?.map((column) => ({
+						...column,
+						tasks: column.id === payload.column_id
+							? column.tasks?.map((task) =>
+								task.id === payload.task_id
+									? {
+										...task,
+										subtasks: task.subtasks.map((subtask) =>
+											subtask.id === payload.subtask_id
+												? { ...subtask, isCompleted: payload.isCompleted }
+												: subtask
+										)
+									}
+									: task
+							)
+							: column.tasks
+					}))
+				};
+			});
+
+			return { previous_board };
+		},
+		onError: (_, payload, context) => {
+			if (context?.previous_board) {
+				queryClient.setQueryData<Board>([...CACHE_KEY_BOARD, payload.board_id], context.previous_board);
+			}
+		},
+		onSuccess: () => {
+			callback?.onSuccess?.();
+		}
+	});
+
+	return { updateSubtask, ...rest };
 };

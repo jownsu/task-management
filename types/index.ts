@@ -24,11 +24,3 @@ export type Task = Pick<PrismaTask, "id" | "title" | "subtaskOrder"> & {
 	description: string;
 	subtasks: Subtask[];
 };
-
-export interface UpdateSubTaskPayload {
-	board_id: string;
-	column_id: string;
-	task_id: string;
-	subtask_id: string;
-	isCompleted: boolean;
-}

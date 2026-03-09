@@ -50,9 +50,18 @@ export const delete_task_schema = z.object({
 	id: z.string()
 });
 
+export const update_subtask_schema = z.object({
+	board_id: z.string(),
+	column_id: z.string(),
+	task_id: z.string(),
+	subtask_id: z.string(),
+	isCompleted: z.boolean()
+});
+
 export type TaskSchemaType = z.infer<typeof task_schema>;
 export type CreateTaskSchemaType = z.infer<typeof create_task_schema>;
 export type EditTaskSchemaType = z.infer<typeof edit_task_schema>;
 export type DeleteTaskSchemaType = z.infer<typeof delete_task_schema>;
 export type ViewTaskSchemaType = z.infer<typeof view_task_schema>;
+export type UpdateSubtaskSchemaType = z.infer<typeof update_subtask_schema>;
 

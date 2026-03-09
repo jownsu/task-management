@@ -5,7 +5,7 @@ import prisma from "@/lib/prisma";
 import { authActionClient } from "@/lib/safe-action";
 
 /* SCHEMA */
-import { create_task_schema, delete_task_schema, edit_task_schema } from "@/schema/task-schema";
+import { create_task_schema, delete_task_schema, edit_task_schema, update_subtask_schema } from "@/schema/task-schema";
 
 /* TYPES */
 import { Subtask } from "@/types";
@@ -215,4 +215,38 @@ export const deleteTaskAction = authActionClient
 				data: { taskOrder: task.column.taskOrder.filter((task_id) => task_id !== id) }
 			});
 		});
+	});
+
+/**
+ * DOCU: Updates the completion status of a subtask. <br>
+ * Triggered: On toggling a subtask checkbox in view task modal. <br>
+ * Last Updated: March 09, 2026
+ * @author Jhones
+ */
+export const updateSubtaskAction = authActionClient
+	.schema(update_subtask_schema)
+	.action(async ({ parsedInput, ctx }) => {
+		const { subtask_id, task_id, board_id, isCompleted } = parsedInput;
+
+		/* Verify the subtask belongs to a task in a board owned by the current user */
+		const subtask = await prisma.subtask.findFirst({
+			where: {
+				id: subtask_id,
+				taskId: task_id,
+				task: { column: { board: { id: board_id, userId: ctx.userId } } }
+			},
+			select: { id: true }
+		});
+
+		if (!subtask) {
+			throw new Error("Subtask not found");
+		}
+
+		const updated_subtask = await prisma.subtask.update({
+			where: { id: subtask_id },
+			data: { isCompleted },
+			select: { id: true, title: true, isCompleted: true }
+		});
+
+		return updated_subtask;
 	});

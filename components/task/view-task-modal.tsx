@@ -3,9 +3,6 @@
 /* NEXT */
 import { useParams } from "next/navigation";
 
-/* REACT */
-import { useEffect, useState } from "react";
-
 /* COMPONENTS */
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import ActionOptions from "@/components/actions-dropdown";
@@ -18,11 +15,8 @@ import { useTaskStore } from "@/store/task.store";
 /* HOOKS */
 import { useSelectedTask } from "@/hooks/use-selected-task";
 
-/* TYPES */
-import { Subtask } from "@/types";
-
 /* MUTATIONS */
-import { useUpdateSubtask } from "@/hooks/mutations/subtask.mutation";
+import { useUpdateSubtask } from "@/hooks/mutations/task.mutation";
 
 /* UTILITIES */
 import { cn } from "@/lib/utils";
@@ -33,36 +27,23 @@ const ViewTaskModal = () => {
 	const setModal = useTaskStore((state) => state.setModal);
 	const modals = useTaskStore((state) => state.modals);
 	const selected_task = useSelectedTask();
+	const sub_tasks = selected_task?.subtasks ?? [];
 
-	const [sub_tasks, setSubTasks] = useState<Subtask[]>([]);
-
-	const { updateSubtask } = useUpdateSubtask()
-
-	useEffect(() => {
-		if(selected_task){
-			setSubTasks(selected_task.subtasks);
-		}
-	}, [selected_task]);
+	const { updateSubtask } = useUpdateSubtask();
 
 	/**
-	 * DOCU: Updates the subtasks and current status when the selected task changes. <br>
-	 * Triggered: When the selected task changes. <br>
+	 * DOCU: Toggles the completion status of a subtask. <br>
+	 * Triggered: When a subtask checkbox is clicked. <br>
 	 */
-	const onToggleSubtask = (subtask: Subtask) => {
-		setSubTasks((prev_tasks) =>
-			prev_tasks.map((prev_task) =>
-				prev_task.id === subtask.id ? { ...prev_task, isCompleted: !prev_task.isCompleted } : prev_task
-			)
-		);
-
+	const onToggleSubtask = (subtask_id: string, isCompleted: boolean) => {
 		if(selected_task){
 			updateSubtask({
 				board_id,
 				column_id: selected_task.column_id,
 				task_id: selected_task.id,
-				subtask_id: subtask.id,
-				isCompleted: !subtask.isCompleted
-			})
+				subtask_id,
+				isCompleted: !isCompleted
+			});
 		}
 	}
 
@@ -102,12 +83,12 @@ const ViewTaskModal = () => {
 									onClick={(event) => {
 										event.preventDefault();
 										event.stopPropagation();
-										onToggleSubtask(subtask);
+										onToggleSubtask(subtask.id, subtask.isCompleted);
 									}}
 									onKeyDown={(event) => {
 										if (event.key === "Enter" || event.key === " ") {
 											event.preventDefault();
-											onToggleSubtask(subtask);
+											onToggleSubtask(subtask.id, subtask.isCompleted);
 										}
 									}}
 								>
