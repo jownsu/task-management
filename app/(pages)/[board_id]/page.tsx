@@ -1,5 +1,6 @@
 /* COMPONENTS */
 import ColumnList from "@/components/columns/column-list";
+import CreateColumnModal from "@/components/columns/create-column-modal";
 import CreateTaskModal from "@/components/task/create-task-modal";
 import MainContainer from "@/components/main-container";
 import EditBoardmodal from "@/components/board/edit-board-modal";
@@ -33,6 +34,7 @@ const TaskPage = async ({ params }: Props) => {
 					<ColumnList />
 
 					{/* MODALS */}
+					<CreateColumnModal />
 					<CreateTaskModal />
 					<EditBoardmodal />
 					<DeleteBoardModal />
