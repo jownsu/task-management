@@ -224,9 +224,14 @@ const CreateTaskModal = () => {
 							/>
 						</FormItem>
 
-						<Button type="submit" className="w-full" disabled={isPending}>
-							{isPending ? "Creating..." : "Create Task"}
-						</Button>
+						<div className="flex flex-col gap-[12]">
+							<Button type="submit" className="w-full" disabled={isPending}>
+								{isPending ? "Creating..." : "Create Task"}
+							</Button>
+							<Button type="button" variant="secondary" className="w-full" disabled={isPending} onClick={() => setModal("add_task", false)}>
+								Cancel
+							</Button>
+						</div>
 					</form>
 				</Form>
 			</DialogContent>

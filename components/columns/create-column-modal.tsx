@@ -93,13 +93,18 @@ const CreateColumnModal = () => {
 							)}
 						/>
 
-						<Button
-							type="submit"
-							className="w-full"
-							disabled={isPending}
-						>
-							{isPending ? "Creating column..." : "Create New Column"}
-						</Button>
+						<div className="flex flex-col gap-[12]">
+							<Button
+								type="submit"
+								className="w-full"
+								disabled={isPending}
+							>
+								{isPending ? "Creating column..." : "Create New Column"}
+							</Button>
+							<Button type="button" variant="secondary" className="w-full" disabled={isPending} onClick={() => setModal("add_column", false)}>
+								Cancel
+							</Button>
+						</div>
 					</form>
 				</Form>
 			</DialogContent>

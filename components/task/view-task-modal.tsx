@@ -8,6 +8,7 @@ import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import ActionOptions from "@/components/actions-dropdown";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Button } from "@/components/ui/button";
 import { DialogDescription } from "@/components/ui/dialog";
 
 /* STORE */
@@ -143,6 +144,10 @@ const ViewTaskModal = () => {
 							</SelectContent>
 						</Select>
 					</div>
+
+					<Button variant="secondary" className="w-full" onClick={() => setModal("view_task", false)}>
+						Close
+					</Button>
 				</div>
 			</DialogContent>
 		</Dialog>

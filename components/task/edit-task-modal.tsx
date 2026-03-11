@@ -104,7 +104,7 @@ const EditTaskModal = () => {
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [modals.edit_task]);
-	
+
 	return (
 		<Dialog
 			open={modals.edit_task}
@@ -195,9 +195,14 @@ const EditTaskModal = () => {
 							</div>
 						</FormItem>
 
-						<Button type="submit" className="w-full" disabled={isPending}>
-							{isPending ? "Saving..." : "Save Changes"}
-						</Button>
+						<div className="flex flex-col gap-[12]">
+							<Button type="submit" className="w-full" disabled={isPending}>
+								{isPending ? "Saving..." : "Save Changes"}
+							</Button>
+							<Button type="button" variant="secondary" className="w-full" disabled={isPending} onClick={() => setModal("edit_task", false)}>
+								Cancel
+							</Button>
+						</div>
 					</form>
 				</Form>
 			</DialogContent>

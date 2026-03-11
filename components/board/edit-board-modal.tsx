@@ -69,10 +69,10 @@ const EditBoardmodal = () => {
 			form.reset({
 				id: selected_board.id,
 				name: selected_board.name,
-				columns: selected_board.columns?.map(column => ({ 
-					id: column.id, 
-					name: column.name, 
-					is_new: false 
+				columns: selected_board.columns?.map(column => ({
+					id: column.id,
+					name: column.name,
+					is_new: false
 				}))
 			});
 		}
@@ -127,7 +127,7 @@ const EditBoardmodal = () => {
 													floating_error
 												/>
 												{
-													column.is_new 
+													column.is_new
 													? (
 														<button
 															type="button"
@@ -175,18 +175,23 @@ const EditBoardmodal = () => {
 							</div>
 						</FormItem>
 
-						<Button 
-							type="submit" 
-							className="w-full"
-							disabled={isPending}
-						>
-							{isPending ? "Saving..." : "Save Changes"}
-						</Button>
+						<div className="flex flex-col gap-[12]">
+							<Button
+								type="submit"
+								className="w-full"
+								disabled={isPending}
+							>
+								{isPending ? "Saving..." : "Save Changes"}
+							</Button>
+							<Button type="button" variant="secondary" className="w-full" disabled={isPending} onClick={() => setModal("edit_board", false)}>
+								Cancel
+							</Button>
+						</div>
 					</form>
 				</Form>
 			</DialogContent>
 
-			<DeleteColumnModal 
+			<DeleteColumnModal
 				open={open_delete_column_modal}
 				onOpenChange={setDeleteColumnModal}
 				selected_column={selected_column}

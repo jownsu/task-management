@@ -142,13 +142,18 @@ const CreateBoardmodal = () => {
 							</div>
 						</FormItem>
 
-						<Button 
-							type="submit" 
-							className="w-full"
-							disabled={isPending}
-						>
-							{isPending ? "Creating board..." : "Create New Board"}
-						</Button>
+						<div className="flex flex-col gap-[12]">
+							<Button
+								type="submit"
+								className="w-full"
+								disabled={isPending}
+							>
+								{isPending ? "Creating board..." : "Create New Board"}
+							</Button>
+							<Button type="button" variant="secondary" className="w-full" disabled={isPending} onClick={() => setModal("add_board", false)}>
+								Cancel
+							</Button>
+						</div>
 					</form>
 				</Form>
 			</DialogContent>
