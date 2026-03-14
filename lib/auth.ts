@@ -2,7 +2,6 @@
 import NextAuth from "next-auth";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import Google from "next-auth/providers/google";
-import GitHubProvider from "next-auth/providers/github";
 import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 
@@ -15,9 +14,18 @@ import { login_schema } from "@/schema/auth-schema";
 export const { handlers, auth, signIn, signOut } = NextAuth({
 	adapter: PrismaAdapter(prisma),
 	session: { strategy: "jwt" },
+	pages: {
+		error: "/auth/error",
+	},
 	providers: [
-		Google,
-		GitHubProvider,
+		Google({
+			clientId: process.env["GOOGLE_CLIENT_ID"]!,
+			clientSecret: process.env["GOOGLE_CLIENT_SECRET"]!,
+			allowDangerousEmailAccountLinking: true,
+			authorization: {
+				params: { prompt: "select_account" },
+			},
+		}),
 		Credentials({
 			credentials: {
 				email: { label: "Email", type: "email" },
@@ -61,7 +69,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 			},
 		}),
 	],
-	trustHost: true,
 	callbacks: {
 		/**
 		 * DOCU: Attaches user ID to the JWT token. <br>
