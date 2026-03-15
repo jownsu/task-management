@@ -5,7 +5,7 @@ import prisma from "@/lib/prisma";
 import { authActionClient } from "@/lib/safe-action";
 
 /* SCHEMA */
-import { create_task_schema, delete_task_schema, edit_task_schema, update_subtask_schema, update_task_column_schema } from "@/schema/task-schema";
+import { create_task_schema, delete_task_schema, edit_task_schema, reorder_task_schema, update_subtask_schema, update_task_column_schema } from "@/schema/task-schema";
 
 /* TYPES */
 import { Subtask } from "@/types";
@@ -310,5 +310,40 @@ export const updateTaskColumnAction = authActionClient
 				where: { id: new_column_id },
 				data: { taskOrder: { push: task_id } }
 			});
+		});
+	});
+
+/**
+ * DOCU: Reorders tasks within a column by updating the taskOrder array. <br>
+ * Triggered: When a task is dropped after dragging within the same column. <br>
+ * Last Updated: March 15, 2026
+ * @author Jhones
+ */
+export const reorderTaskAction = authActionClient
+	.schema(reorder_task_schema)
+	.action(async ({ parsedInput, ctx }) => {
+		const { board_id, column_id, source_index, destination_index } = parsedInput;
+
+		/* Verify that the column belongs to a board owned by the current user */
+		const column = await prisma.column.findFirst({
+			where: {
+				id: column_id,
+				board: { id: board_id, userId: ctx.userId }
+			},
+			select: { taskOrder: true }
+		});
+
+		if (!column) {
+			throw new Error("Column not found");
+		}
+
+		/* Reorder the taskOrder array */
+		const reordered_task_order = [...column.taskOrder];
+		const [moved_id] = reordered_task_order.splice(source_index, 1);
+		reordered_task_order.splice(destination_index, 0, moved_id);
+
+		await prisma.column.update({
+			where: { id: column_id },
+			data: { taskOrder: reordered_task_order }
 		});
 	});

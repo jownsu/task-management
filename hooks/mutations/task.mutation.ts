@@ -1,11 +1,11 @@
 /* ACTIONS */
-import { createTaskAction, deleteTaskAction, editTaskAction, updateSubtaskAction, updateTaskColumnAction } from "@/actions/task.actions";
+import { createTaskAction, deleteTaskAction, editTaskAction, reorderTaskAction, updateSubtaskAction, updateTaskColumnAction } from "@/actions/task.actions";
 
 /* UTILITIES */
 import { executeAction } from "@/lib/execute-action";
 
 /* SCHEMA */
-import { CreateTaskSchemaType, DeleteTaskSchemaType, EditTaskSchemaType, UpdateSubtaskSchemaType, UpdateTaskColumnSchemaType } from "@/schema/task-schema";
+import { CreateTaskSchemaType, DeleteTaskSchemaType, EditTaskSchemaType, ReorderTaskSchemaType, UpdateSubtaskSchemaType, UpdateTaskColumnSchemaType } from "@/schema/task-schema";
 
 /* TYPES */
 import { Board, CallbackResponse } from "@/types";
@@ -249,4 +249,58 @@ export const useUpdateTaskColumn = (callback?: CallbackResponse) => {
 	});
 
 	return { updateTaskColumn, ...rest };
+};
+
+/**
+ * DOCU: Will reorder tasks within the same column via drag and drop. <br>
+ * Triggered: When a task is dropped after dragging in the board view. <br>
+ * Last Updated: March 15, 2026
+ * @author Jhones
+ */
+export const useReorderTask = (callback?: CallbackResponse) => {
+	const queryClient = useQueryClient();
+
+	const { mutate: reorderTask, ...rest } = useMutation({
+		mutationFn: (payload: ReorderTaskSchemaType) => executeAction(reorderTaskAction(payload)),
+		onMutate: async (payload) => {
+			await queryClient.cancelQueries({ queryKey: [...CACHE_KEY_BOARD, payload.board_id] });
+
+			const previous_board = queryClient.getQueryData<Board>([...CACHE_KEY_BOARD, payload.board_id]);
+
+			queryClient.setQueryData<Board>([...CACHE_KEY_BOARD, payload.board_id], (board) => {
+				if (!board) return board;
+
+				return {
+					...board,
+					columns: board.columns?.map((column) => {
+						if (column.id !== payload.column_id) return column;
+
+						const reordered_tasks = [...(column.tasks || [])];
+						const [moved_task] = reordered_tasks.splice(payload.source_index, 1);
+						reordered_tasks.splice(payload.destination_index, 0, moved_task);
+
+						const reordered_task_order = [...column.taskOrder];
+						const [moved_id] = reordered_task_order.splice(payload.source_index, 1);
+						reordered_task_order.splice(payload.destination_index, 0, moved_id);
+
+						return { ...column, tasks: reordered_tasks, taskOrder: reordered_task_order };
+					})
+				};
+			});
+
+			return { previous_board };
+		},
+		onError: (_, payload, context) => {
+			if (context?.previous_board) {
+				queryClient.setQueryData<Board>([...CACHE_KEY_BOARD, payload.board_id], context.previous_board);
+			}
+
+			callback?.onError?.();
+		},
+		onSuccess: () => {
+			callback?.onSuccess?.();
+		}
+	});
+
+	return { reorderTask, ...rest };
 };
