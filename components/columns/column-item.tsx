@@ -2,18 +2,28 @@
 import TaskItem from "@/components/columns/task-item";
 
 /* PLUGINS */
-import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
+import { useDroppable } from "@dnd-kit/react";
+import { CollisionPriority } from "@dnd-kit/abstract";
 
 /* TYPES */
 import { Column } from "@/types";
+
+/* UTILITIES */
+import { cn } from "@/lib/utils";
 
 interface Props {
 	column: Column;
 }
 
 const ColumnItem = ({ column }: Props) => {
-	const task_ids = column?.tasks?.map((task) => task.id) || [];
 
+	const {ref} = useDroppable({
+		id: column.id,
+		type: "column",
+		accept: "task",
+		collisionPriority: CollisionPriority.Low,
+	});
+  
 	return (
 		<div className="shrink-0 w-[280] flex flex-col gap-[24]">
 			<div className="flex items-center gap-[12]">
@@ -22,18 +32,20 @@ const ColumnItem = ({ column }: Props) => {
 					{column.name} ({column?.tasks?.length})
 				</span>
 			</div>
-
-			<SortableContext items={task_ids} strategy={verticalListSortingStrategy}>
-				<div className="flex flex-col gap-[20] min-h-[1]">
-					{column?.tasks?.map((task) => (
-						<TaskItem
-							key={task.id}
-							task={task}
-							column_id={column.id}
-						/>
-					))}
-				</div>
-			</SortableContext>
+	
+			<div 
+				ref={ref}
+				className={cn("flex flex-col gap-[20] min-h-full h-full rounded-lg")} 
+			>
+				{column?.tasks?.map((task, index) => (
+					<TaskItem
+						key={task.id}
+						task={task}
+						column_id={column.id}
+						index={index}
+					/>
+				))}
+			</div>
 		</div>
 	);
 };

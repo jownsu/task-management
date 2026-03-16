@@ -1,8 +1,11 @@
 "use client";
 
+/* REACT */
+import { useRef, useState } from "react";
+
 /* PLUGINS */
-import { useSortable } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
+import { useSortable } from "@dnd-kit/react/sortable";
+import { MdDragIndicator } from "react-icons/md";
 
 /* STORE */
 import { useTaskStore } from "@/store/task.store";
@@ -10,39 +13,50 @@ import { useTaskStore } from "@/store/task.store";
 /* TYPES */
 import { Task } from "@/types";
 
+/* UTILITIES */
+import { cn } from "@/lib/utils";
+
 interface Props {
 	column_id: string;
 	task: Task;
+	index: number;
 }
 
-const TaskItem = ({ task, column_id }: Props) => {
+const TaskItem = ({ task, column_id, index }: Props) => {
 	const setModal = useTaskStore((state) => state.setModal);
 	const setSelectedTask = useTaskStore((state) => state.setSelectedTask);
-	const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: task.id, data: { column_id } });
-
-	const style = {
-		transform: CSS.Translate.toString(transform),
-		transition
-	};
-
+	const [element, setElement] = useState<Element | null>(null);
+	const handleRef = useRef<HTMLButtonElement | null>(null);
+	const { isDragging } = useSortable({ 
+		id: task.id, 
+		index, 
+		element, 
+		handle: handleRef, 
+		type: "task",
+		accept: "task",
+		group: column_id
+	});
 	return (
-		<button
-			ref={setNodeRef}
-			style={style}
-			{...attributes}
-			{...listeners}
-			className="bg-foreground rounded-lg px-[16] py-[24] text-left flex flex-col gap-[8] drop-shadow-md cursor-pointer group w-full !h-fit"
-			type="button"
-			onClick={() => {
-				setModal("view_task", true);
-				setSelectedTask(task.id, column_id);
-			}}
-		>
-			<p className="text-h-md text-black dark:text-white group-hover:text-primary dark:group-hover:text-primary">
-				{task.title}
-			</p>
-			<p className="text-b-md text-medium-grey">{task?.subtasks.filter(subtask => subtask.isCompleted).length} of {task?.subtasks?.length} subtasks</p>
-		</button>
+		<div key={task.id} ref={setElement} className="bg-foreground rounded-lg flex items-center drop-shadow-md px-[16] py-[24] group">
+			<button
+				className="group flex cursor-pointer flex-col gap-[8] text-left flex-1"
+				style={{ opacity: isDragging ? 0.5 : undefined }}
+				type="button"
+				onClick={() => {
+					setModal("view_task", true);
+					setSelectedTask(task.id, column_id);
+				}}
+			>
+				<p className="text-h-md group-hover:text-primary dark:group-hover:text-primary text-black dark:text-white">{task.title}</p>
+				<p className="text-b-md text-medium-grey">
+					{task?.subtasks.filter((subtask) => subtask.isCompleted).length} of {task?.subtasks?.length} subtasks
+				</p>
+			</button>
+
+			<button ref={handleRef} type="button" className={cn("cursor-grab text-primary/70 transition-opacity", isDragging ? "opacity-100" : "opacity-0 group-hover:opacity-100")}>
+				<MdDragIndicator size={20} />
+			</button>
+		</div>
 	);
 };
 
