@@ -12,7 +12,7 @@ import EmptyBoard from "@/components/columns/empty-board";
 import CreateColumnItem from "@/components/columns/create-column-item";
 
 /* PLUGINS */
-import { DragDropProvider } from "@dnd-kit/react";
+import { DragDropProvider, DragOverlay } from "@dnd-kit/react";
 import { move } from "@dnd-kit/helpers";
 
 /* QUERIES */
@@ -20,6 +20,7 @@ import { useGetBoard } from "@/hooks/queries/board.query";
 
 /* TYPES */
 import { Column, Task } from "@/types";
+import TaskItem from "./task-item";
 
 const ColumnList = () => {
 
@@ -58,6 +59,19 @@ const ColumnList = () => {
 		return <EmptyBoard />;
 	}
 
+	/**
+	 * DOCU: Finds a task by its ID across all columns for the drag overlay. <br>
+	 * Triggered: When DragOverlay renders during an active drag. <br>
+	 * Last Updated: March 17, 2026
+	 * @author Jhones
+	 */
+	const findTaskById = (id: string): Task | undefined => {
+		for (const column of columns) {
+			const task = column.tasks?.find((t) => t.id === id);
+			if (task) return task;
+		}
+	};
+
 	return (
 		<DragDropProvider onDragOver={handleDragOver}>
 			<div className="h-full flex gap-[24]">
@@ -66,6 +80,20 @@ const ColumnList = () => {
 				))}
 				<CreateColumnItem />
 			</div>
+			<DragOverlay dropAnimation={null}>
+				{(source) => {
+					const task = findTaskById(source.id as string);
+					if (!task) return null;
+
+					return (
+						<TaskItem
+							task={{...task, id: "0"}}
+							column_id={""}
+							index={0}
+						/>
+					);
+				}}
+			</DragOverlay>
 		</DragDropProvider>
 	);
 };

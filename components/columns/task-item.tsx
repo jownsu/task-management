@@ -37,10 +37,9 @@ const TaskItem = ({ task, column_id, index }: Props) => {
 		group: column_id
 	});
 	return (
-		<div key={task.id} ref={setElement} className="bg-foreground rounded-lg flex items-center drop-shadow-md px-[16] py-[24] group">
+		<div key={task.id} ref={setElement} className={cn("bg-foreground rounded-lg flex items-center drop-shadow-md px-[16] py-[24] group", isDragging && "border-dashed border-2 border-primary !bg-transparent")}>
 			<button
-				className="group flex cursor-pointer flex-col gap-[8] text-left flex-1"
-				style={{ opacity: isDragging ? 0.5 : undefined }}
+				className={cn("group flex cursor-pointer flex-col gap-[8] text-left flex-1", isDragging && "opacity-0")}
 				type="button"
 				onClick={() => {
 					setModal("view_task", true);
@@ -53,7 +52,7 @@ const TaskItem = ({ task, column_id, index }: Props) => {
 				</p>
 			</button>
 
-			<button ref={handleRef} type="button" className={cn("cursor-grab text-primary/70 transition-opacity", isDragging ? "opacity-100" : "opacity-0 group-hover:opacity-100")}>
+			<button ref={handleRef} type="button" className={cn("cursor-grab text-primary/70 transition-opacity", isDragging ? "opacity-0" : "opacity-100 group-hover:opacity-100")}>
 				<MdDragIndicator size={20} />
 			</button>
 		</div>
