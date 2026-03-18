@@ -8,8 +8,6 @@ import DeleteBoardModal from "@/components/board/delete-board-modal";
 import ViewTaskModal from "@/components/task/view-task-modal";
 import EditTaskModal from "@/components/task/edit-task-modal";
 import DeleteTaskModal from "@/components/task/delete-task-modal";
-import Navbar from "@/components/navigation/navbar";
-
 /* PLUGINS */
 import { HydrationBoundary } from "@tanstack/react-query";
 
@@ -28,7 +26,6 @@ const TaskPage = async ({ params }: Props) => {
 
 	return (
 		<HydrationBoundary state={prefetched_board}>
-			<Navbar />
 			<MainContainer>
 				<div className="h-full overflow-auto p-[24]">
 					<ColumnList />

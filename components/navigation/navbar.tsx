@@ -43,31 +43,33 @@ const Navbar = () => {
 				>
 					<IconKanban />
 				</div>
-				{isLoading ? <Skeleton className="w-64 h-8" /> : <h1 className="!text-h-xl self-center">{board?.name}</h1>}
+				{board_id && (isLoading ? <Skeleton className="w-64 h-8" /> : <h1 className="!text-h-xl self-center">{board?.name}</h1>)}
 			</div>
 
 			<NavMobile />
 
-			<div className="flex items-center gap-[8] self-center md:gap-[16]">
-				<Button type="button" className="text-md h-[32] w-[48] md:h-[48] md:w-fit md:!px-[24]" onClick={() => setTaskModal("add_task", true)}>
-					<FaPlus className="size-[12]" /> <span className="hidden md:block">Add New Task</span>
-				</Button>
-				<ActionOptions
-					name="Board"
-					onDeleteClick={() => {
-						if (board) {
-							setBoardModal("delete_board", true);
-							setSelectedBoard(board);
-						}
-					}}
-					onEditClick={() => {
-						if (board) {
-							setBoardModal("edit_board", true);
-							setSelectedBoard(board);
-						}
-					}}
-				/>
-			</div>
+			{board_id && (
+				<div className="flex items-center gap-[8] self-center md:gap-[16]">
+					<Button type="button" className="text-md h-[32] w-[48] md:h-[48] md:w-fit md:!px-[24]" onClick={() => setTaskModal("add_task", true)}>
+						<FaPlus className="size-[12]" /> <span className="hidden md:block">Add New Task</span>
+					</Button>
+					<ActionOptions
+						name="Board"
+						onDeleteClick={() => {
+							if (board) {
+								setBoardModal("delete_board", true);
+								setSelectedBoard(board);
+							}
+						}}
+						onEditClick={() => {
+							if (board) {
+								setBoardModal("edit_board", true);
+								setSelectedBoard(board);
+							}
+						}}
+					/>
+				</div>
+			)}
 		</nav>
 	);
 };
