@@ -16,12 +16,10 @@ import {
 
 /* PLUGINS */
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
-import { signOut } from "next-auth/react";
 import { useMediaQuery } from "react-responsive";
 
 /* ICONS */
 import { FaChevronDown } from "react-icons/fa";
-import { LuLogOut } from "react-icons/lu";
 
 /* QUERIES */
 import { useGetBoard } from "@/hooks/queries/board.query";
@@ -50,14 +48,6 @@ const BoardsDropdown = () => {
 						<SheetTitle>Boards List</SheetTitle>
 					</VisuallyHidden>
 					<BoardsList />
-						<button
-							type="button"
-							className="flex items-center gap-[12] h-[48] pl-[24] rounded-r-full text-medium-grey !text-h-md hover:bg-destructive/10 hover:text-destructive mr-[24] cursor-pointer w-full"
-							onClick={() => signOut({ redirectTo: "/login" })}
-						>
-							<LuLogOut size={16} />
-							Logout
-						</button>
 					<SheetFooter className="flex-col gap-[8] px-[24] pb-[16]">
 
 						<ThemeSwitch />

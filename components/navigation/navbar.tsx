@@ -6,6 +6,7 @@ import { useParams } from "next/navigation";
 /* COMPONENTS */
 import ActionOptions from "@/components/actions-dropdown";
 import NavMobile from "@/components/navigation/nav-mobile";
+import ProfileDropdown from "@/components/navigation/profile-dropdown";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -48,28 +49,31 @@ const Navbar = () => {
 
 			<NavMobile />
 
-			{board_id && (
-				<div className="flex items-center gap-[8] self-center md:gap-[16]">
-					<Button type="button" className="text-md h-[32] w-[48] md:h-[48] md:w-fit md:!px-[24]" onClick={() => setTaskModal("add_task", true)}>
-						<FaPlus className="size-[12]" /> <span className="hidden md:block">Add New Task</span>
-					</Button>
-					<ActionOptions
-						name="Board"
-						onDeleteClick={() => {
-							if (board) {
-								setBoardModal("delete_board", true);
-								setSelectedBoard(board);
-							}
-						}}
-						onEditClick={() => {
-							if (board) {
-								setBoardModal("edit_board", true);
-								setSelectedBoard(board);
-							}
-						}}
-					/>
-				</div>
-			)}
+			<div className="flex items-center gap-[8] self-center md:gap-[16]">
+				{board_id && (
+					<>
+						<Button type="button" className="text-md h-[32] w-[48] md:h-[48] md:w-fit md:!px-[24]" onClick={() => setTaskModal("add_task", true)}>
+							<FaPlus className="size-[12]" /> <span className="hidden md:block">Add New Task</span>
+						</Button>
+						<ActionOptions
+							name="Board"
+							onDeleteClick={() => {
+								if (board) {
+									setBoardModal("delete_board", true);
+									setSelectedBoard(board);
+								}
+							}}
+							onEditClick={() => {
+								if (board) {
+									setBoardModal("edit_board", true);
+									setSelectedBoard(board);
+								}
+							}}
+						/>
+					</>
+				)}
+				<ProfileDropdown />
+			</div>
 		</nav>
 	);
 };

@@ -1,6 +1,5 @@
 /* COMPONENTS */
 import CreateBoardmodal from "@/components/board/create-board-modal";
-import Navbar from "@/components/navigation/navbar";
 import SideNav from "@/components/navigation/side-nav";
 
 /* PLUGINS */
@@ -18,7 +17,6 @@ export default async function RootLayout({
 
 	return (
 		<HydrationBoundary state={prefetched_boards}>
-			<Navbar />
 			<div className="flex h-full flex-1">
 				<SideNav />
 				{children}
