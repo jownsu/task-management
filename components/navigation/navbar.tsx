@@ -31,8 +31,8 @@ const Navbar = () => {
 	const setSelectedBoard = useBoardStore((state) => state.setSelectedBoard);
 	const setTaskModal = useTaskStore((state) => state.setModal);
 
-	const { board_id } = useParams() as { board_id: string };
-	const { board, isLoading } = useGetBoard(board_id);
+	const { board_id } = useParams() as { board_id?: string };
+	const { board, isLoading } = useGetBoard(board_id as string, { enabled: !!board_id });
 
 	return (
 		<nav className="bg-foreground fixed z-[99] flex h-[64] w-full justify-between px-[24] md:h-[81] lg:h-[96]">

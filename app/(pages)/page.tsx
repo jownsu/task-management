@@ -2,6 +2,7 @@
 
 /* COMPONENTS */
 import MainContainer from "@/components/main-container";
+import Navbar from "@/components/navigation/navbar";
 import { Button } from "@/components/ui/button";
 
 /* STORE */
@@ -26,6 +27,8 @@ const HomePage = () => {
 	const has_boards = boards && boards.length > 0;
 
 	return (
+		<>
+		<Navbar />
 		<MainContainer className="flex h-screen items-center justify-center">
 			<div className="flex flex-col items-center gap-[24] px-[24] text-center">
 				<div className="flex size-[80] items-center justify-center rounded-full bg-primary/10">
@@ -62,6 +65,7 @@ const HomePage = () => {
 				)}
 			</div>
 		</MainContainer>
+		</>
 	);
 };
 
