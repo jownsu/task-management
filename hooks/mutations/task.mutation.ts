@@ -8,7 +8,7 @@ import { executeAction } from "@/lib/execute-action";
 import { CreateTaskSchemaType, DeleteTaskSchemaType, EditTaskSchemaType, ReorderTaskSchemaType, UpdateSubtaskSchemaType, UpdateTaskColumnSchemaType } from "@/schema/task-schema";
 
 /* TYPES */
-import { Board, CallbackResponse } from "@/types";
+import { Board, CallbackResponse, Task } from "@/types";
 
 /* CONSTANTS */
 import { CACHE_KEY_BOARD } from "@/constants/query-keys";
@@ -252,9 +252,9 @@ export const useUpdateTaskColumn = (callback?: CallbackResponse) => {
 };
 
 /**
- * DOCU: Will reorder tasks within the same column via drag and drop. <br>
+ * DOCU: Will reorder tasks within a column or move a task across columns via drag and drop. <br>
  * Triggered: When a task is dropped after dragging in the board view. <br>
- * Last Updated: March 15, 2026
+ * Last Updated: March 20, 2026
  * @author Jhones
  */
 export const useReorderTask = (callback?: CallbackResponse) => {
@@ -270,20 +270,44 @@ export const useReorderTask = (callback?: CallbackResponse) => {
 			queryClient.setQueryData<Board>([...CACHE_KEY_BOARD, payload.board_id], (board) => {
 				if (!board) return board;
 
+				/* Find which column currently holds the task in the cache */
+				const source_column = board.columns?.find((col) => col.tasks?.some((t) => t.id === payload.task_id));
+				const task = source_column?.tasks?.find((t) => t.id === payload.task_id);
+
+				if (!source_column || !task) return board;
+
+				const is_same_column = source_column.id === payload.updated_column_id;
+
 				return {
 					...board,
 					columns: board.columns?.map((column) => {
-						if (column.id !== payload.column_id) return column;
+						/* Same-column reorder: reorder tasks to match updated_task_order */
+						if (is_same_column && column.id === payload.updated_column_id) {
+							const task_map = new Map(column.tasks?.map((t) => [t.id, t]));
+							const reordered_tasks = payload.updated_task_order.map((id) => task_map.get(id)).filter(Boolean) as Task[];
 
-						const reordered_tasks = [...(column.tasks || [])];
-						const [moved_task] = reordered_tasks.splice(payload.source_index, 1);
-						reordered_tasks.splice(payload.destination_index, 0, moved_task);
+							return { ...column, taskOrder: payload.updated_task_order, tasks: reordered_tasks };
+						}
 
-						const reordered_task_order = [...column.taskOrder];
-						const [moved_id] = reordered_task_order.splice(payload.source_index, 1);
-						reordered_task_order.splice(payload.destination_index, 0, moved_id);
+						/* Cross-column: remove task from source column */
+						if (!is_same_column && column.id === source_column.id) {
+							return {
+								...column,
+								taskOrder: column.taskOrder.filter((id) => id !== payload.task_id),
+								tasks: column.tasks?.filter((t) => t.id !== payload.task_id)
+							};
+						}
 
-						return { ...column, tasks: reordered_tasks, taskOrder: reordered_task_order };
+						/* Cross-column: add task to destination column in correct position */
+						if (!is_same_column && column.id === payload.updated_column_id) {
+							const all_tasks = [...(column.tasks || []), task];
+							const task_map = new Map(all_tasks.map((t) => [t.id, t]));
+							const reordered_tasks = payload.updated_task_order.map((id) => task_map.get(id)).filter(Boolean) as Task[];
+
+							return { ...column, taskOrder: payload.updated_task_order, tasks: reordered_tasks };
+						}
+
+						return column;
 					})
 				};
 			});

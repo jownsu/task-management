@@ -314,36 +314,70 @@ export const updateTaskColumnAction = authActionClient
 	});
 
 /**
- * DOCU: Reorders tasks within a column by updating the taskOrder array. <br>
- * Triggered: When a task is dropped after dragging within the same column. <br>
- * Last Updated: March 15, 2026
+ * DOCU: Reorders tasks within a column or moves a task across columns by updating taskOrder arrays. <br>
+ * Triggered: When a task is dropped after dragging in the board view. <br>
+ * Last Updated: March 20, 2026
  * @author Jhones
  */
 export const reorderTaskAction = authActionClient
 	.schema(reorder_task_schema)
 	.action(async ({ parsedInput, ctx }) => {
-		const { board_id, column_id, source_index, destination_index } = parsedInput;
+		const { board_id, task_id, updated_column_id, updated_task_order } = parsedInput;
 
-		/* Verify that the column belongs to a board owned by the current user */
-		const column = await prisma.column.findFirst({
+		/* Verify the task belongs to a board owned by the current user */
+		const task = await prisma.task.findFirst({
 			where: {
-				id: column_id,
-				board: { id: board_id, userId: ctx.userId }
+				id: task_id,
+				column: { board: { id: board_id, userId: ctx.userId } }
 			},
-			select: { taskOrder: true }
+			select: { id: true, columnId: true, column: { select: { taskOrder: true } } }
 		});
 
-		if (!column) {
-			throw new Error("Column not found");
+		if (!task) {
+			throw new Error("Task not found");
 		}
 
-		/* Reorder the taskOrder array */
-		const reordered_task_order = [...column.taskOrder];
-		const [moved_id] = reordered_task_order.splice(source_index, 1);
-		reordered_task_order.splice(destination_index, 0, moved_id);
+		/* Same-column reorder */
+		if (task.columnId === updated_column_id) {
+			await prisma.column.update({
+				where: { id: updated_column_id },
+				data: { taskOrder: updated_task_order }
+			});
+			return;
+		}
 
-		await prisma.column.update({
-			where: { id: column_id },
-			data: { taskOrder: reordered_task_order }
+		/* Verify the target column belongs to the same board */
+		const target_column = await prisma.column.findFirst({
+			where: {
+				id: updated_column_id,
+				boardId: board_id,
+				board: { userId: ctx.userId }
+			},
+			select: { id: true }
+		});
+
+		if (!target_column) {
+			throw new Error("Target column not found");
+		}
+
+		/* Cross-column move */
+		await prisma.$transaction(async (tx) => {
+			/* Move the task to the new column */
+			await tx.task.update({
+				where: { id: task_id },
+				data: { columnId: updated_column_id }
+			});
+
+			/* Remove task from old column's taskOrder */
+			await tx.column.update({
+				where: { id: task.columnId },
+				data: { taskOrder: task.column.taskOrder.filter((id) => id !== task_id) }
+			});
+
+			/* Set the new column's taskOrder */
+			await tx.column.update({
+				where: { id: updated_column_id },
+				data: { taskOrder: updated_task_order }
+			});
 		});
 	});

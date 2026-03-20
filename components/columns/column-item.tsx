@@ -13,9 +13,10 @@ import { cn } from "@/lib/utils";
 
 interface Props {
 	column: Column;
+	is_reordering?: boolean;
 }
 
-const ColumnItem = ({ column }: Props) => {
+const ColumnItem = ({ column, is_reordering }: Props) => {
 
 	const {ref} = useDroppable({
 		id: column.id,
@@ -43,6 +44,7 @@ const ColumnItem = ({ column }: Props) => {
 						task={task}
 						column_id={column.id}
 						index={index}
+						disabled={is_reordering}
 					/>
 				))}
 			</div>

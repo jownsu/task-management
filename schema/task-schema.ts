@@ -76,9 +76,9 @@ export type UpdateTaskColumnSchemaType = z.infer<typeof update_task_column_schem
 
 export const reorder_task_schema = z.object({
 	board_id: z.string(),
-	column_id: z.string(),
-	source_index: z.number(),
-	destination_index: z.number()
+	task_id: z.string(),
+	updated_column_id: z.string(),
+	updated_task_order: z.array(z.string())
 });
 
 export type ReorderTaskSchemaType = z.infer<typeof reorder_task_schema>;

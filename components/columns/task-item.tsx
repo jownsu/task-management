@@ -20,24 +20,26 @@ interface Props {
 	column_id: string;
 	task: Task;
 	index: number;
+	disabled?: boolean;
 }
 
-const TaskItem = ({ task, column_id, index }: Props) => {
+const TaskItem = ({ task, column_id, index, disabled }: Props) => {
 	const setModal = useTaskStore((state) => state.setModal);
 	const setSelectedTask = useTaskStore((state) => state.setSelectedTask);
 	const [element, setElement] = useState<Element | null>(null);
 	const handleRef = useRef<HTMLButtonElement | null>(null);
-	const { isDragging } = useSortable({ 
-		id: task.id, 
-		index, 
-		element, 
-		handle: handleRef, 
+	const { isDragging } = useSortable({
+		id: task.id,
+		index,
+		element,
+		handle: handleRef,
 		type: "task",
 		accept: "task",
-		group: column_id
+		group: column_id,
+		disabled
 	});
 	return (
-		<div key={task.id} ref={setElement} className={cn("bg-foreground rounded-lg flex items-center drop-shadow-md px-[16] py-[24] group", isDragging && "border-dashed border-2 border-primary !bg-transparent")}>
+		<div key={task.id} ref={setElement} className={cn("bg-foreground rounded-lg flex items-center drop-shadow-md px-[16] py-[24] group transition-opacity", isDragging && "border-dashed border-2 border-primary !bg-transparent", disabled && "opacity-50 pointer-events-none")}>
 			<button
 				className={cn("group flex cursor-pointer flex-col gap-[8] text-left flex-1", isDragging && "opacity-0")}
 				type="button"
