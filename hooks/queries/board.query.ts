@@ -35,12 +35,12 @@ export const prefetchBoard = async (board_id: string) => {
  * Last Updated: December 30, 2024
  * @author Jhones
  */
-export const useGetBoard = (board_id: string, options?: { enabled?: boolean }) => {
+export const useGetBoard = (board_id?: string) => {
 	const { data: board, ...rest } = useQuery({
 		queryKey: [...CACHE_KEY_BOARD, board_id],
-		queryFn: () => getBoardById(board_id),
+		queryFn: () => getBoardById(board_id!),
 		staleTime: STALE_TIME,
-		enabled: options?.enabled
+		enabled: !!board_id
 	});
 
 	return { board, ...rest };

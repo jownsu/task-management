@@ -20,7 +20,7 @@ export const useSelectedTask = () => {
 	const params = useParams();
 	const board_id = params.board_id as string | undefined;
 	const selected_task_id = useTaskStore((state) => state.selected_task_id);
-	const { board } = useGetBoard(board_id ?? "", { enabled: !!board_id });
+	const { board } = useGetBoard(board_id);
 
 	return useMemo(() => {
 		if (!board || !selected_task_id) return null;
