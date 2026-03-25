@@ -1,5 +1,8 @@
 "use client";
 
+/* NEXT */
+import Link from "next/link";
+
 /* REACT */
 import { useState } from "react";
 
@@ -114,6 +117,12 @@ const SocialsLogin = () => {
 					<FcGoogle size={20} />
 					Log in with Google
 				</Button>
+				<p className="text-medium-grey !text-b-lg mt-[8] text-center">
+					Don&apos;t have an account?{" "}
+					<Link href="/signup" className="text-primary hover:text-primary-foreground font-bold">
+						Sign up
+					</Link>
+				</p>
 			</CardContent>
 		</Card>
 	);
