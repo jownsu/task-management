@@ -7,6 +7,7 @@ import Providers from "@/components/providers";
 /* PLUGINS */
 import { Plus_Jakarta_Sans } from "next/font/google";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { Toaster } from "sonner";
 
 /* STYLES */
 import "./globals.css";
@@ -35,6 +36,7 @@ export default function RootLayout({
 				<Providers>
 					{children}
 					<ReactQueryDevtools initialIsOpen={false} />
+					<Toaster richColors position="bottom-right" />
 				</Providers>
 			</body>
 		</html>

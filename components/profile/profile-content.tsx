@@ -1,7 +1,7 @@
 "use client";
 
-/* REACT */
-import { useState } from "react";
+/* PLUGINS */
+import { toast } from "sonner";
 
 /* COMPONENTS */
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -49,9 +49,6 @@ const getInitials = (name: string) => {
  */
 const ProfileContent = () => {
 	const { user_profile } = useGetUserProfile();
-	const [name_success, setNameSuccess] = useState(false);
-	const [password_success, setPasswordSuccess] = useState(false);
-	const [password_error, setPasswordError] = useState<string | null>(null);
 
 	const name_form = useForm<UpdateNameSchema>({
 		resolver: zodResolver(update_name_schema),
@@ -71,21 +68,17 @@ const ProfileContent = () => {
 
 	const { updateName, isPending: is_name_pending } = useUpdateUserName({
 		onSuccess: () => {
-			setNameSuccess(true);
-			setTimeout(() => setNameSuccess(false), 3000);
+			toast.success("Name updated successfully!");
 		},
 	});
 
 	const { changeUserPassword, isPending: is_password_pending } = useChangePassword({
 		onSuccess: () => {
-			setPasswordSuccess(true);
-			setPasswordError(null);
+			toast.success("Password changed successfully!");
 			password_form.reset();
-			setTimeout(() => setPasswordSuccess(false), 3000);
 		},
 		onError: (error_msg) => {
-			setPasswordError(error_msg || "Failed to change password");
-			setPasswordSuccess(false);
+			toast.error(error_msg || "Failed to change password");
 		},
 	});
 
@@ -96,7 +89,6 @@ const ProfileContent = () => {
 	 * @author Jhones
 	 */
 	const onNameSubmit: SubmitHandler<UpdateNameSchema> = (data) => {
-		setNameSuccess(false);
 		updateName(data);
 	};
 
@@ -107,8 +99,6 @@ const ProfileContent = () => {
 	 * @author Jhones
 	 */
 	const onPasswordSubmit: SubmitHandler<ChangePasswordSchema> = (data) => {
-		setPasswordError(null);
-		setPasswordSuccess(false);
 		changeUserPassword(data);
 	};
 
@@ -185,8 +175,6 @@ const ProfileContent = () => {
 								<Input type="email" value={user_profile.email} disabled className="opacity-60" />
 							</FormItem>
 
-							{name_success && <p className="!text-b-sm text-emerald-500">Name updated successfully!</p>}
-
 							<Button type="submit" className="w-full" disabled={is_name_pending}>
 								{is_name_pending ? "Saving..." : "Save Changes"}
 							</Button>
@@ -236,9 +224,6 @@ const ProfileContent = () => {
 										</FormItem>
 									)}
 								/>
-
-								{password_error && <p className="!text-b-sm text-destructive">{password_error}</p>}
-								{password_success && <p className="!text-b-sm text-emerald-500">Password changed successfully!</p>}
 
 								<Button type="submit" className="w-full" disabled={is_password_pending}>
 									{is_password_pending ? "Updating..." : "Update Password"}

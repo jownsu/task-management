@@ -1,5 +1,8 @@
 "use client";
 
+/* NEXT */
+import Link from "next/link";
+
 /* PLUGINS */
 import { signOut, useSession } from "next-auth/react";
 import { ClassNameValue } from "tailwind-merge";
@@ -9,7 +12,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 /* ICONS */
-import { LuLogOut } from "react-icons/lu";
+import { LuLogOut, LuUser } from "react-icons/lu";
 
 /* UTILITIES */
 import { cn } from "@/lib/utils";
@@ -60,6 +63,14 @@ const UserProfile = ({ className }: Props) => {
 				</button>
 			</PopoverTrigger>
 			<PopoverContent side="top" align="start" sideOffset={8} className="pointer-events-auto z-[200] w-(--radix-popover-trigger-width) min-w-[160] p-[4] border border-lines">
+				<Link
+					href="/profile"
+					className="!text-b-md flex w-full items-center gap-[8] rounded-md px-[12] py-[8] transition-colors hover:bg-primary/10 dark:hover:bg-white/5"
+				>
+					<LuUser size={16} />
+					Profile
+				</Link>
+				<div className="my-[4] border-b border-lines" />
 				<button
 					type="button"
 					className="!text-b-md flex w-full cursor-pointer items-center gap-[8] rounded-md px-[12] py-[8] text-destructive transition-colors hover:bg-destructive/10"
