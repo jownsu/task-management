@@ -35,7 +35,7 @@ const ViewTaskModal = () => {
 	const sub_tasks = selected_task?.subtasks ?? [];
 	const { board } = useGetBoard(board_id);
 
-	const { updateSubtask } = useUpdateSubtask();
+	const { updateSubtask, isPending: is_updating_subtask } = useUpdateSubtask();
 	const { updateTaskColumn } = useUpdateTaskColumn();
 
 	/**
@@ -101,7 +101,7 @@ const ViewTaskModal = () => {
 							{sub_tasks.map((subtask) => (
 								<label
 									key={subtask.id}
-									className={"px-[12] py-[16] bg-background flex gap-[16] cursor-pointer"}
+									className={cn("px-[12] py-[16] bg-background flex gap-[16] cursor-pointer", { "pointer-events-none opacity-50": is_updating_subtask })}
 									tabIndex={0}
 									aria-label={subtask.title}
 									onClick={(event) => {
