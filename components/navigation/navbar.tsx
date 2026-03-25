@@ -6,7 +6,6 @@ import { useParams } from "next/navigation";
 /* COMPONENTS */
 import ActionOptions from "@/components/actions-dropdown";
 import NavMobile from "@/components/navigation/nav-mobile";
-import ProfileDropdown from "@/components/navigation/profile-dropdown";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -72,7 +71,6 @@ const Navbar = () => {
 						/>
 					</>
 				)}
-				<ProfileDropdown />
 			</div>
 		</nav>
 	);

@@ -4,6 +4,7 @@
 import KanbanIcon from "@/components/kanban-icon";
 import BoardsList from "@/components/navigation/boards-list";
 import ThemeSwitch from "@/components/navigation/theme-switch";
+import UserProfile from "@/components/navigation/user-profile";
 
 /* STORE */
 import { useNavigationStore } from "@/store/navigation.store";
@@ -42,6 +43,8 @@ const SideNav = () => {
 				<IconHide />
 				Hide Sidebar
 			</button>
+
+			<UserProfile className="mx-[12]" />
 
 			<button
 				type="button"

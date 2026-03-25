@@ -6,6 +6,7 @@ import { useParams } from "next/navigation";
 /* COMPONENTS */
 import BoardsList from "@/components/navigation/boards-list";
 import ThemeSwitch from "@/components/navigation/theme-switch";
+import UserProfile from "@/components/navigation/user-profile";
 import {
 	Sheet,
 	SheetContent,
@@ -49,8 +50,8 @@ const BoardsDropdown = () => {
 					</VisuallyHidden>
 					<BoardsList />
 					<SheetFooter className="flex-col gap-[8] px-[24] pb-[16]">
-
 						<ThemeSwitch />
+						<UserProfile />
 					</SheetFooter>
 				</div>
 			</SheetContent>
