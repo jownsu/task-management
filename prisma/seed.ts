@@ -58,6 +58,8 @@ async function main() {
 		where: { userId: user.id },
 	});
 
+	const board_ids: string[] = [];
+
 	/* Seed boards with columns, tasks, and subtasks */
 	for (const board_data of seedData.boards as BoardData[]) {
 		const board = await prisma.board.create({
@@ -125,8 +127,15 @@ async function main() {
 			data: { columnOrder: column_ids }
 		});
 
+		board_ids.push(board.id);
 		console.log(`✅ Created board: ${board_data.name}`);
 	}
+
+	/* Set the board order on the user */
+	await prisma.user.update({
+		where: { id: user.id },
+		data: { boardOrder: board_ids }
+	});
 
 	console.log("🌱 Seed completed successfully!");
 }

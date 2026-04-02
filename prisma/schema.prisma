@@ -22,7 +22,8 @@ model User {
   createdAt DateTime @default(now()) @db.Timestamp(6)
   updatedAt DateTime @updatedAt @db.Timestamp(6)
 
-  boards    Board[]
+  boardOrder String[] @default([]) @db.Uuid
+  boards     Board[]
 }
  
 model Account {

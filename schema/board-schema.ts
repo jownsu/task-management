@@ -23,6 +23,11 @@ export const delete_board_schema = z.object({
 	id: z.string()
 });
 
+export const reorder_board_schema = z.object({
+	updated_board_order: z.array(z.string())
+});
+
 export type AddBoardSchema = z.infer<typeof add_board_schema>;
 export type EditBoardSchema = z.infer<typeof edit_board_schema>;
 export type DeleteBoardSchema = z.infer<typeof delete_board_schema>;
+export type ReorderBoardSchema = z.infer<typeof reorder_board_schema>;

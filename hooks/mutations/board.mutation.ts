@@ -2,13 +2,13 @@
 import { useRouter } from "next/navigation";
 
 /* ACTIONS */
-import { createBoardAction, deleteBoardAction, editBoardAction } from "@/actions/board.actions";
+import { createBoardAction, deleteBoardAction, editBoardAction, reorderBoardAction } from "@/actions/board.actions";
 
 /* UTILITIES */
 import { executeAction } from "@/lib/execute-action";
 
 /* SCHEMA */
-import { AddBoardSchema, DeleteBoardSchema, EditBoardSchema } from "@/schema/board-schema";
+import { AddBoardSchema, DeleteBoardSchema, EditBoardSchema, ReorderBoardSchema } from "@/schema/board-schema";
 
 /* TYPES */
 import { Board, CallbackResponse } from "@/types";
@@ -116,4 +116,44 @@ export const useDeleteBoard = (callback?: CallbackResponse) => {
 	});
 
 	return { deleteBoard, ...rest };
+};
+
+/**
+ * DOCU: Will reorder boards in the sidebar with optimistic cache update. <br>
+ * Triggered: When a user finishes dragging a board in the sidebar list. <br>
+ * Last Updated: April 02, 2026
+ * @author Jhones
+ */
+export const useReorderBoard = (callback?: CallbackResponse) => {
+	const queryClient = useQueryClient();
+
+	const { mutate: reorderBoard, ...rest } = useMutation({
+		mutationFn: (payload: ReorderBoardSchema) => executeAction(reorderBoardAction(payload)),
+		onMutate: async (payload) => {
+			await queryClient.cancelQueries({ queryKey: CACHE_KEY_BOARDS });
+
+			const previous_boards = queryClient.getQueryData<Omit<Board, "columns" | "columnOrder">[]>(CACHE_KEY_BOARDS);
+
+			queryClient.setQueryData<Omit<Board, "columns" | "columnOrder">[]>(CACHE_KEY_BOARDS, (boards) => {
+				if (!boards) return boards;
+
+				const board_map = new Map(boards.map((board) => [board.id, board]));
+				return payload.updated_board_order.map((id) => board_map.get(id)).filter(Boolean) as Omit<Board, "columns" | "columnOrder">[];
+			});
+
+			return { previous_boards };
+		},
+		onError: (_, __, context) => {
+			if (context?.previous_boards) {
+				queryClient.setQueryData(CACHE_KEY_BOARDS, context.previous_boards);
+			}
+
+			callback?.onError?.();
+		},
+		onSuccess: () => {
+			callback?.onSuccess?.();
+		}
+	});
+
+	return { reorderBoard, ...rest };
 };
