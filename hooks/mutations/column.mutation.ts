@@ -15,6 +15,7 @@ import { CACHE_KEY_BOARD } from "@/constants/query-keys";
 
 /* PLUGINS */
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 
 /**
  * DOCU: Will create a new column for the current board. <br>
@@ -41,6 +42,9 @@ export const useCreateColumn = (callback?: CallbackResponse<Column>) => {
 
 				callback?.onSuccess?.(response);
 			}
+		},
+		onError: () => {
+			toast.error("Something went wrong. Please try again.");
 		}
 	});
 
@@ -67,6 +71,9 @@ export const useDeleteColumn = (callback?: CallbackResponse) => {
 			});
 
 			callback?.onSuccess?.();
+		},
+		onError: () => {
+			toast.error("Something went wrong. Please try again.");
 		}
 	});
 

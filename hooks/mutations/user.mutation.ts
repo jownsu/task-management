@@ -15,6 +15,7 @@ import { CACHE_KEY_USER } from "@/constants/query-keys";
 
 /* PLUGINS */
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 
 /**
  * DOCU: Will update the current user's display name. <br>
@@ -32,6 +33,7 @@ export const useUpdateUserName = (callback?: CallbackResponse) => {
 			callback?.onSuccess?.();
 		},
 		onError: (error) => {
+			toast.error("Something went wrong. Please try again.");
 			callback?.onError?.(error.message);
 		},
 	});
@@ -52,6 +54,7 @@ export const useChangePassword = (callback?: CallbackResponse) => {
 			callback?.onSuccess?.();
 		},
 		onError: (error) => {
+			toast.error("Something went wrong. Please try again.");
 			callback?.onError?.(error.message);
 		},
 	});
@@ -72,6 +75,7 @@ export const useDeleteAccount = (callback?: CallbackResponse) => {
 			callback?.onSuccess?.();
 		},
 		onError: (error) => {
+			toast.error("Something went wrong. Please try again.");
 			callback?.onError?.(error.message);
 		},
 	});

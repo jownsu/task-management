@@ -15,6 +15,7 @@ import { CACHE_KEY_BOARD } from "@/constants/query-keys";
 
 /* PLUGINS */
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 
 /**
  * DOCU: Will create a new task with its subtasks. <br>
@@ -48,6 +49,9 @@ export const useCreateTask = (callback?: CallbackResponse) => {
 			}
 
 			callback?.onSuccess?.();
+		},
+		onError: () => {
+			toast.error("Something went wrong. Please try again.");
 		}
 	});
 
@@ -91,6 +95,9 @@ export const useEditTask = (callback?: CallbackResponse) => {
 			}
 
 			callback?.onSuccess?.();
+		},
+		onError: () => {
+			toast.error("Something went wrong. Please try again.");
 		}
 	});
 
@@ -127,6 +134,9 @@ export const useDeleteTask = (callback?: CallbackResponse) => {
 			});
 
 			callback?.onSuccess?.();
+		},
+		onError: () => {
+			toast.error("Something went wrong. Please try again.");
 		}
 	});
 
@@ -180,6 +190,8 @@ export const useUpdateSubtask = (callback?: CallbackResponse) => {
 			if (context?.previous_board) {
 				queryClient.setQueryData<Board>([...CACHE_KEY_BOARD, payload.board_id], context.previous_board);
 			}
+
+			toast.error("Something went wrong. Please try again.");
 		},
 		onSuccess: () => {
 			callback?.onSuccess?.();
@@ -242,6 +254,8 @@ export const useUpdateTaskColumn = (callback?: CallbackResponse) => {
 			if (context?.previous_board) {
 				queryClient.setQueryData<Board>([...CACHE_KEY_BOARD, payload.board_id], context.previous_board);
 			}
+
+			toast.error("Something went wrong. Please try again.");
 		},
 		onSuccess: () => {
 			callback?.onSuccess?.();
@@ -319,6 +333,7 @@ export const useReorderTask = (callback?: CallbackResponse) => {
 				queryClient.setQueryData<Board>([...CACHE_KEY_BOARD, payload.board_id], context.previous_board);
 			}
 
+			toast.error("Something went wrong. Please try again.");
 			callback?.onError?.();
 		},
 		onSuccess: () => {

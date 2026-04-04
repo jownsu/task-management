@@ -18,6 +18,7 @@ import { CACHE_KEY_BOARD, CACHE_KEY_BOARDS } from "@/constants/query-keys";
 
 /* PLUGINS */
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 
 /**
  * DOCU: Will create a new board. <br>
@@ -43,6 +44,9 @@ export const useCreateBoard = (callback?: CallbackResponse<Board>) => {
 			}
 
 			callback?.onSuccess?.(response);
+		},
+		onError: () => {
+			toast.error("Something went wrong. Please try again.");
 		}
 	});
 
@@ -82,6 +86,9 @@ export const useEditBoard = (callback?: CallbackResponse) => {
 
 				callback?.onSuccess?.();
 			}
+		},
+		onError: () => {
+			toast.error("Something went wrong. Please try again.");
 		}
 	});
 
@@ -113,6 +120,9 @@ export const useDeleteBoard = (callback?: CallbackResponse) => {
 
 			callback?.onSuccess?.();
 		},
+		onError: () => {
+			toast.error("Something went wrong. Please try again.");
+		}
 	});
 
 	return { deleteBoard, ...rest };
@@ -148,6 +158,7 @@ export const useReorderBoard = (callback?: CallbackResponse) => {
 				queryClient.setQueryData(CACHE_KEY_BOARDS, context.previous_boards);
 			}
 
+			toast.error("Something went wrong. Please try again.");
 			callback?.onError?.();
 		},
 		onSuccess: () => {
