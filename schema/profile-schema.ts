@@ -22,3 +22,11 @@ export const change_password_schema = z
 	});
 
 export type ChangePasswordSchema = z.infer<typeof change_password_schema>;
+
+export const delete_account_schema = z.object({
+	confirmation_phrase: z.string().refine((value) => value === "Delete my account because I'm gay", {
+		message: "Phrase does not match",
+	}),
+});
+
+export type DeleteAccountSchema = z.infer<typeof delete_account_schema>;

@@ -8,6 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Form, FormField, FormItem, FormLabel } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import DangerZone from "@/components/profile/danger-zone";
 
 /* PLUGINS */
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -238,6 +239,9 @@ const ProfileContent = () => {
 					)}
 				</div>
 			</div>
+
+			{/* Danger Zone */}
+			<DangerZone />
 		</div>
 	);
 };

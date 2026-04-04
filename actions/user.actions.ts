@@ -8,7 +8,7 @@ import prisma from "@/lib/prisma";
 import { authActionClient, getAuthUser } from "@/lib/safe-action";
 
 /* SCHEMA */
-import { update_name_schema, change_password_schema } from "@/schema/profile-schema";
+import { update_name_schema, change_password_schema, delete_account_schema } from "@/schema/profile-schema";
 
 /* TYPES */
 import type { UserProfile } from "@/types";
@@ -118,6 +118,22 @@ export const changePassword = authActionClient
 		await prisma.user.update({
 			where: { id: ctx.userId },
 			data: { password: hashed_password },
+		});
+
+		return { success: true };
+	});
+
+/**
+ * DOCU: Permanently deletes the current user's account and all associated data. <br>
+ * Triggered: When the user confirms account deletion on the profile page. <br>
+ * Last Updated: April 04, 2026
+ * @author Jhones
+ */
+export const deleteAccount = authActionClient
+	.schema(delete_account_schema)
+	.action(async ({ ctx }) => {
+		await prisma.user.delete({
+			where: { id: ctx.userId },
 		});
 
 		return { success: true };
