@@ -99,7 +99,11 @@ const SocialsLogin = () => {
 							)}
 						/>
 
-						{error && <p className="text-destructive !text-b-lg text-center">{error}</p>}
+						<Link href="/forgot-password" className="text-primary hover:text-primary-foreground !text-b-lg self-end font-bold transition-colors">
+							Forgot password?
+						</Link>
+
+									{error && <p className="text-destructive !text-b-lg text-center">{error}</p>}
 
 						<Button type="submit" className="h-[53] w-full rounded-lg text-md" disabled={is_loading}>
 							{is_loading ? "Logging in..." : "Log in"}

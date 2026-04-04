@@ -15,5 +15,7 @@ const getEnvVar = (key: string): string => {
 
 export const ENV = {
 	DATABASE_URL: getEnvVar("DATABASE_URL"),
+	RESEND_API_KEY: getEnvVar("RESEND_API_KEY"),
+	NEXT_PUBLIC_APP_URL: getEnvVar("NEXT_PUBLIC_APP_URL"),
 	NODE_ENV: process.env.NODE_ENV || "development",
 } as const;
