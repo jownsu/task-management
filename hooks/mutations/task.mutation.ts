@@ -1,14 +1,14 @@
 /* ACTIONS */
-import { createTaskAction, deleteTaskAction, editTaskAction, reorderTaskAction, updateSubtaskAction, updateTaskColumnAction } from "@/actions/task.actions";
+import { createTaskAction, deleteTaskAction, editTaskAction, reorderSubtaskAction, reorderTaskAction, updateSubtaskAction, updateTaskColumnAction } from "@/actions/task.actions";
 
 /* UTILITIES */
 import { executeAction } from "@/lib/execute-action";
 
 /* SCHEMA */
-import { CreateTaskSchemaType, DeleteTaskSchemaType, EditTaskSchemaType, ReorderTaskSchemaType, UpdateSubtaskSchemaType, UpdateTaskColumnSchemaType } from "@/schema/task-schema";
+import { CreateTaskSchemaType, DeleteTaskSchemaType, EditTaskSchemaType, ReorderSubtaskSchemaType, ReorderTaskSchemaType, UpdateSubtaskSchemaType, UpdateTaskColumnSchemaType } from "@/schema/task-schema";
 
 /* TYPES */
-import { Board, CallbackResponse, Task } from "@/types";
+import { Board, CallbackResponse, Subtask, Task } from "@/types";
 
 /* CONSTANTS */
 import { CACHE_KEY_BOARD } from "@/constants/query-keys";
@@ -342,4 +342,59 @@ export const useReorderTask = (callback?: CallbackResponse) => {
 	});
 
 	return { reorderTask, ...rest };
+};
+
+/**
+ * DOCU: Will reorder subtasks within a task via drag and drop. <br>
+ * Triggered: When a subtask is dropped after dragging in the view task modal. <br>
+ * Last Updated: April 05, 2026
+ * @author Jhones
+ */
+export const useReorderSubtask = (callback?: CallbackResponse) => {
+	const queryClient = useQueryClient();
+
+	const { mutate: reorderSubtask, ...rest } = useMutation({
+		mutationFn: (payload: ReorderSubtaskSchemaType) => executeAction(reorderSubtaskAction(payload)),
+		onMutate: async (payload) => {
+			await queryClient.cancelQueries({ queryKey: [...CACHE_KEY_BOARD, payload.board_id] });
+
+			const previous_board = queryClient.getQueryData<Board>([...CACHE_KEY_BOARD, payload.board_id]);
+
+			queryClient.setQueryData<Board>([...CACHE_KEY_BOARD, payload.board_id], (board) => {
+				if (!board) return board;
+
+				return {
+					...board,
+					columns: board.columns?.map((column) => ({
+						...column,
+						tasks: column.id === payload.column_id
+							? column.tasks?.map((task) => {
+								if (task.id !== payload.task_id) return task;
+
+								const subtask_map = new Map(task.subtasks.map((s) => [s.id, s]));
+								const reordered_subtasks = payload.updated_subtask_order.map((id) => subtask_map.get(id)).filter(Boolean) as Subtask[];
+
+								return { ...task, subtaskOrder: payload.updated_subtask_order, subtasks: reordered_subtasks };
+							})
+							: column.tasks
+					}))
+				};
+			});
+
+			return { previous_board };
+		},
+		onError: (_, payload, context) => {
+			if (context?.previous_board) {
+				queryClient.setQueryData<Board>([...CACHE_KEY_BOARD, payload.board_id], context.previous_board);
+			}
+
+			toast.error("Something went wrong. Please try again.");
+			callback?.onError?.();
+		},
+		onSuccess: () => {
+			callback?.onSuccess?.();
+		}
+	});
+
+	return { reorderSubtask, ...rest };
 };

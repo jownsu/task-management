@@ -5,7 +5,7 @@ import prisma from "@/lib/prisma";
 import { authActionClient } from "@/lib/safe-action";
 
 /* SCHEMA */
-import { create_task_schema, delete_task_schema, edit_task_schema, reorder_task_schema, update_subtask_schema, update_task_column_schema } from "@/schema/task-schema";
+import { create_task_schema, delete_task_schema, edit_task_schema, reorder_subtask_schema, reorder_task_schema, update_subtask_schema, update_task_column_schema } from "@/schema/task-schema";
 
 /* TYPES */
 import { Subtask } from "@/types";
@@ -379,5 +379,35 @@ export const reorderTaskAction = authActionClient
 				where: { id: updated_column_id },
 				data: { taskOrder: updated_task_order }
 			});
+		});
+	});
+
+/**
+ * DOCU: Reorders subtasks within a task by updating the subtaskOrder array. <br>
+ * Triggered: When a subtask is dropped after dragging in the view task modal. <br>
+ * Last Updated: April 05, 2026
+ * @author Jhones
+ */
+export const reorderSubtaskAction = authActionClient
+	.schema(reorder_subtask_schema)
+	.action(async ({ parsedInput, ctx }) => {
+		const { board_id, task_id, updated_subtask_order } = parsedInput;
+
+		/* Verify the task belongs to a board owned by the current user */
+		const task = await prisma.task.findFirst({
+			where: {
+				id: task_id,
+				column: { board: { id: board_id, userId: ctx.userId } }
+			},
+			select: { id: true }
+		});
+
+		if (!task) {
+			throw new Error("Task not found");
+		}
+
+		await prisma.task.update({
+			where: { id: task_id },
+			data: { subtaskOrder: updated_subtask_order }
 		});
 	});

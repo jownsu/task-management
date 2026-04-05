@@ -83,3 +83,11 @@ export const reorder_task_schema = z.object({
 
 export type ReorderTaskSchemaType = z.infer<typeof reorder_task_schema>;
 
+export const reorder_subtask_schema = z.object({
+	board_id: z.string(),
+	column_id: z.string(),
+	task_id: z.string(),
+	updated_subtask_order: z.array(z.string())
+});
+
+export type ReorderSubtaskSchemaType = z.infer<typeof reorder_subtask_schema>;
