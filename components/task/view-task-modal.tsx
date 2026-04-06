@@ -14,6 +14,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { DialogDescription } from "@/components/ui/dialog";
 import SortableSubtaskField from "@/components/task/sortable-subtask-field";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 
 /* PLUGINS */
 import { DragDropProvider, DragOverlay } from "@dnd-kit/react";
@@ -160,9 +161,15 @@ const ViewTaskModal = () => {
 						/>
 					</div>
 
-					<DialogDescription className="!text-b-lg text-medium-grey">
-						{selected_task?.description}
-					</DialogDescription>
+					{selected_task?.description ? (
+						<DialogDescription className="!text-b-lg text-medium-grey">
+							{selected_task.description}
+						</DialogDescription>
+					) : (
+						<VisuallyHidden>
+							<DialogDescription>No description</DialogDescription>
+						</VisuallyHidden>
+					)}
 
 					{subtasks.length > 0 && <div className="grid gap-4">
 						<label className="text-medium-grey t-[12] font-bold leading-none">Subtasks ({subtasks.filter(subtask => subtask.isCompleted).length}/{subtasks.length})</label>
