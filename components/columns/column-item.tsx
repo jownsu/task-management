@@ -28,7 +28,7 @@ const ColumnItem = ({ column, is_reordering }: Props) => {
 	return (
 		<div className="shrink-0 w-[280] flex flex-col gap-[24]">
 			<div className="flex items-center gap-[12]">
-				<span className="size-[15] rounded-full bg-blue-500 block"></span>
+				<span className="size-[15] rounded-full block" style={{ backgroundColor: column.theme }}></span>
 				<span className="text-h-sm text-medium-grey uppercase">
 					{column.name} ({column?.tasks?.length})
 				</span>

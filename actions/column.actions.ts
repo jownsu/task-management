@@ -10,7 +10,7 @@ import { add_column_schema, delete_column_schema } from "@/schema/column-schema"
 /**
  * DOCU: Creates a new column for a board owned by the current user. <br>
  * Triggered: On submission of add column form. <br>
- * Last Updated: March 11, 2026
+ * Last Updated: April 06, 2026
  * @author Jhones
  */
 export const createColumnAction = authActionClient
@@ -27,9 +27,10 @@ export const createColumnAction = authActionClient
 			const new_column = await tx.column.create({
 				data: {
 					name: parsedInput.name,
+					theme: parsedInput.theme,
 					boardId: parsedInput.board_id
 				},
-				select: { id: true, name: true, taskOrder: true }
+				select: { id: true, name: true, theme: true, taskOrder: true }
 			});
 
 			await tx.board.update({

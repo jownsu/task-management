@@ -10,12 +10,13 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import DeleteColumnModal from "@/components/columns/delete-column-modal";
 import SortableColumnField from "@/components/board/sortable-column-field";
+import ColorPicker from "@/components/ui/color-picker";
 
 /* PLUGINS */
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DragDropProvider, DragOverlay } from "@dnd-kit/react";
 import { move } from "@dnd-kit/helpers";
-import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
+import { Controller, SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 
 /* SCHEMA */
 import { edit_board_schema, EditBoardSchema, MAX_COLUMNS } from "@/schema/board-schema";
@@ -31,8 +32,11 @@ import { FaPlus } from "react-icons/fa";
 import { IoIosClose } from "react-icons/io";
 import { MdDeleteOutline, MdDragIndicator } from "react-icons/md";
 
-/* CONSTANTS */
+/* TYPES */
 import { Column } from "@/types";
+
+/* CONSTANTS */
+import { DEFAULT_COLUMN_THEME } from "@/constants";
 
 const EditBoardmodal = () => {
 	const board_modals = useBoardStore((state) => state.modals);
@@ -124,6 +128,7 @@ const EditBoardmodal = () => {
 				columns: selected_board.columns?.map(column => ({
 					id: column.id,
 					name: column.name,
+					theme: column.theme,
 					is_new: false
 				}))
 			});
@@ -176,6 +181,18 @@ const EditBoardmodal = () => {
 													name={`columns.${field_index}.name`}
 													render={({ field }) => (
 														<>
+															<Controller
+																control={form.control}
+																name={`columns.${field_index}.theme`}
+																render={({ field: theme_field }) => (
+																	<ColorPicker
+																		value={theme_field.value || DEFAULT_COLUMN_THEME}
+																		onChange={theme_field.onChange}
+																		disabled={isPending}
+																		className="mx-[8]"
+																	/>
+																)}
+															/>
 															<Input
 																{...field}
 																type="text"
@@ -204,6 +221,7 @@ const EditBoardmodal = () => {
 																				setSelectedColumn({
 																					id: column.id,
 																					name: column.name,
+																					theme: form.getValues(`columns.${field_index}.theme`) || DEFAULT_COLUMN_THEME,
 																					taskOrder: [],
 																					index: field_index
 																				});
@@ -243,7 +261,7 @@ const EditBoardmodal = () => {
 									type="button"
 									variant="secondary"
 									className="mt-[12]"
-									onClick={() => append({ name: "", is_new: true })}
+									onClick={() => append({ name: "", theme: DEFAULT_COLUMN_THEME, is_new: true })}
 									disabled={isPending}
 								>
 									<FaPlus /> Add New Column

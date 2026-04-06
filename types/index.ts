@@ -15,7 +15,7 @@ export type Board = Pick<PrismaBoard, "id" | "name" | "columnOrder"> & {
 	columns?: Column[];
 };
 
-export type Column = Pick<PrismaColumn, "id" | "name" | "taskOrder"> & {
+export type Column = Pick<PrismaColumn, "id" | "name" | "theme" | "taskOrder"> & {
 	tasks?: Task[];
 };
 

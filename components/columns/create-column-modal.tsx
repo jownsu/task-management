@@ -11,13 +11,17 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Form, FormField, FormItem, FormLabel } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import ColorPicker from "@/components/ui/color-picker";
 
 /* PLUGINS */
 import { zodResolver } from "@hookform/resolvers/zod";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
 
 /* SCHEMA */
 import { AddColumnSchema, add_column_schema } from "@/schema/column-schema";
+
+/* CONSTANTS */
+import { DEFAULT_COLUMN_THEME } from "@/constants";
 
 /* STORE */
 import { useColumnStore } from "@/store/column.store";
@@ -34,7 +38,8 @@ const CreateColumnModal = () => {
 		resolver: zodResolver(add_column_schema),
 		defaultValues: {
 			board_id: "",
-			name: ""
+			name: "",
+			theme: DEFAULT_COLUMN_THEME
 		}
 	});
 
@@ -58,7 +63,7 @@ const CreateColumnModal = () => {
 
 	useEffect(() => {
 		if (modals.add_column) {
-			form.reset({ board_id, name: "" });
+			form.reset({ board_id, name: "", theme: DEFAULT_COLUMN_THEME });
 		}
 	}, [modals.add_column, form, board_id]);
 
@@ -83,12 +88,25 @@ const CreateColumnModal = () => {
 							render={({ field }) => (
 								<FormItem>
 									<FormLabel>Column Name</FormLabel>
-									<Input
-										{...field}
-										type="text"
-										placeholder="e.g. Todo"
-										error={errors.name?.message}
-									/>
+									<div className="flex items-center gap-[12]">
+										<Controller
+											control={form.control}
+											name="theme"
+											render={({ field: theme_field }) => (
+												<ColorPicker
+													value={theme_field.value || DEFAULT_COLUMN_THEME}
+													onChange={theme_field.onChange}
+													disabled={isPending}
+												/>
+											)}
+										/>
+										<Input
+											{...field}
+											type="text"
+											placeholder="e.g. Todo"
+											error={errors.name?.message}
+										/>
+									</div>
 								</FormItem>
 							)}
 						/>

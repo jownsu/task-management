@@ -183,3 +183,9 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+/* react-colorful overrides */
+.react-colorful {
+  width: 100% !important;
+  height: 150px !important;
+}

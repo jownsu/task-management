@@ -9,12 +9,13 @@ import { Form, FormField, FormItem, FormLabel } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import SortableColumnField from "@/components/board/sortable-column-field";
+import ColorPicker from "@/components/ui/color-picker";
 
 /* PLUGINS */
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DragDropProvider, DragOverlay } from "@dnd-kit/react";
 import { move } from "@dnd-kit/helpers";
-import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
+import { Controller, SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 
 /* SCHEMA */
 import { AddBoardSchema, add_board_schema, MAX_COLUMNS } from "@/schema/board-schema";
@@ -30,6 +31,9 @@ import { FaPlus } from "react-icons/fa";
 import { IoIosClose } from "react-icons/io";
 import { MdDragIndicator } from "react-icons/md";
 
+/* CONSTANTS */
+import { DEFAULT_COLUMN_THEME } from "@/constants";
+
 const CreateBoardmodal = () => {
 	const setModal = useBoardStore((state) => state.setModal);
 	const modals = useBoardStore((state) => state.modals);
@@ -39,8 +43,8 @@ const CreateBoardmodal = () => {
 		defaultValues: {
 			name: "",
 			columns: [
-				{ name: "Todo" },
-				{ name: "Doing" }
+				{ name: "Todo", theme: DEFAULT_COLUMN_THEME },
+				{ name: "Doing", theme: DEFAULT_COLUMN_THEME }
 			]
 		}
 	});
@@ -166,6 +170,18 @@ const CreateBoardmodal = () => {
 													name={`columns.${field_index}.name`}
 													render={({ field }) => (
 														<>
+															<Controller
+																control={form.control}
+																name={`columns.${field_index}.theme`}
+																render={({ field: theme_field }) => (
+																	<ColorPicker
+																		value={theme_field.value || DEFAULT_COLUMN_THEME}
+																		onChange={theme_field.onChange}
+																		disabled={isPending}
+																		className="mx-[8]"
+																	/>
+																)}
+															/>
 															<Input {...field} defaultValue={field.value} value={undefined} type="text" placeholder="e.g. Done" error={errors.columns?.[field_index]?.name?.message} floating_error />
 															<button type="button" className="cursor-pointer t-[32] hover:text-destructive text-medium-grey duration-200 translate-x-2.5" onClick={() => remove(field_index)}>
 																<IoIosClose />
@@ -195,7 +211,7 @@ const CreateBoardmodal = () => {
 							</DragDropProvider>
 
 							{columns.length < MAX_COLUMNS && (
-								<Button type="button" variant="secondary" className="mt-[12]" onClick={() => append({ name: "" })} disabled={isPending}>
+								<Button type="button" variant="secondary" className="mt-[12]" onClick={() => append({ name: "", theme: DEFAULT_COLUMN_THEME })} disabled={isPending}>
 									<FaPlus /> Add New Column
 								</Button>
 							)}

@@ -49,7 +49,7 @@ export async function getAllBoards(): Promise<Omit<Board, "columns" | "columnOrd
 /**
  * DOCU: Creates a new board with its columns for the current user. <br>
  * Triggered: On submission of new board form. <br>
- * Last Updated: April 02, 2026
+ * Last Updated: April 06, 2026
  * @author Jhones
  */
 export const createBoardAction = authActionClient
@@ -62,7 +62,7 @@ export const createBoardAction = authActionClient
 					name: parsedInput.name,
 					userId: ctx.userId,
 					columns: {
-						create: parsedInput.columns.map((column) => ({ name: column.name }))
+						create: parsedInput.columns.map((column) => ({ name: column.name, theme: column.theme }))
 					}
 				},
 				include: {
@@ -96,7 +96,7 @@ export const createBoardAction = authActionClient
 /**
  * DOCU: Edits a board and its columns (create, update, delete) for the current user. <br>
  * Triggered: On submission of edit board form. <br>
- * Last Updated: March 06, 2026
+ * Last Updated: April 06, 2026
  * @author Jhones
  */
 export const editBoardAction = authActionClient
@@ -129,12 +129,12 @@ export const editBoardAction = authActionClient
 				if (column.id && !column.is_new) {
 					await tx.column.update({
 						where: { id: column.id },
-						data: { name: column.name }
+						data: { name: column.name, theme: column.theme }
 					});
 					column_ids.push(column.id);
 				} else {
 					const new_column = await tx.column.create({
-						data: { name: column.name, boardId: id }
+						data: { name: column.name, theme: column.theme, boardId: id }
 					});
 					column_ids.push(new_column.id);
 				}
@@ -165,6 +165,7 @@ export const editBoardAction = authActionClient
 			columns: sortByIdOrder(board.columns, board.columnOrder).map((column) => ({
 				id: column.id,
 				name: column.name,
+				theme: column.theme,
 				taskOrder: column.taskOrder,
 				tasks: sortByIdOrder(column.tasks, column.taskOrder).map((task) => ({
 					id: task.id,
@@ -184,7 +185,7 @@ export const editBoardAction = authActionClient
 /**
  * DOCU: Deletes a board owned by the current user and removes it from board order. <br>
  * Triggered: On submission of delete board form. <br>
- * Last Updated: April 02, 2026
+ * Last Updated: April 06, 2026
  * @author Jhones
  */
 export const deleteBoardAction = authActionClient
@@ -257,6 +258,7 @@ export async function getBoardById(board_id: string): Promise<Board | null> {
 		columns: sortByIdOrder(board.columns, board.columnOrder).map((column) => ({
 			id: column.id,
 			name: column.name,
+			theme: column.theme,
 			taskOrder: column.taskOrder,
 			tasks: sortByIdOrder(column.tasks, column.taskOrder).map((task) => ({
 				id: task.id,

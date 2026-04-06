@@ -70,6 +70,7 @@ export const useDeleteColumn = (callback?: CallbackResponse) => {
 				return board;
 			});
 
+			toast.success("Column deleted successfully.");
 			callback?.onSuccess?.();
 		},
 		onError: () => {

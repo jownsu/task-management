@@ -1,15 +1,17 @@
 import * as React from "react";
 
 import { cn } from "@/lib/utils";
+import { ClassValue } from "clsx";
 
 interface Props {
 	error?: string;
 	floating_error?: boolean;
+	containerClassName?: ClassValue;
 }
 
-function Input({ className, type, error, floating_error, ...props }: React.ComponentProps<"input"> & Props) {
+function Input({ className, type, error, floating_error, containerClassName, ...props }: React.ComponentProps<"input"> & Props) {
 	return (
-		<div className="flex flex-col w-full gap-[8] relative">
+		<div className={cn("flex flex-col w-full gap-[8] relative", containerClassName)}>
 			<input
 				type={type}
 				data-slot="input"

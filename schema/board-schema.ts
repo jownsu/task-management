@@ -6,6 +6,7 @@ export const add_board_schema = z.object({
 	name: z.string().min(1, "Name is required"),
 	columns: z.array(z.object({
 		name: z.string().min(1, "Can't be empty"),
+		theme: z.string().regex(/^#[0-9A-Fa-f]{6}$/, "Invalid hex color").default("#635FC7"),
 	})).max(MAX_COLUMNS, `You can only have up to ${MAX_COLUMNS} columns`)
 });
 
@@ -15,6 +16,7 @@ export const edit_board_schema = z.object({
 	columns: z.array(z.object({
 		id: z.string().optional(),
 		name: z.string().min(1, "Can't be empty"),
+		theme: z.string().regex(/^#[0-9A-Fa-f]{6}$/, "Invalid hex color").default("#635FC7"),
 		is_new: z.boolean().default(false).optional()
 	})).max(MAX_COLUMNS, `You can only have up to ${MAX_COLUMNS} columns`)
 });

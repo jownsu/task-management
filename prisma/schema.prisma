@@ -95,6 +95,7 @@ model Board {
 model Column {
   id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   name      String
+  theme     String   @default("#635FC7")
   taskOrder String[] @default([]) @db.Uuid
   boardId   String   @db.Uuid
   board     Board    @relation(fields: [boardId], references: [id], onDelete: Cascade)
