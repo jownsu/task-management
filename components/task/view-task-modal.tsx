@@ -164,7 +164,7 @@ const ViewTaskModal = () => {
 						{selected_task?.description}
 					</DialogDescription>
 
-					<div className="grid gap-4">
+					{subtasks.length > 0 && <div className="grid gap-4">
 						<label className="text-medium-grey t-[12] font-bold leading-none">Subtasks ({subtasks.filter(subtask => subtask.isCompleted).length}/{subtasks.length})</label>
 						<DragDropProvider onDragStart={handleDragStart} onDragOver={handleDragOver} onDragEnd={handleDragEnd}>
 							<div className="flex flex-col gap-2">
@@ -223,7 +223,7 @@ const ViewTaskModal = () => {
 								}}
 							</DragOverlay>
 						</DragDropProvider>
-					</div>
+					</div>}
 
 					<div className="grid gap-2">
 						<label className="text-medium-grey t-[12] font-bold leading-none">Column</label>

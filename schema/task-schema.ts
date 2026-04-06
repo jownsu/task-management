@@ -5,7 +5,7 @@ export const MAX_SUBTASKS = 10;
 export const task_schema = z.object({
     id: z.string().optional(),
     title: z.string().min(1, "Title is required"),
-    description: z.string().min(1, "Description is required"),
+    description: z.string().optional(),
     column_id: z.string(),
     sub_tasks: z.array(z.object({
         id: z.string().optional(),
@@ -26,7 +26,7 @@ export const view_task_schema = z.object({
 
 export const create_task_schema = z.object({
 	title: z.string().min(1, "Title is required"),
-	description: z.string().min(1, "Description is required"),
+	description: z.string().optional(),
 	column_id: z.string(),
 	board_id: z.string(),
 	sub_tasks: z.array(z.object({
@@ -38,7 +38,7 @@ export const edit_task_schema = z.object({
 	id: z.string(),
 	board_id: z.string(),
 	title: z.string().min(1, "Title is required"),
-	description: z.string().min(1, "Description is required"),
+	description: z.string().optional(),
 	sub_tasks: z.array(z.object({
 		id: z.string().optional(),
 		title: z.string().min(1, "Can't be empty"),

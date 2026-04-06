@@ -49,9 +49,11 @@ const TaskItem = ({ task, column_id, index, disabled }: Props) => {
 				}}
 			>
 				<p className="text-h-md group-hover:text-primary dark:group-hover:text-primary text-black dark:text-white">{task.title}</p>
-				<p className="text-b-md text-medium-grey">
-					{task?.subtasks.filter((subtask) => subtask.isCompleted).length} of {task?.subtasks?.length} subtasks
-				</p>
+				{task?.subtasks?.length > 0 && (
+					<p className="text-b-md text-medium-grey">
+						{task?.subtasks.filter((subtask) => subtask.isCompleted).length} of {task?.subtasks?.length} subtasks
+					</p>
+				)}
 			</button>
 
 			<button ref={handleRef} type="button" className={cn("cursor-grab text-primary/70 transition-opacity", isDragging ? "opacity-0" : "opacity-100 group-hover:opacity-100")}>

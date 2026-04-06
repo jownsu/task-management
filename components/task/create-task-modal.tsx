@@ -60,16 +60,7 @@ const CreateTaskModal = () => {
 		defaultValues: {
 			title: "",
 			description: "",
-			sub_tasks: [
-				{
-					id: crypto.randomUUID(),
-					title: ""
-				},
-				{
-					id: crypto.randomUUID(),
-					title: ""
-				}
-			],
+			sub_tasks: [],
 			column_id: board?.columns?.[0]?.id || ""
 		}
 	});
@@ -150,10 +141,7 @@ const CreateTaskModal = () => {
 			form.reset({
 				title: "",
 				description: "",
-				sub_tasks: [
-					{ id: crypto.randomUUID(), title: "" },
-					{ id: crypto.randomUUID(), title: "" }
-				],
+				sub_tasks: [],
 				column_id: board?.columns?.[0]?.id || ""
 			});
 		}
