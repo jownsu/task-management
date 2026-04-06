@@ -43,6 +43,7 @@ export const useCreateBoard = (callback?: CallbackResponse<Board>) => {
 				router.push(`/${response.id}`);
 			}
 
+			toast.success("Board created successfully.");
 			callback?.onSuccess?.(response);
 		},
 		onError: () => {
@@ -84,6 +85,7 @@ export const useEditBoard = (callback?: CallbackResponse) => {
 					}
 				});
 
+				toast.success("Board updated successfully.");
 				callback?.onSuccess?.();
 			}
 		},
@@ -118,6 +120,7 @@ export const useDeleteBoard = (callback?: CallbackResponse) => {
 				return boards;
 			});
 
+			toast.success("Board deleted successfully.");
 			callback?.onSuccess?.();
 		},
 		onError: () => {

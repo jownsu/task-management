@@ -48,6 +48,7 @@ export const useCreateTask = (callback?: CallbackResponse) => {
 				});
 			}
 
+			toast.success("Task created successfully.");
 			callback?.onSuccess?.();
 		},
 		onError: () => {
@@ -94,6 +95,7 @@ export const useEditTask = (callback?: CallbackResponse) => {
 				});
 			}
 
+			toast.success("Task updated successfully.");
 			callback?.onSuccess?.();
 		},
 		onError: () => {
@@ -133,6 +135,7 @@ export const useDeleteTask = (callback?: CallbackResponse) => {
 				};
 			});
 
+			toast.success("Task deleted successfully.");
 			callback?.onSuccess?.();
 		},
 		onError: () => {
@@ -194,6 +197,7 @@ export const useUpdateSubtask = (callback?: CallbackResponse) => {
 			toast.error("Something went wrong. Please try again.");
 		},
 		onSuccess: () => {
+			toast.success("Subtask updated successfully.");
 			callback?.onSuccess?.();
 		}
 	});
