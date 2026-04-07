@@ -1,11 +1,11 @@
 /* ACTIONS */
-import { createTaskAction, deleteTaskAction, editTaskAction, reorderSubtaskAction, reorderTaskAction, updateSubtaskAction, updateTaskColumnAction } from "@/actions/task.actions";
+import { addSubtaskAction, createTaskAction, deleteTaskAction, editTaskAction, reorderSubtaskAction, reorderTaskAction, updateSubtaskAction, updateTaskColumnAction } from "@/actions/task.actions";
 
 /* UTILITIES */
 import { executeAction } from "@/lib/execute-action";
 
 /* SCHEMA */
-import { CreateTaskSchemaType, DeleteTaskSchemaType, EditTaskSchemaType, ReorderSubtaskSchemaType, ReorderTaskSchemaType, UpdateSubtaskSchemaType, UpdateTaskColumnSchemaType } from "@/schema/task-schema";
+import { AddSubtaskSchemaType, CreateTaskSchemaType, DeleteTaskSchemaType, EditTaskSchemaType, ReorderSubtaskSchemaType, ReorderTaskSchemaType, UpdateSubtaskSchemaType, UpdateTaskColumnSchemaType } from "@/schema/task-schema";
 
 /* TYPES */
 import { Board, CallbackResponse, Subtask, Task } from "@/types";
@@ -401,4 +401,51 @@ export const useReorderSubtask = (callback?: CallbackResponse) => {
 	});
 
 	return { reorderSubtask, ...rest };
+};
+
+/**
+ * DOCU: Will add a single subtask to an existing task. <br>
+ * Triggered: On submission of quick-add subtask input in view task modal. <br>
+ * Last Updated: April 07, 2026
+ * @author Jhones
+ */
+export const useAddSubtask = (callback?: CallbackResponse) => {
+	const queryClient = useQueryClient();
+
+	const { mutate: addSubtask, ...rest } = useMutation({
+		mutationFn: (payload: AddSubtaskSchemaType) => executeAction(addSubtaskAction(payload)),
+		onSuccess: (response, payload) => {
+			if (response) {
+				queryClient.setQueryData<Board>([...CACHE_KEY_BOARD, payload.board_id], (board) => {
+					if (!board) return board;
+
+					return {
+						...board,
+						columns: board.columns?.map((column) => ({
+							...column,
+							tasks: column.id === payload.column_id
+								? column.tasks?.map((task) =>
+									task.id === payload.task_id
+										? {
+											...task,
+											subtaskOrder: [...task.subtaskOrder, response.id],
+											subtasks: [...task.subtasks, response]
+										}
+										: task
+								)
+								: column.tasks
+						}))
+					};
+				});
+			}
+
+			toast.success("Subtask added successfully.");
+			callback?.onSuccess?.();
+		},
+		onError: () => {
+			toast.error("Something went wrong. Please try again.");
+		}
+	});
+
+	return { addSubtask, ...rest };
 };

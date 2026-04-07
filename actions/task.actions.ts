@@ -5,7 +5,7 @@ import prisma from "@/lib/prisma";
 import { authActionClient } from "@/lib/safe-action";
 
 /* SCHEMA */
-import { create_task_schema, delete_task_schema, edit_task_schema, reorder_subtask_schema, reorder_task_schema, update_subtask_schema, update_task_column_schema } from "@/schema/task-schema";
+import { add_subtask_schema, create_task_schema, delete_task_schema, edit_task_schema, MAX_SUBTASKS, reorder_subtask_schema, reorder_task_schema, update_subtask_schema, update_task_column_schema } from "@/schema/task-schema";
 
 /* TYPES */
 import { Subtask } from "@/types";
@@ -410,4 +410,57 @@ export const reorderSubtaskAction = authActionClient
 			where: { id: task_id },
 			data: { subtaskOrder: updated_subtask_order }
 		});
+	});
+
+/**
+ * DOCU: Creates a single subtask and appends it to the task's subtaskOrder. <br>
+ * Triggered: On submission of quick-add subtask input in view task modal. <br>
+ * Last Updated: April 07, 2026
+ * @author Jhones
+ */
+export const addSubtaskAction = authActionClient
+	.schema(add_subtask_schema)
+	.action(async ({ parsedInput, ctx }) => {
+		const { board_id, task_id, title } = parsedInput;
+
+		/* Verify the task belongs to a board owned by the current user */
+		const task = await prisma.task.findFirst({
+			where: {
+				id: task_id,
+				column: { board: { id: board_id, userId: ctx.userId } }
+			},
+			select: { id: true, _count: { select: { subtasks: true } } }
+		});
+
+		if (!task) {
+			throw new Error("Task not found");
+		}
+
+		if (task._count.subtasks >= MAX_SUBTASKS) {
+			throw new Error("Maximum number of subtasks reached");
+		}
+
+		const result = await prisma.$transaction(async (tx) => {
+			/* Create the subtask */
+			const subtask = await tx.subtask.create({
+				data: {
+					title,
+					taskId: task_id
+				}
+			});
+
+			/* Append to the task's subtaskOrder */
+			await tx.task.update({
+				where: { id: task_id },
+				data: { subtaskOrder: { push: subtask.id } }
+			});
+
+			return {
+				id: subtask.id,
+				title: subtask.title,
+				isCompleted: subtask.isCompleted
+			};
+		});
+
+		return result;
 	});

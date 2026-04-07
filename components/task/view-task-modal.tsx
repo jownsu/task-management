@@ -14,6 +14,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { DialogDescription } from "@/components/ui/dialog";
 import SortableSubtaskField from "@/components/task/sortable-subtask-field";
+import QuickAddSubtask from "@/components/task/quick-add-subtask";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 
 /* PLUGINS */
@@ -37,6 +38,9 @@ import { Subtask } from "@/types";
 
 /* UTILITIES */
 import { cn } from "@/lib/utils";
+
+/* CONSTANTS */
+import { MAX_SUBTASKS } from "@/schema/task-schema";
 
 /* ICONS */
 import { MdDragIndicator } from "react-icons/md";
@@ -171,66 +175,78 @@ const ViewTaskModal = () => {
 						</VisuallyHidden>
 					)}
 
-					{subtasks.length > 0 && <div className="grid gap-4">
-						<label className="text-medium-grey t-[12] font-bold leading-none">Subtasks ({subtasks.filter(subtask => subtask.isCompleted).length}/{subtasks.length})</label>
-						<DragDropProvider onDragStart={handleDragStart} onDragOver={handleDragOver} onDragEnd={handleDragEnd}>
-							<div className="flex flex-col gap-2">
-								{subtasks.map((subtask, index) => (
-									<SortableSubtaskField key={subtask.id} id={subtask.id} index={index} disabled={is_updating_subtask || is_reordering}>
-										<label
-											className={cn("px-[12] py-[16] bg-background flex gap-[16] cursor-pointer flex-1 min-w-0", { "pointer-events-none opacity-50": is_updating_subtask || is_reordering })}
-											tabIndex={0}
-											aria-label={subtask.title}
-											onClick={(event) => {
-												event.preventDefault();
-												event.stopPropagation();
-												onToggleSubtask(subtask.id, subtask.isCompleted);
-											}}
-											onKeyDown={(event) => {
-												if (event.key === "Enter" || event.key === " ") {
-													event.preventDefault();
-													onToggleSubtask(subtask.id, subtask.isCompleted);
-												}
-											}}
-										>
-											<Checkbox checked={subtask.isCompleted} />
-											<span
-												className={cn("t-[12] font-bold dark:text-white", {
-													["line-through opacity-50"]: subtask.isCompleted,
-												})}
-											>
-												{subtask.title}
-											</span>
-										</label>
-									</SortableSubtaskField>
-								))}
-							</div>
-							<DragOverlay dropAnimation={null}>
-								{(source) => {
-									const subtask = subtasks.find((s) => s.id === source.id);
-									if (!subtask) return null;
-
-									return (
-										<div className="flex items-center rounded-md bg-foreground drop-shadow-md">
-											<span className="text-primary -translate-x-0.5">
-												<MdDragIndicator size={16} />
-											</span>
-											<div className="px-[12] py-[16] bg-background flex gap-[16] flex-1 min-w-0">
-												<Checkbox checked={subtask.isCompleted} />
-												<span
-													className={cn("t-[12] font-bold dark:text-white", {
-														["line-through opacity-50"]: subtask.isCompleted,
-													})}
+					<div className="grid gap-4">
+						{subtasks.length > 0 && (
+							<>
+								<label className="text-medium-grey t-[12] font-bold leading-none">Subtasks ({subtasks.filter(subtask => subtask.isCompleted).length}/{subtasks.length})</label>
+								<DragDropProvider onDragStart={handleDragStart} onDragOver={handleDragOver} onDragEnd={handleDragEnd}>
+									<div className="flex flex-col gap-2">
+										{subtasks.map((subtask, index) => (
+											<SortableSubtaskField key={subtask.id} id={subtask.id} index={index} disabled={is_updating_subtask || is_reordering}>
+												<label
+													className={cn("px-[12] py-[16] bg-background flex gap-[16] cursor-pointer flex-1 min-w-0", { "pointer-events-none opacity-50": is_updating_subtask || is_reordering })}
+													tabIndex={0}
+													aria-label={subtask.title}
+													onClick={(event) => {
+														event.preventDefault();
+														event.stopPropagation();
+														onToggleSubtask(subtask.id, subtask.isCompleted);
+													}}
+													onKeyDown={(event) => {
+														if (event.key === "Enter" || event.key === " ") {
+															event.preventDefault();
+															onToggleSubtask(subtask.id, subtask.isCompleted);
+														}
+													}}
 												>
-													{subtask.title}
-												</span>
-											</div>
-										</div>
-									);
-								}}
-							</DragOverlay>
-						</DragDropProvider>
-					</div>}
+													<Checkbox checked={subtask.isCompleted} />
+													<span
+														className={cn("t-[12] font-bold dark:text-white", {
+															["line-through opacity-50"]: subtask.isCompleted,
+														})}
+													>
+														{subtask.title}
+													</span>
+												</label>
+											</SortableSubtaskField>
+										))}
+									</div>
+									<DragOverlay dropAnimation={null}>
+										{(source) => {
+											const subtask = subtasks.find((s) => s.id === source.id);
+											if (!subtask) return null;
+
+											return (
+												<div className="flex items-center rounded-md bg-foreground drop-shadow-md">
+													<span className="text-primary -translate-x-0.5">
+														<MdDragIndicator size={16} />
+													</span>
+													<div className="px-[12] py-[16] bg-background flex gap-[16] flex-1 min-w-0">
+														<Checkbox checked={subtask.isCompleted} />
+														<span
+															className={cn("t-[12] font-bold dark:text-white", {
+																["line-through opacity-50"]: subtask.isCompleted,
+															})}
+														>
+															{subtask.title}
+														</span>
+													</div>
+												</div>
+											);
+										}}
+									</DragOverlay>
+								</DragDropProvider>
+							</>
+						)}
+						{selected_task && subtasks.length < MAX_SUBTASKS && (
+							<QuickAddSubtask
+								key={selected_task.id}
+								board_id={board_id}
+								column_id={selected_task.column_id}
+								task_id={selected_task.id}
+							/>
+						)}
+					</div>
 
 					<div className="grid gap-2">
 						<label className="text-medium-grey t-[12] font-bold leading-none">Column</label>
