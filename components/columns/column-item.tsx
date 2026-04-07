@@ -1,5 +1,6 @@
 /* COMPONENTS */
 import TaskItem from "@/components/columns/task-item";
+import QuickAddTask from "@/components/columns/quick-add-task";
 
 /* PLUGINS */
 import { useDroppable } from "@dnd-kit/react";
@@ -34,9 +35,9 @@ const ColumnItem = ({ column, is_reordering }: Props) => {
 				</span>
 			</div>
 	
-			<div 
+			<div
 				ref={ref}
-				className={cn("flex flex-col gap-[20] min-h-full h-full rounded-lg")} 
+				className={cn("flex flex-col gap-[20] min-h-full h-full rounded-lg")}
 			>
 				{column?.tasks?.map((task, index) => (
 					<TaskItem
@@ -47,6 +48,7 @@ const ColumnItem = ({ column, is_reordering }: Props) => {
 						disabled={is_reordering}
 					/>
 				))}
+				<QuickAddTask column_id={column.id} />
 			</div>
 		</div>
 	);
