@@ -206,6 +206,10 @@ Classes in `services/` extend `APIClient`. Use `.then()/.catch()` chaining with 
 { "status": boolean, "result": T | null, "error": unknown, "message": string | null }
 ```
 
+## Rules
+
+- **NEVER commit without explicit permission.** Do not run `git commit` unless the user explicitly asks. This includes subagents — always instruct them not to commit. The user wants to review all changed files before committing.
+
 ## Current State / Notes
 
 - **Auth:** Scaffolded (User model, login page, middleware stub) but not implemented. No session checks on server actions yet.

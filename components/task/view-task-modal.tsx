@@ -177,16 +177,16 @@ const ViewTaskModal = () => {
 						</VisuallyHidden>
 					)}
 
-					<div className="grid gap-4">
+					<div>
 						{subtasks.length > 0 && (
 							<>
-								<label className="text-medium-grey t-[12] font-bold leading-none">Subtasks ({subtasks.filter(subtask => subtask.isCompleted).length}/{subtasks.length})</label>
+								<label className="text-medium-grey t-[12] font-bold leading-none mb-[16]">Subtasks ({subtasks.filter(subtask => subtask.isCompleted).length}/{subtasks.length})</label>
 								<DragDropProvider onDragStart={handleDragStart} onDragOver={handleDragOver} onDragEnd={handleDragEnd}>
 									<div className="flex flex-col gap-2">
 										{subtasks.map((subtask, index) => (
-											<SortableSubtaskField key={subtask.id} id={subtask.id} index={index} disabled={is_updating_subtask || is_reordering}>
+											<SortableSubtaskField key={subtask.id} id={subtask.id} index={index} disabled={is_updating_subtask || is_reordering || is_marking_all}>
 												<label
-													className={cn("px-[12] py-[16] bg-background flex gap-[16] cursor-pointer flex-1 min-w-0", { "pointer-events-none opacity-50": is_updating_subtask || is_reordering })}
+													className={cn("px-[12] py-[16] bg-background flex gap-[16] cursor-pointer flex-1 min-w-0", { "pointer-events-none opacity-50": is_updating_subtask || is_reordering || is_marking_all })}
 													tabIndex={0}
 													aria-label={subtask.title}
 													onClick={(event) => {
@@ -238,33 +238,34 @@ const ViewTaskModal = () => {
 										}}
 									</DragOverlay>
 								</DragDropProvider>
+								{subtasks.some((subtask) => !subtask.isCompleted) && selected_task && (
+									<button
+										type="button"
+										className="flex items-center h-[32] text-primary gap-[8] w-fit t-[13] font-bold mt-[8] cursor-pointer disabled:opacity-50"
+										disabled={is_marking_all || is_updating_subtask || is_reordering}
+										onClick={() => {
+											markAllSubtasksComplete({
+												board_id,
+												column_id: selected_task.column_id,
+												task_id: selected_task.id
+											});
+										}}
+									>
+										<MdCheckBox size={16} />
+										Mark all as done
+									</button>
+								)}
 							</>
 						)}
 						{selected_task && subtasks.length < MAX_SUBTASKS && (
-							<QuickAddSubtask
-								key={selected_task.id}
-								board_id={board_id}
-								column_id={selected_task.column_id}
-								task_id={selected_task.id}
-							/>
-						)}
-						{subtasks.length > 0 && subtasks.some((subtask) => !subtask.isCompleted) && selected_task && (
-							<Button
-								variant="ghost"
-								size="sm"
-								className="text-primary gap-[8] self-start t-[13] font-bold"
-								disabled={is_marking_all || is_updating_subtask || is_reordering}
-								onClick={() => {
-									markAllSubtasksComplete({
-										board_id,
-										column_id: selected_task.column_id,
-										task_id: selected_task.id
-									});
-								}}
-							>
-								<MdCheckBox size={16} />
-								Mark all as done
-							</Button>
+							<div className="mt-[16]">
+								<QuickAddSubtask
+									key={selected_task.id}
+									board_id={board_id}
+									column_id={selected_task.column_id}
+									task_id={selected_task.id}
+								/>
+							</div>
 						)}
 					</div>
 
