@@ -26,6 +26,7 @@
   --lines: hsl(221, 69%, 94%);
   --black: hsl(237, 100%, 4%);
   --medium-grey: hsl(216, 15%, 57%);
+  --success: hsl(143, 64%, 40%);
 }
 
 .dark {
@@ -49,6 +50,7 @@
   --input: hsl(240 3.7% 15.9%);
   --ring: hsl(242, 48%, 58%);
   --lines: hsl(236, 11%, 27%);
+  --success: hsl(143, 64%, 48%);
 }
 
 @theme inline {
@@ -73,6 +75,7 @@
   --color-ring: var(--ring);
   --color-medium-grey: var(--medium-grey);
   --color-lines: var(--lines);
+  --color-success: var(--success);
   --color-black: var(--black);
   
   --font-main: var(--font-jakarta);

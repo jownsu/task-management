@@ -118,6 +118,7 @@ model Task {
   id           String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   title        String
   description  String?
+  isCompleted  Boolean   @default(false)
   subtaskOrder String[]  @default([]) @db.Uuid
   columnId     String    @db.Uuid
   column       Column    @relation(fields: [columnId], references: [id], onDelete: Cascade)

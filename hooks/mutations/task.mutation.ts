@@ -1,11 +1,11 @@
 /* ACTIONS */
-import { addSubtaskAction, createTaskAction, deleteTaskAction, editTaskAction, reorderSubtaskAction, reorderTaskAction, updateSubtaskAction, updateTaskColumnAction } from "@/actions/task.actions";
+import { addSubtaskAction, createTaskAction, deleteTaskAction, editTaskAction, markAllSubtasksCompleteAction, reorderSubtaskAction, reorderTaskAction, toggleTaskCompleteAction, updateSubtaskAction, updateTaskColumnAction } from "@/actions/task.actions";
 
 /* UTILITIES */
 import { executeAction } from "@/lib/execute-action";
 
 /* SCHEMA */
-import { AddSubtaskSchemaType, CreateTaskSchemaType, DeleteTaskSchemaType, EditTaskSchemaType, ReorderSubtaskSchemaType, ReorderTaskSchemaType, UpdateSubtaskSchemaType, UpdateTaskColumnSchemaType } from "@/schema/task-schema";
+import { AddSubtaskSchemaType, CreateTaskSchemaType, DeleteTaskSchemaType, EditTaskSchemaType, MarkAllSubtasksCompleteSchemaType, ReorderSubtaskSchemaType, ReorderTaskSchemaType, ToggleTaskCompleteSchemaType, UpdateSubtaskSchemaType, UpdateTaskColumnSchemaType } from "@/schema/task-schema";
 
 /* TYPES */
 import { Board, CallbackResponse, Subtask, Task } from "@/types";
@@ -84,6 +84,7 @@ export const useEditTask = (callback?: CallbackResponse) => {
 									? {
 										id: response.id,
 										title: response.title,
+										isCompleted: task.isCompleted,
 										description: response.description,
 										subtaskOrder: response.subtaskOrder,
 										subtasks: response.subtasks
@@ -170,18 +171,24 @@ export const useUpdateSubtask = (callback?: CallbackResponse) => {
 					columns: board.columns?.map((column) => ({
 						...column,
 						tasks: column.id === payload.column_id
-							? column.tasks?.map((task) =>
-								task.id === payload.task_id
-									? {
-										...task,
-										subtasks: task.subtasks.map((subtask) =>
-											subtask.id === payload.subtask_id
-												? { ...subtask, isCompleted: payload.isCompleted }
-												: subtask
-										)
-									}
-									: task
-							)
+							? column.tasks?.map((task) => {
+								if (task.id !== payload.task_id) return task;
+
+								const updated_subtasks = task.subtasks.map((subtask) =>
+									subtask.id === payload.subtask_id
+										? { ...subtask, isCompleted: payload.isCompleted }
+										: subtask
+								);
+
+								/* Auto-complete task if all subtasks are now completed */
+								const all_completed = payload.isCompleted && updated_subtasks.every((s) => s.isCompleted);
+
+								return {
+									...task,
+									subtasks: updated_subtasks,
+									isCompleted: all_completed ? true : task.isCompleted
+								};
+							})
 							: column.tasks
 					}))
 				};
@@ -448,4 +455,112 @@ export const useAddSubtask = (callback?: CallbackResponse) => {
 	});
 
 	return { addSubtask, ...rest };
+};
+
+/**
+ * DOCU: Will mark all subtasks of a task as completed with optimistic updates. <br>
+ * Triggered: On clicking the "Mark all as done" button in the view task modal. <br>
+ * Last Updated: April 08, 2026
+ * @author Jhones
+ */
+export const useMarkAllSubtasksComplete = (callback?: CallbackResponse) => {
+	const queryClient = useQueryClient();
+
+	const { mutate: markAllSubtasksComplete, ...rest } = useMutation({
+		mutationFn: (payload: MarkAllSubtasksCompleteSchemaType) => executeAction(markAllSubtasksCompleteAction(payload)),
+		onMutate: async (payload) => {
+			await queryClient.cancelQueries({ queryKey: [...CACHE_KEY_BOARD, payload.board_id] });
+
+			const previous_board = queryClient.getQueryData<Board>([...CACHE_KEY_BOARD, payload.board_id]);
+
+			queryClient.setQueryData<Board>([...CACHE_KEY_BOARD, payload.board_id], (board) => {
+				if (!board) return board;
+
+				return {
+					...board,
+					columns: board.columns?.map((column) => ({
+						...column,
+						tasks: column.id === payload.column_id
+							? column.tasks?.map((task) =>
+								task.id === payload.task_id
+									? {
+										...task,
+										isCompleted: true,
+										subtasks: task.subtasks.map((subtask) => ({ ...subtask, isCompleted: true }))
+									}
+									: task
+							)
+							: column.tasks
+					}))
+				};
+			});
+
+			return { previous_board };
+		},
+		onError: (_, payload, context) => {
+			if (context?.previous_board) {
+				queryClient.setQueryData<Board>([...CACHE_KEY_BOARD, payload.board_id], context.previous_board);
+			}
+
+			toast.error("Something went wrong. Please try again.");
+		},
+		onSuccess: () => {
+			toast.success("All subtasks marked as done.");
+			callback?.onSuccess?.();
+		}
+	});
+
+	return { markAllSubtasksComplete, ...rest };
+};
+
+/**
+ * DOCU: Will toggle the completion status of a task with optimistic updates. <br>
+ * Triggered: On clicking the task completion toggle in the task card or view task modal. <br>
+ * Last Updated: April 09, 2026
+ * @author Jhones
+ */
+export const useToggleTaskComplete = (callback?: CallbackResponse) => {
+	const queryClient = useQueryClient();
+
+	const { mutate: toggleTaskComplete, ...rest } = useMutation({
+		mutationFn: (payload: ToggleTaskCompleteSchemaType) => executeAction(toggleTaskCompleteAction(payload)),
+		onMutate: async (payload) => {
+			await queryClient.cancelQueries({ queryKey: [...CACHE_KEY_BOARD, payload.board_id] });
+
+			const previous_board = queryClient.getQueryData<Board>([...CACHE_KEY_BOARD, payload.board_id]);
+
+			queryClient.setQueryData<Board>([...CACHE_KEY_BOARD, payload.board_id], (board) => {
+				if (!board) return board;
+
+				return {
+					...board,
+					columns: board.columns?.map((column) => ({
+						...column,
+						tasks: column.id === payload.column_id
+							? column.tasks?.map((task) =>
+								task.id === payload.task_id
+									? { ...task, isCompleted: payload.isCompleted }
+									: task
+							)
+							: column.tasks
+					}))
+				};
+			});
+
+			return { previous_board };
+		},
+		onError: (_, payload, context) => {
+			if (context?.previous_board) {
+				queryClient.setQueryData<Board>([...CACHE_KEY_BOARD, payload.board_id], context.previous_board);
+			}
+
+			toast.error("Something went wrong. Please try again.");
+		},
+		onSuccess: (_, payload) => {
+			toast.success(payload.isCompleted ? "Task marked as done." : "Task marked as incomplete.");
+			callback?.onSuccess?.();
+		}
+	});
+
+	return { toggleTaskComplete, ...rest };
 };

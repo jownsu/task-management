@@ -108,3 +108,12 @@ export const mark_all_subtasks_complete_schema = z.object({
 });
 
 export type MarkAllSubtasksCompleteSchemaType = z.infer<typeof mark_all_subtasks_complete_schema>;
+
+export const toggle_task_complete_schema = z.object({
+	board_id: z.string(),
+	column_id: z.string(),
+	task_id: z.string(),
+	isCompleted: z.boolean()
+});
+
+export type ToggleTaskCompleteSchemaType = z.infer<typeof toggle_task_complete_schema>;

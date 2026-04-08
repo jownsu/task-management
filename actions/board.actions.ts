@@ -170,6 +170,7 @@ export const editBoardAction = authActionClient
 				tasks: sortByIdOrder(column.tasks, column.taskOrder).map((task) => ({
 					id: task.id,
 					title: task.title,
+					isCompleted: task.isCompleted,
 					description: task.description || "",
 					subtaskOrder: task.subtaskOrder,
 					subtasks: sortByIdOrder(task.subtasks, task.subtaskOrder).map((subtask) => ({
@@ -263,6 +264,7 @@ export async function getBoardById(board_id: string): Promise<Board | null> {
 			tasks: sortByIdOrder(column.tasks, column.taskOrder).map((task) => ({
 				id: task.id,
 				title: task.title,
+				isCompleted: task.isCompleted,
 				description: task.description || "",
 				subtaskOrder: task.subtaskOrder,
 				subtasks: sortByIdOrder(task.subtasks, task.subtaskOrder).map((subtask) => ({

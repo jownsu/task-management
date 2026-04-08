@@ -31,8 +31,7 @@ import { useGetBoard } from "@/hooks/queries/board.query";
 import { useSelectedTask } from "@/hooks/use-selected-task";
 
 /* MUTATIONS */
-import { useUpdateSubtask, useUpdateTaskColumn, useReorderSubtask } from "@/hooks/mutations/task.mutation";
-import { useMarkAllSubtasksComplete } from "@/hooks/mutations/mark-all-subtasks-complete.mutation";
+import { useUpdateSubtask, useUpdateTaskColumn, useReorderSubtask, useMarkAllSubtasksComplete, useToggleTaskComplete } from "@/hooks/mutations/task.mutation";
 
 /* TYPES */
 import { Subtask } from "@/types";
@@ -44,7 +43,7 @@ import { cn } from "@/lib/utils";
 import { MAX_SUBTASKS } from "@/schema/task-schema";
 
 /* ICONS */
-import { MdDragIndicator, MdCheckBox } from "react-icons/md";
+import { MdDragIndicator, MdCheckCircle } from "react-icons/md";
 
 const ViewTaskModal = () => {
 	const { board_id } = useParams() as { board_id: string };
@@ -57,7 +56,8 @@ const ViewTaskModal = () => {
 	const { updateSubtask, isPending: is_updating_subtask } = useUpdateSubtask();
 	const { updateTaskColumn } = useUpdateTaskColumn();
 	const { reorderSubtask, isPending: is_reordering } = useReorderSubtask();
-	const { markAllSubtasksComplete, isPending: is_marking_all } = useMarkAllSubtasksComplete();
+	const { isPending: is_marking_all } = useMarkAllSubtasksComplete();
+	const { toggleTaskComplete, isPending: is_toggling_complete } = useToggleTaskComplete();
 	const [subtasks, setSubtasks] = useState<Subtask[]>(selected_task?.subtasks ?? []);
 	const subtasks_snapshot_ref = useRef<Subtask[]>([]);
 
@@ -97,6 +97,23 @@ const ViewTaskModal = () => {
 			});
 		}
 	}
+
+	/**
+	 * DOCU: Toggles the completion status of the task. <br>
+	 * Triggered: On clicking the mark as done/incomplete button in the view task modal. <br>
+	 * Last Updated: April 09, 2026
+	 * @author Jhones
+	 */
+	const onToggleTaskComplete = () => {
+		if (selected_task) {
+			toggleTaskComplete({
+				board_id,
+				column_id: selected_task.column_id,
+				task_id: selected_task.id,
+				isCompleted: !selected_task.isCompleted
+			});
+		}
+	};
 
 	/**
 	 * DOCU: Captures the current subtasks state before dragging starts for rollback on cancel. <br>
@@ -155,7 +172,14 @@ const ViewTaskModal = () => {
 			<DialogContent>
 				<div className="flex flex-col gap-[24]">
 					<div className="flex">
-						<DialogTitle className="text-h-lg flex-1">{selected_task?.title}</DialogTitle>
+						<div className="flex-1 flex items-start gap-[12]">
+							{selected_task?.isCompleted && (
+								<span className="text-success mt-[4]">
+									<MdCheckCircle size={20} />
+								</span>
+							)}
+							<DialogTitle className={cn("text-h-lg flex-1", selected_task?.isCompleted && "line-through opacity-50")}>{selected_task?.title}</DialogTitle>
+						</div>
 						<ActionOptions
 							name="Task"
 							onDeleteClick={() => {
@@ -238,21 +262,18 @@ const ViewTaskModal = () => {
 										}}
 									</DragOverlay>
 								</DragDropProvider>
-								{subtasks.some((subtask) => !subtask.isCompleted) && selected_task && (
+								{selected_task && (
 									<button
 										type="button"
-										className="flex items-center h-[32] text-primary gap-[8] w-fit t-[13] font-bold mt-[8] cursor-pointer disabled:opacity-50"
-										disabled={is_marking_all || is_updating_subtask || is_reordering}
-										onClick={() => {
-											markAllSubtasksComplete({
-												board_id,
-												column_id: selected_task.column_id,
-												task_id: selected_task.id
-											});
-										}}
+										className={cn(
+											"flex items-center h-[32] gap-[8] w-fit t-[13] font-bold mt-[8] cursor-pointer disabled:opacity-50",
+											selected_task.isCompleted ? "text-medium-grey" : "text-success"
+										)}
+										disabled={is_toggling_complete || is_updating_subtask || is_reordering}
+										onClick={onToggleTaskComplete}
 									>
-										<MdCheckBox size={16} />
-										Mark all as done
+										<MdCheckCircle size={16} />
+										{selected_task.isCompleted ? "Mark as incomplete" : "Mark as done"}
 									</button>
 								)}
 							</>

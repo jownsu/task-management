@@ -21,7 +21,7 @@ export type Column = Pick<PrismaColumn, "id" | "name" | "theme" | "taskOrder"> &
 
 export type Subtask = Pick<PrismaSubtask, "id" | "title" | "isCompleted">;
 
-export type Task = Pick<PrismaTask, "id" | "title" | "subtaskOrder"> & {
+export type Task = Pick<PrismaTask, "id" | "title" | "isCompleted" | "subtaskOrder"> & {
 	description: string;
 	subtasks: Subtask[];
 };

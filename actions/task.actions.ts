@@ -5,7 +5,7 @@ import prisma from "@/lib/prisma";
 import { authActionClient } from "@/lib/safe-action";
 
 /* SCHEMA */
-import { add_subtask_schema, create_task_schema, delete_task_schema, edit_task_schema, mark_all_subtasks_complete_schema, MAX_SUBTASKS, reorder_subtask_schema, reorder_task_schema, update_subtask_schema, update_task_column_schema } from "@/schema/task-schema";
+import { add_subtask_schema, create_task_schema, delete_task_schema, edit_task_schema, mark_all_subtasks_complete_schema, MAX_SUBTASKS, reorder_subtask_schema, reorder_task_schema, toggle_task_complete_schema, update_subtask_schema, update_task_column_schema } from "@/schema/task-schema";
 
 /* TYPES */
 import { Subtask } from "@/types";
@@ -77,6 +77,7 @@ export const createTaskAction = authActionClient
 			return {
 				id: task.id,
 				title: task.title,
+				isCompleted: task.isCompleted,
 				description: task.description || "",
 				subtaskOrder: subtask_ids,
 				subtasks
@@ -218,9 +219,9 @@ export const deleteTaskAction = authActionClient
 	});
 
 /**
- * DOCU: Updates the completion status of a subtask. <br>
+ * DOCU: Updates the completion status of a subtask. Auto-completes the parent task when all subtasks are done. <br>
  * Triggered: On toggling a subtask checkbox in view task modal. <br>
- * Last Updated: March 09, 2026
+ * Last Updated: April 09, 2026
  * @author Jhones
  */
 export const updateSubtaskAction = authActionClient
@@ -247,6 +248,20 @@ export const updateSubtaskAction = authActionClient
 			data: { isCompleted },
 			select: { id: true, title: true, isCompleted: true }
 		});
+
+		/* Auto-complete task if all subtasks are now completed */
+		if (isCompleted) {
+			const incomplete_count = await prisma.subtask.count({
+				where: { taskId: task_id, isCompleted: false }
+			});
+
+			if (incomplete_count === 0) {
+				await prisma.task.update({
+					where: { id: task_id },
+					data: { isCompleted: true }
+				});
+			}
+		}
 
 		return updated_subtask;
 	});
@@ -489,8 +504,45 @@ export const markAllSubtasksCompleteAction = authActionClient
 			throw new Error("Task not found");
 		}
 
-		await prisma.subtask.updateMany({
-			where: { taskId: task_id },
-			data: { isCompleted: true }
+		await prisma.$transaction(async (tx) => {
+			await tx.subtask.updateMany({
+				where: { taskId: task_id },
+				data: { isCompleted: true }
+			});
+
+			await tx.task.update({
+				where: { id: task_id },
+				data: { isCompleted: true }
+			});
+		});
+	});
+
+/**
+ * DOCU: Toggles the completion status of a task. <br>
+ * Triggered: On clicking the task completion toggle in the task card or view task modal. <br>
+ * Last Updated: April 09, 2026
+ * @author Jhones
+ */
+export const toggleTaskCompleteAction = authActionClient
+	.schema(toggle_task_complete_schema)
+	.action(async ({ parsedInput, ctx }) => {
+		const { board_id, task_id, isCompleted } = parsedInput;
+
+		/* Verify the task belongs to a board owned by the current user */
+		const task = await prisma.task.findFirst({
+			where: {
+				id: task_id,
+				column: { board: { id: board_id, userId: ctx.userId } }
+			},
+			select: { id: true }
+		});
+
+		if (!task) {
+			throw new Error("Task not found");
+		}
+
+		await prisma.task.update({
+			where: { id: task_id },
+			data: { isCompleted }
 		});
 	});
