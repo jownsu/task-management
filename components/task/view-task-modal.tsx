@@ -32,6 +32,7 @@ import { useSelectedTask } from "@/hooks/use-selected-task";
 
 /* MUTATIONS */
 import { useUpdateSubtask, useUpdateTaskColumn, useReorderSubtask } from "@/hooks/mutations/task.mutation";
+import { useMarkAllSubtasksComplete } from "@/hooks/mutations/mark-all-subtasks-complete.mutation";
 
 /* TYPES */
 import { Subtask } from "@/types";
@@ -43,7 +44,7 @@ import { cn } from "@/lib/utils";
 import { MAX_SUBTASKS } from "@/schema/task-schema";
 
 /* ICONS */
-import { MdDragIndicator } from "react-icons/md";
+import { MdDragIndicator, MdCheckBox } from "react-icons/md";
 
 const ViewTaskModal = () => {
 	const { board_id } = useParams() as { board_id: string };
@@ -56,6 +57,7 @@ const ViewTaskModal = () => {
 	const { updateSubtask, isPending: is_updating_subtask } = useUpdateSubtask();
 	const { updateTaskColumn } = useUpdateTaskColumn();
 	const { reorderSubtask, isPending: is_reordering } = useReorderSubtask();
+	const { markAllSubtasksComplete, isPending: is_marking_all } = useMarkAllSubtasksComplete();
 	const [subtasks, setSubtasks] = useState<Subtask[]>(selected_task?.subtasks ?? []);
 	const subtasks_snapshot_ref = useRef<Subtask[]>([]);
 
@@ -245,6 +247,24 @@ const ViewTaskModal = () => {
 								column_id={selected_task.column_id}
 								task_id={selected_task.id}
 							/>
+						)}
+						{subtasks.length > 0 && subtasks.some((subtask) => !subtask.isCompleted) && selected_task && (
+							<Button
+								variant="ghost"
+								size="sm"
+								className="text-primary gap-[8] self-start t-[13] font-bold"
+								disabled={is_marking_all || is_updating_subtask || is_reordering}
+								onClick={() => {
+									markAllSubtasksComplete({
+										board_id,
+										column_id: selected_task.column_id,
+										task_id: selected_task.id
+									});
+								}}
+							>
+								<MdCheckBox size={16} />
+								Mark all as done
+							</Button>
 						)}
 					</div>
 
