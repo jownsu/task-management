@@ -5,7 +5,7 @@ import prisma from "@/lib/prisma";
 import { authActionClient } from "@/lib/safe-action";
 
 /* SCHEMA */
-import { add_subtask_schema, create_task_schema, delete_task_schema, edit_task_schema, MAX_SUBTASKS, reorder_subtask_schema, reorder_task_schema, update_subtask_schema, update_task_column_schema } from "@/schema/task-schema";
+import { add_subtask_schema, create_task_schema, delete_task_schema, edit_task_schema, mark_all_subtasks_complete_schema, MAX_SUBTASKS, reorder_subtask_schema, reorder_task_schema, update_subtask_schema, update_task_column_schema } from "@/schema/task-schema";
 
 /* TYPES */
 import { Subtask } from "@/types";
@@ -463,4 +463,34 @@ export const addSubtaskAction = authActionClient
 		});
 
 		return result;
+	});
+
+/**
+ * DOCU: Marks all subtasks of a task as completed in a single batch update. <br>
+ * Triggered: On clicking the "Mark all as done" button in the view task modal. <br>
+ * Last Updated: April 08, 2026
+ * @author Jhones
+ */
+export const markAllSubtasksCompleteAction = authActionClient
+	.schema(mark_all_subtasks_complete_schema)
+	.action(async ({ parsedInput, ctx }) => {
+		const { board_id, task_id } = parsedInput;
+
+		/* Verify the task belongs to a board owned by the current user */
+		const task = await prisma.task.findFirst({
+			where: {
+				id: task_id,
+				column: { board: { id: board_id, userId: ctx.userId } }
+			},
+			select: { id: true }
+		});
+
+		if (!task) {
+			throw new Error("Task not found");
+		}
+
+		await prisma.subtask.updateMany({
+			where: { taskId: task_id },
+			data: { isCompleted: true }
+		});
 	});
