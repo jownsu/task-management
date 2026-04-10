@@ -1,5 +1,6 @@
 /* COMPONENTS */
 import ColumnList from "@/components/columns/column-list";
+import FilterBar from "@/components/columns/filter-bar";
 import CreateColumnModal from "@/components/columns/create-column-modal";
 import CreateTaskModal from "@/components/task/create-task-modal";
 import MainContainer from "@/components/main-container";
@@ -33,6 +34,7 @@ const TaskPage = async ({ params }: Props) => {
 		
 			<MainContainer>
 				<div className="h-full overflow-auto p-[24]">
+					<FilterBar />
 					<ColumnList />
 
 					{/* MODALS */}

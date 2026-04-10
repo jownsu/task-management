@@ -6,6 +6,9 @@ import QuickAddTask from "@/components/columns/quick-add-task";
 import { useDroppable } from "@dnd-kit/react";
 import { CollisionPriority } from "@dnd-kit/abstract";
 
+/* HOOKS */
+import { useFilteredTasks } from "@/hooks/use-filtered-tasks";
+
 /* TYPES */
 import { Column } from "@/types";
 
@@ -19,6 +22,8 @@ interface Props {
 
 const ColumnItem = ({ column, is_reordering }: Props) => {
 
+	const filtered_tasks = useFilteredTasks(column.tasks || []);
+
 	const {ref} = useDroppable({
 		id: column.id,
 		type: "column",
@@ -31,7 +36,7 @@ const ColumnItem = ({ column, is_reordering }: Props) => {
 			<div className="flex items-center gap-[12]">
 				<span className="size-[15] rounded-full block" style={{ backgroundColor: column.theme }}></span>
 				<span className="text-h-sm text-medium-grey uppercase">
-					{column.name} ({column?.tasks?.length})
+					{column.name} ({filtered_tasks.length})
 				</span>
 			</div>
 	
@@ -39,7 +44,7 @@ const ColumnItem = ({ column, is_reordering }: Props) => {
 				ref={ref}
 				className={cn("flex flex-col gap-[20] min-h-full h-full rounded-lg")}
 			>
-				{column?.tasks?.map((task, index) => (
+				{filtered_tasks.map((task, index) => (
 					<TaskItem
 						key={task.id}
 						task={task}

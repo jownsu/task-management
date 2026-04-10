@@ -11,6 +11,7 @@ import { useSortable } from "@dnd-kit/react/sortable";
 
 /* STORE */
 import { useTaskStore } from "@/store/task.store";
+import { useFilterStore } from "@/store/filter.store";
 
 /* MUTATIONS */
 import { useToggleTaskComplete } from "@/hooks/mutations/task.mutation";
@@ -36,6 +37,7 @@ const TaskItem = ({ task, column_id, index, disabled }: Props) => {
 	const { board_id } = useParams() as { board_id: string };
 	const setModal = useTaskStore((state) => state.setModal);
 	const setSelectedTask = useTaskStore((state) => state.setSelectedTask);
+	const is_filters_active = useFilterStore((state) => state.search_query !== "" || state.completion_filter !== "all" || state.selected_tag_ids.length > 0);
 	const [element, setElement] = useState<Element | null>(null);
 	const handleRef = useRef<HTMLButtonElement | null>(null);
 	const { toggleTaskComplete, isPending: is_toggling } = useToggleTaskComplete();
@@ -47,7 +49,7 @@ const TaskItem = ({ task, column_id, index, disabled }: Props) => {
 		type: "task",
 		accept: "task",
 		group: column_id,
-		disabled
+		disabled: disabled || is_filters_active
 	});
 
 	/**
@@ -122,9 +124,11 @@ const TaskItem = ({ task, column_id, index, disabled }: Props) => {
 				)}
 			</button>
 
-			<button ref={handleRef} type="button" className={cn("cursor-grab text-primary/70 transition-opacity", isDragging ? "opacity-0" : "opacity-100 group-hover:opacity-100")}>
-				<MdDragIndicator size={20} />
-			</button>
+			{!is_filters_active && (
+				<button ref={handleRef} type="button" className={cn("cursor-grab text-primary/70 transition-opacity", isDragging ? "opacity-0" : "opacity-100 group-hover:opacity-100")}>
+					<MdDragIndicator size={20} />
+				</button>
+			)}
 		</div>
 	);
 };

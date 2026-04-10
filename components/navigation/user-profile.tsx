@@ -62,7 +62,7 @@ const UserProfile = ({ className }: Props) => {
 					</div>
 				</button>
 			</PopoverTrigger>
-			<PopoverContent side="top" align="start" sideOffset={8} className="pointer-events-auto z-[200] w-(--radix-popover-trigger-width) min-w-[160] p-[4] border border-lines">
+			<PopoverContent side="top" align="start" sideOffset={8} className="pointer-events-auto z-[200] w-(--radix-popover-trigger-width) min-w-[160] p-[4] bg-foreground border border-lines shadow-lg">
 				<Link
 					href="/profile"
 					className="!text-b-md flex w-full items-center gap-[8] rounded-md px-[12] py-[8] transition-colors hover:bg-primary/10 dark:hover:bg-white/5"
