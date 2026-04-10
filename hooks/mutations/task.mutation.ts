@@ -87,7 +87,8 @@ export const useEditTask = (callback?: CallbackResponse) => {
 										isCompleted: task.isCompleted,
 										description: response.description,
 										subtaskOrder: response.subtaskOrder,
-										subtasks: response.subtasks
+										subtasks: response.subtasks,
+										tags: response.tags
 									}
 									: task
 							)

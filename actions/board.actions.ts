@@ -96,13 +96,13 @@ export const createBoardAction = authActionClient
 /**
  * DOCU: Edits a board and its columns (create, update, delete) for the current user. <br>
  * Triggered: On submission of edit board form. <br>
- * Last Updated: April 06, 2026
+ * Last Updated: April 09, 2026
  * @author Jhones
  */
 export const editBoardAction = authActionClient
 	.schema(edit_board_schema)
 	.action(async ({ parsedInput, ctx }) => {
-		const { id, name, columns } = parsedInput;
+		const { id, name, columns, tags } = parsedInput;
 
 		/* Get existing column IDs to determine which ones to delete */
 		const existing_columns = await prisma.column.findMany({
@@ -114,11 +114,28 @@ export const editBoardAction = authActionClient
 		const payload_column_ids = columns.filter((column) => column.id && !column.is_new).map((column) => column.id!);
 		const columns_to_delete = existing_column_ids.filter((column_id) => !payload_column_ids.includes(column_id));
 
+		/* Get existing tag IDs to determine which ones to delete */
+		const existing_tags = await prisma.tag.findMany({
+			where: { boardId: id },
+			select: { id: true }
+		});
+
+		const existing_tag_ids = existing_tags.map((tag) => tag.id);
+		const payload_tag_ids = (tags || []).filter((tag) => tag.id && !tag.is_new).map((tag) => tag.id!);
+		const tags_to_delete = existing_tag_ids.filter((tag_id) => !payload_tag_ids.includes(tag_id));
+
 		const board = await prisma.$transaction(async (tx) => {
 			/* Delete removed columns */
 			if (columns_to_delete.length > 0) {
 				await tx.column.deleteMany({
 					where: { id: { in: columns_to_delete } }
+				});
+			}
+
+			/* Delete removed tags */
+			if (tags_to_delete.length > 0) {
+				await tx.tag.deleteMany({
+					where: { id: { in: tags_to_delete } }
 				});
 			}
 
@@ -140,16 +157,36 @@ export const editBoardAction = authActionClient
 				}
 			}
 
+			/* Update existing tags and create new ones */
+			for (const tag of tags || []) {
+				if (tag.id && !tag.is_new) {
+					await tx.tag.update({
+						where: { id: tag.id },
+						data: { name: tag.name.trim(), color: tag.color }
+					});
+				} else {
+					await tx.tag.create({
+						data: { name: tag.name.trim(), color: tag.color, boardId: id }
+					});
+				}
+			}
+
 			/* Update board name, column order, and return full board */
 			return tx.board.update({
 				where: { id, userId: ctx.userId },
 				data: { name, columnOrder: column_ids },
 				include: {
+					tags: true,
 					columns: {
 						include: {
 							tasks: {
 								include: {
-									subtasks: true
+									subtasks: true,
+									tags: {
+										include: {
+											tag: true
+										}
+									}
 								}
 							}
 						}
@@ -162,6 +199,11 @@ export const editBoardAction = authActionClient
 			id: board.id,
 			name: board.name,
 			columnOrder: board.columnOrder,
+			tags: board.tags.map((tag) => ({
+				id: tag.id,
+				name: tag.name,
+				color: tag.color
+			})),
 			columns: sortByIdOrder(board.columns, board.columnOrder).map((column) => ({
 				id: column.id,
 				name: column.name,
@@ -177,6 +219,11 @@ export const editBoardAction = authActionClient
 						id: subtask.id,
 						title: subtask.title,
 						isCompleted: subtask.isCompleted
+					})),
+					tags: task.tags.map((task_tag) => ({
+						id: task_tag.tag.id,
+						name: task_tag.tag.name,
+						color: task_tag.tag.color
 					}))
 				}))
 			}))
@@ -231,18 +278,24 @@ export const reorderBoardAction = authActionClient
 /**
  * DOCU: Fetches a single board with all its columns, tasks, and subtasks. <br>
  * Triggered: When loading a specific board page. <br>
- * Last Updated: December 30, 2024
+ * Last Updated: April 09, 2026
  * @author Jhones
  */
 export async function getBoardById(board_id: string): Promise<Board | null> {
 	const board = await prisma.board.findUnique({
 		where: { id: board_id },
 		include: {
+			tags: true,
 			columns: {
 				include: {
 					tasks: {
 						include: {
-							subtasks: true
+							subtasks: true,
+							tags: {
+								include: {
+									tag: true
+								}
+							}
 						}
 					}
 				}
@@ -256,6 +309,11 @@ export async function getBoardById(board_id: string): Promise<Board | null> {
 		id: board.id,
 		name: board.name,
 		columnOrder: board.columnOrder,
+		tags: board.tags.map((tag) => ({
+			id: tag.id,
+			name: tag.name,
+			color: tag.color
+		})),
 		columns: sortByIdOrder(board.columns, board.columnOrder).map((column) => ({
 			id: column.id,
 			name: column.name,
@@ -271,6 +329,11 @@ export async function getBoardById(board_id: string): Promise<Board | null> {
 					id: subtask.id,
 					title: subtask.title,
 					isCompleted: subtask.isCompleted
+				})),
+				tags: task.tags.map((task_tag) => ({
+					id: task_tag.tag.id,
+					name: task_tag.tag.name,
+					color: task_tag.tag.color
 				}))
 			}))
 		}))

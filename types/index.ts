@@ -3,7 +3,8 @@ import type {
     Column as PrismaColumn,
     Task as PrismaTask,
     Subtask as PrismaSubtask,
-    User as PrismaUser
+    User as PrismaUser,
+    Tag as PrismaTag
 } from "@/lib/generated/prisma/client";
 
 export interface CallbackResponse<T = unknown> {
@@ -13,6 +14,7 @@ export interface CallbackResponse<T = unknown> {
 
 export type Board = Pick<PrismaBoard, "id" | "name" | "columnOrder"> & {
 	columns?: Column[];
+	tags?: Tag[];
 };
 
 export type Column = Pick<PrismaColumn, "id" | "name" | "theme" | "taskOrder"> & {
@@ -21,9 +23,12 @@ export type Column = Pick<PrismaColumn, "id" | "name" | "theme" | "taskOrder"> &
 
 export type Subtask = Pick<PrismaSubtask, "id" | "title" | "isCompleted">;
 
+export type Tag = Pick<PrismaTag, "id" | "name" | "color">;
+
 export type Task = Pick<PrismaTask, "id" | "title" | "isCompleted" | "subtaskOrder"> & {
 	description: string;
 	subtasks: Subtask[];
+	tags: Tag[];
 };
 
 export type UserProfile = Pick<PrismaUser, "id" | "name" | "email" | "image" | "createdAt"> & {

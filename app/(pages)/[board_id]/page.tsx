@@ -5,6 +5,7 @@ import CreateTaskModal from "@/components/task/create-task-modal";
 import MainContainer from "@/components/main-container";
 import EditBoardmodal from "@/components/board/edit-board-modal";
 import DeleteBoardModal from "@/components/board/delete-board-modal";
+import EditTagsModal from "@/components/board/edit-tags-modal";
 import ViewTaskModal from "@/components/task/view-task-modal";
 import EditTaskModal from "@/components/task/edit-task-modal";
 import DeleteTaskModal from "@/components/task/delete-task-modal";
@@ -38,6 +39,7 @@ const TaskPage = async ({ params }: Props) => {
 					<CreateColumnModal />
 					<CreateTaskModal />
 					<EditBoardmodal />
+					<EditTagsModal />
 					<DeleteBoardModal />
 					<ViewTaskModal />
 					<EditTaskModal />

@@ -130,7 +130,7 @@ const EditBoardmodal = () => {
 					name: column.name,
 					theme: column.theme,
 					is_new: false
-				}))
+				})),
 			});
 		}
 	}, [form, board_modals.edit_board, selected_board]);

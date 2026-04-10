@@ -30,6 +30,13 @@ import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 /* SCHEMA */
 import { task_schema, TaskSchemaType, MAX_SUBTASKS } from "@/schema/task-schema";
 
+/* CONSTANTS */
+import { MAX_TASK_TAGS } from "@/schema/tag-schema";
+
+/* UTILITIES */
+import { cn } from "@/lib/utils";
+import { getContrastColor } from "@/lib/helpers";
+
 /* STORE */
 import { useTaskStore } from "@/store/task.store";
 
@@ -82,13 +89,31 @@ const CreateTaskModal = () => {
 	const snapshot_ref = useRef<TaskSchemaType["sub_tasks"]>([]);
 	const sorted_keys = drag_sorted_keys ?? sub_tasks.map((s) => s.temp_id);
 
+	const selected_tag_ids = form.watch("tag_ids") || [];
+
+	/**
+	 * DOCU: Toggles a tag's selection state for the task. <br>
+	 * Triggered: On clicking a tag pill in the create task modal. <br>
+	 * Last Updated: April 09, 2026
+	 * @author Jhones
+	 */
+	const toggleTag = (tag_id: string) => {
+		const updated = selected_tag_ids.includes(tag_id)
+			? selected_tag_ids.filter((id) => id !== tag_id)
+			: selected_tag_ids.length < MAX_TASK_TAGS
+				? [...selected_tag_ids, tag_id]
+				: selected_tag_ids;
+		form.setValue("tag_ids", updated);
+	};
+
 	const onCreateTaskSubmit: SubmitHandler<TaskSchemaType> = (data) => {
 		createTask({
 			title: data.title,
 			description: data.description,
 			column_id: data.column_id,
 			board_id,
-			sub_tasks: data.sub_tasks.map(({ title }) => ({ title }))
+			sub_tasks: data.sub_tasks.map(({ title }) => ({ title })),
+			tag_ids: data.tag_ids && data.tag_ids.length > 0 ? data.tag_ids : undefined
 		});
 	};
 
@@ -142,7 +167,8 @@ const CreateTaskModal = () => {
 				title: "",
 				description: "",
 				sub_tasks: [],
-				column_id: board?.columns?.[0]?.id || ""
+				column_id: board?.columns?.[0]?.id || "",
+			tag_ids: []
 			});
 		}
 	}, [modals.add_task, form, board]);
@@ -193,6 +219,37 @@ const CreateTaskModal = () => {
 								</FormItem>
 							)}
 						/>
+
+						{board?.tags && board.tags.length > 0 && (
+							<FormItem>
+								<FormLabel>Tags</FormLabel>
+								<div className="flex flex-wrap gap-[8]">
+									{board.tags.map((tag) => {
+										const is_selected = selected_tag_ids.includes(tag.id);
+										const is_limit_reached = selected_tag_ids.length >= MAX_TASK_TAGS && !is_selected;
+										return (
+											<button
+												key={tag.id}
+												type="button"
+												className={cn(
+													"t-[11] font-bold px-[10] py-[3] rounded-full cursor-pointer transition-all",
+													is_selected && "ring-2 ring-offset-2 ring-primary dark:ring-offset-dark-grey",
+													is_limit_reached && "opacity-30 cursor-not-allowed"
+												)}
+												style={{
+													backgroundColor: tag.color,
+													color: getContrastColor(tag.color)
+												}}
+												onClick={() => toggleTag(tag.id)}
+												disabled={isPending || is_limit_reached}
+											>
+												{tag.name}
+											</button>
+										);
+									})}
+								</div>
+							</FormItem>
+						)}
 
 						<FormItem>
 							<FormLabel>Subtasks</FormLabel>

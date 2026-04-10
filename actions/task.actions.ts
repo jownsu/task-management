@@ -13,13 +13,13 @@ import { Subtask } from "@/types";
 /**
  * DOCU: Creates a new task with its subtasks in a column. <br>
  * Triggered: On submission of new task form. <br>
- * Last Updated: March 07, 2026
+ * Last Updated: April 09, 2026
  * @author Jhones
  */
 export const createTaskAction = authActionClient
 	.schema(create_task_schema)
 	.action(async ({ parsedInput, ctx }) => {
-		const { title, description, column_id, board_id, sub_tasks } = parsedInput;
+		const { title, description, column_id, board_id, sub_tasks, tag_ids } = parsedInput;
 
 		/* Verify that the column belongs to a board owned by the current user */
 		const column = await prisma.column.findFirst({
@@ -68,6 +68,25 @@ export const createTaskAction = authActionClient
 				data: { subtaskOrder: subtask_ids }
 			});
 
+			/* Create tag associations */
+			const tags: { id: string; name: string; color: string }[] = [];
+
+			if (tag_ids && tag_ids.length > 0) {
+				await tx.taskTag.createMany({
+					data: tag_ids.map((tag_id) => ({
+						taskId: task.id,
+						tagId: tag_id
+					}))
+				});
+
+				const tag_records = await tx.tag.findMany({
+					where: { id: { in: tag_ids } },
+					select: { id: true, name: true, color: true }
+				});
+
+				tags.push(...tag_records);
+			}
+
 			/* Append the task to the column's taskOrder */
 			await tx.column.update({
 				where: { id: column_id },
@@ -80,7 +99,8 @@ export const createTaskAction = authActionClient
 				isCompleted: task.isCompleted,
 				description: task.description || "",
 				subtaskOrder: subtask_ids,
-				subtasks
+				subtasks,
+				tags
 			};
 		});
 
@@ -96,7 +116,7 @@ export const createTaskAction = authActionClient
 export const editTaskAction = authActionClient
 	.schema(edit_task_schema)
 	.action(async ({ parsedInput, ctx }) => {
-		const { id, board_id, title, description, sub_tasks } = parsedInput;
+		const { id, board_id, title, description, sub_tasks, tag_ids } = parsedInput;
 
 		/* Verify the task belongs to a board owned by the current user */
 		const task = await prisma.task.findFirst({
@@ -168,12 +188,36 @@ export const editTaskAction = authActionClient
 				}
 			});
 
+			/* Sync tag associations: delete all existing, re-insert submitted */
+			await tx.taskTag.deleteMany({
+				where: { taskId: id }
+			});
+
+			const tags: { id: string; name: string; color: string }[] = [];
+
+			if (tag_ids && tag_ids.length > 0) {
+				await tx.taskTag.createMany({
+					data: tag_ids.map((tag_id) => ({
+						taskId: id,
+						tagId: tag_id
+					}))
+				});
+
+				const tag_records = await tx.tag.findMany({
+					where: { id: { in: tag_ids } },
+					select: { id: true, name: true, color: true }
+				});
+
+				tags.push(...tag_records);
+			}
+
 			return {
 				id: updated_task.id,
 				title: updated_task.title,
 				description: updated_task.description || "",
 				subtaskOrder: subtask_ids,
-				subtasks
+				subtasks,
+				tags
 			};
 		});
 

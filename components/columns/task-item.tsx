@@ -20,6 +20,7 @@ import { Task } from "@/types";
 
 /* UTILITIES */
 import { cn } from "@/lib/utils";
+import { getContrastColor } from "@/lib/helpers";
 
 /* ICONS */
 import { MdDragIndicator, MdCheckCircle, MdRadioButtonUnchecked } from "react-icons/md";
@@ -102,6 +103,22 @@ const TaskItem = ({ task, column_id, index, disabled }: Props) => {
 					<p className="text-b-md text-medium-grey">
 						{task?.subtasks.filter((subtask) => subtask.isCompleted).length} of {task?.subtasks?.length} subtasks
 					</p>
+				)}
+				{task.tags.length > 0 && (
+					<div className="flex flex-wrap gap-[4]">
+						{task.tags.map((tag) => (
+							<span
+								key={tag.id}
+								className="t-[11] font-bold px-[10] py-[3] rounded-full"
+								style={{
+									backgroundColor: tag.color,
+									color: getContrastColor(tag.color)
+								}}
+							>
+								{tag.name}
+							</span>
+						))}
+					</div>
 				)}
 			</button>
 

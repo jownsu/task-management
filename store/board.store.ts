@@ -7,6 +7,7 @@ import { Board } from "@/types";
 interface Modals {
 	add_board: boolean;
 	edit_board: boolean;
+	edit_tags: boolean;
 	delete_board: boolean;
 }
 
@@ -21,6 +22,7 @@ export const useBoardStore = create<BoardStore>()((set) => ({
 	modals: {
 		add_board: false,
 		edit_board: false,
+		edit_tags: false,
 		delete_board: false
 	},
 	selected_board: null,

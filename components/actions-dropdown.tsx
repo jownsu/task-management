@@ -12,10 +12,11 @@ import Ellipsis from "@/public/icon-ellipsis.svg";
 interface Props {
 	name?: string;
 	onEditClick?: () => void;
+	onEditTagsClick?: () => void;
 	onDeleteClick?: () => void;
 }
 
-const ActionOptions = ({ onEditClick, onDeleteClick, name }: Props) => {
+const ActionOptions = ({ onEditClick, onEditTagsClick, onDeleteClick, name }: Props) => {
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger className="size-[25] grid place-items-center cursor-pointer shrink-0">
@@ -28,6 +29,14 @@ const ActionOptions = ({ onEditClick, onDeleteClick, name }: Props) => {
 				>
 					Edit {name}
 				</DropdownMenuItem>
+				{onEditTagsClick && (
+					<DropdownMenuItem
+						className="text-medium-grey"
+						onClick={() => onEditTagsClick()}
+					>
+						Edit Tags
+					</DropdownMenuItem>
+				)}
 				<DropdownMenuItem variant="destructive" onClick={() => onDeleteClick?.()}>
 					Delete {name}
 				</DropdownMenuItem>

@@ -90,6 +90,7 @@ model Board {
   columns     Column[]
   createdAt   DateTime @default(now()) @db.Timestamp(6)
   updatedAt   DateTime @updatedAt @db.Timestamp(6)
+  tags        Tag[]
 }
 
 model Column {
@@ -123,6 +124,30 @@ model Task {
   columnId     String    @db.Uuid
   column       Column    @relation(fields: [columnId], references: [id], onDelete: Cascade)
   subtasks     Subtask[]
+  tags         TaskTag[]
   createdAt    DateTime  @default(now()) @db.Timestamp(6)
   updatedAt    DateTime  @updatedAt @db.Timestamp(6)
+}
+
+model Tag {
+  id        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name      String
+  color     String    @default("#635FC7")
+  boardId   String    @db.Uuid
+  board     Board     @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  tasks     TaskTag[]
+  createdAt DateTime  @default(now()) @db.Timestamp(6)
+  updatedAt DateTime  @updatedAt @db.Timestamp(6)
+
+  @@unique([boardId, name])
+}
+
+model TaskTag {
+  taskId    String   @db.Uuid
+  tagId     String   @db.Uuid
+  task      Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  tag       Tag      @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+
+  @@id([taskId, tagId])
 }

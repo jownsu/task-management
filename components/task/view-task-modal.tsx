@@ -38,6 +38,7 @@ import { Subtask } from "@/types";
 
 /* UTILITIES */
 import { cn } from "@/lib/utils";
+import { getContrastColor } from "@/lib/helpers";
 
 /* CONSTANTS */
 import { MAX_SUBTASKS } from "@/schema/task-schema";
@@ -199,6 +200,23 @@ const ViewTaskModal = () => {
 						<VisuallyHidden>
 							<DialogDescription>No description</DialogDescription>
 						</VisuallyHidden>
+					)}
+
+					{selected_task?.tags && selected_task.tags.length > 0 && (
+						<div className="flex flex-wrap gap-[6]">
+							{selected_task.tags.map((tag) => (
+								<span
+									key={tag.id}
+									className="t-[11] font-bold px-[10] py-[3] rounded-full"
+									style={{
+										backgroundColor: tag.color,
+										color: getContrastColor(tag.color)
+									}}
+								>
+									{tag.name}
+								</span>
+							))}
+						</div>
 					)}
 
 					<div>

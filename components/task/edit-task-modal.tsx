@@ -20,6 +20,9 @@ import { DragDropProvider, DragOverlay } from "@dnd-kit/react";
 import { move } from "@dnd-kit/helpers";
 import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 
+/* QUERIES */
+import { useGetBoard } from "@/hooks/queries/board.query";
+
 /* MUTATIONS */
 import { useEditTask } from "@/hooks/mutations/task.mutation";
 
@@ -29,8 +32,15 @@ import { useSelectedTask } from "@/hooks/use-selected-task";
 /* SCHEMA */
 import { task_schema, TaskSchemaType, MAX_SUBTASKS } from "@/schema/task-schema";
 
+/* CONSTANTS */
+import { MAX_TASK_TAGS } from "@/schema/tag-schema";
+
 /* STORE */
 import { useTaskStore } from "@/store/task.store";
+
+/* UTILITIES */
+import { cn } from "@/lib/utils";
+import { getContrastColor } from "@/lib/helpers";
 
 /* ICONS */
 import { FaPlus } from "react-icons/fa";
@@ -44,6 +54,7 @@ const EditTaskModal = () => {
 	const setModal = useTaskStore((state) => state.setModal);
 	const modals = useTaskStore((state) => state.modals);
 	const selected_task = useSelectedTask();
+	const { board } = useGetBoard(board_id);
 	const { editTask, isPending } = useEditTask({
 		onSuccess: () => setModal("edit_task", false)
 	});
@@ -75,6 +86,23 @@ const EditTaskModal = () => {
 	const snapshot_ref = useRef<TaskSchemaType["sub_tasks"]>([]);
 	const sorted_keys = drag_sorted_keys ?? sub_tasks.map((s) => s.temp_id);
 
+	const selected_tag_ids = form.watch("tag_ids") || [];
+
+	/**
+	 * DOCU: Toggles a tag's selection state for the task. <br>
+	 * Triggered: On clicking a tag pill in the edit task modal. <br>
+	 * Last Updated: April 09, 2026
+	 * @author Jhones
+	 */
+	const toggleTag = (tag_id: string) => {
+		const updated = selected_tag_ids.includes(tag_id)
+			? selected_tag_ids.filter((id) => id !== tag_id)
+			: selected_tag_ids.length < MAX_TASK_TAGS
+				? [...selected_tag_ids, tag_id]
+				: selected_tag_ids;
+		form.setValue("tag_ids", updated);
+	};
+
 	const onEditTaskSubmit: SubmitHandler<TaskSchemaType> = (data) => {
 		if (!selected_task) return;
 
@@ -87,7 +115,8 @@ const EditTaskModal = () => {
 				id: subtask.id,
 				title: subtask.title,
 				is_new: subtask.is_new
-			}))
+			})),
+			tag_ids: data.tag_ids
 		});
 	};
 
@@ -145,7 +174,8 @@ const EditTaskModal = () => {
 				sub_tasks: selected_task.subtasks.map((subtask) => ({
 					id: subtask.id,
 					title: subtask.title
-				}))
+				})),
+				tag_ids: selected_task.tags.map((tag) => tag.id)
 			});
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -197,6 +227,37 @@ const EditTaskModal = () => {
 								</FormItem>
 							)}
 						/>
+
+						{board?.tags && board.tags.length > 0 && (
+							<FormItem>
+								<FormLabel>Tags</FormLabel>
+								<div className="flex flex-wrap gap-[8]">
+									{board.tags.map((tag) => {
+										const is_selected = selected_tag_ids.includes(tag.id);
+										const is_limit_reached = selected_tag_ids.length >= MAX_TASK_TAGS && !is_selected;
+										return (
+											<button
+												key={tag.id}
+												type="button"
+												className={cn(
+													"t-[11] font-bold px-[10] py-[3] rounded-full cursor-pointer transition-all",
+													is_selected && "ring-2 ring-offset-2 ring-primary dark:ring-offset-dark-grey",
+													is_limit_reached && "opacity-30 cursor-not-allowed"
+												)}
+												style={{
+													backgroundColor: tag.color,
+													color: getContrastColor(tag.color)
+												}}
+												onClick={() => toggleTag(tag.id)}
+												disabled={isPending || is_limit_reached}
+											>
+												{tag.name}
+											</button>
+										);
+									})}
+								</div>
+							</FormItem>
+						)}
 
 						<FormItem>
 							<FormLabel>Subtasks</FormLabel>

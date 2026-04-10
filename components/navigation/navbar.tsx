@@ -68,6 +68,12 @@ const Navbar = () => {
 									setSelectedBoard(board);
 								}
 							}}
+							onEditTagsClick={() => {
+								if (board) {
+									setBoardModal("edit_tags", true);
+									setSelectedBoard(board);
+								}
+							}}
 						/>
 					</>
 				)}
