@@ -11,7 +11,7 @@ import { CreateTagSchemaType, DeleteTagSchemaType, EditTagSchemaType } from "@/s
 import { Board, CallbackResponse, Tag } from "@/types";
 
 /* CONSTANTS */
-import { CACHE_KEY_BOARD } from "@/constants/query-keys";
+import { CACHE_KEY_TASK_MANAGEMENT_BOARD } from "@/constants/query-keys";
 
 /* PLUGINS */
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -30,7 +30,7 @@ export const useCreateTag = (callback?: CallbackResponse<Tag>) => {
 		mutationFn: (payload: CreateTagSchemaType) => executeAction(createTagAction(payload)),
 		onSuccess: (response, payload) => {
 			if (response) {
-				queryClient.setQueryData<Board>([...CACHE_KEY_BOARD, payload.board_id], (board) => {
+				queryClient.setQueryData<Board>([...CACHE_KEY_TASK_MANAGEMENT_BOARD, payload.board_id], (board) => {
 					if (!board) return board;
 
 					return {
@@ -64,7 +64,7 @@ export const useEditTag = (callback?: CallbackResponse) => {
 		mutationFn: (payload: EditTagSchemaType) => executeAction(editTagAction(payload)),
 		onSuccess: (response, payload) => {
 			if (response) {
-				queryClient.setQueryData<Board>([...CACHE_KEY_BOARD, payload.board_id], (board) => {
+				queryClient.setQueryData<Board>([...CACHE_KEY_TASK_MANAGEMENT_BOARD, payload.board_id], (board) => {
 					if (!board) return board;
 
 					return {
@@ -108,7 +108,7 @@ export const useDeleteTag = (callback?: CallbackResponse) => {
 	const { mutate: deleteTag, ...rest } = useMutation({
 		mutationFn: (payload: DeleteTagSchemaType) => executeAction(deleteTagAction(payload)),
 		onSuccess: (_, payload) => {
-			queryClient.setQueryData<Board>([...CACHE_KEY_BOARD, payload.board_id], (board) => {
+			queryClient.setQueryData<Board>([...CACHE_KEY_TASK_MANAGEMENT_BOARD, payload.board_id], (board) => {
 				if (!board) return board;
 
 				return {

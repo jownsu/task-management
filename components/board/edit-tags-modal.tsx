@@ -25,10 +25,10 @@ import { MAX_BOARD_TAGS } from "@/schema/tag-schema";
 import { useBoardStore } from "@/store/board.store";
 
 /* QUERIES */
-import { useGetBoard } from "@/hooks/queries/board.query";
+import { useGetTaskManagementBoard } from "@/hooks/queries/task-management-board.query";
 
 /* MUTATIONS */
-import { useEditBoard } from "@/hooks/mutations/board.mutation";
+import { useEditTaskManagementBoard } from "@/hooks/mutations/board.mutation";
 
 /* ICONS */
 import { FaPlus } from "react-icons/fa";
@@ -59,7 +59,7 @@ const EditTagsModal = () => {
 	const board_modals = useBoardStore((state) => state.modals);
 	const setModal = useBoardStore((state) => state.setModal);
 	const selected_board = useBoardStore((state) => state.selected_board);
-	const { board } = useGetBoard(board_id);
+	const { board } = useGetTaskManagementBoard(board_id);
 
 	const form = useForm<EditTagsFormSchema>({
 		resolver: zodResolver(edit_tags_form_schema),
@@ -78,7 +78,7 @@ const EditTagsModal = () => {
 		keyName: "temp_id"
 	});
 
-	const { editBoard, isPending } = useEditBoard({
+	const { editBoard, isPending } = useEditTaskManagementBoard({
 		onSuccess: () => setModal("edit_tags", false)
 	});
 

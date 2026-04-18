@@ -23,7 +23,7 @@ import { useMediaQuery } from "react-responsive";
 import { FaChevronDown } from "react-icons/fa";
 
 /* QUERIES */
-import { useGetBoard } from "@/hooks/queries/board.query";
+import { useGetAllBoards } from "@/hooks/queries/all_boards.query";
 
 /* CONSTANTS */
 import { BREAKPOINTS } from "@/constants";
@@ -31,7 +31,8 @@ import { BREAKPOINTS } from "@/constants";
 const BoardsDropdown = () => {
 	const is_mobile = useMediaQuery({ maxWidth: BREAKPOINTS.mobile });
 	const { board_id } = useParams() as { board_id: string };
-	const { board } = useGetBoard(board_id);
+	const { boards } = useGetAllBoards();
+	const board = boards?.find((item) => item.id === board_id);
 
 	if (!is_mobile) {
 		return null;

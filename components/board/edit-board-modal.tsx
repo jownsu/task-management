@@ -25,7 +25,7 @@ import { edit_board_schema, EditBoardSchema, MAX_COLUMNS } from "@/schema/board-
 import { useBoardStore } from "@/store/board.store";
 
 /* MUTATIONS */
-import { useEditBoard } from "@/hooks/mutations/board.mutation";
+import { useEditTaskManagementBoard } from "@/hooks/mutations/board.mutation";
 
 /* ICONS */
 import { FaPlus } from "react-icons/fa";
@@ -66,7 +66,7 @@ const EditBoardmodal = () => {
 	const snapshot_ref = useRef<EditBoardSchema["columns"]>([]);
 	const sorted_keys = drag_sorted_keys ?? columns.map((col) => col.temp_id);
 
-	const { editBoard, isPending } = useEditBoard({
+	const { editBoard, isPending } = useEditTaskManagementBoard({
 		onSuccess: () => {
 			setModal("edit_board", false);
 		}

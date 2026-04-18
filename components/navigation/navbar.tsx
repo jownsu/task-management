@@ -19,7 +19,8 @@ import { useTaskStore } from "@/store/task.store";
 import { useNavigationStore } from "@/store/navigation.store";
 
 /* QUERIES */
-import { useGetBoard } from "@/hooks/queries/board.query";
+import { useGetAllBoards } from "@/hooks/queries/all_boards.query";
+import { useGetTaskManagementBoard } from "@/hooks/queries/task-management-board.query";
 
 /* UTILITIES */
 import { cn } from "@/lib/utils";
@@ -31,7 +32,11 @@ const Navbar = () => {
 	const setTaskModal = useTaskStore((state) => state.setModal);
 
 	const { board_id } = useParams() as { board_id?: string };
-	const { board, isLoading } = useGetBoard(board_id);
+	const { boards, isLoading: is_loading_boards } = useGetAllBoards();
+	const board_list_entry = boards?.find((board) => board.id === board_id);
+	const is_task_management = board_list_entry?.type === "TASK_MANAGEMENT";
+
+	const { board: task_management_board } = useGetTaskManagementBoard(is_task_management ? board_id : undefined);
 
 	return (
 		<nav className="bg-foreground fixed z-[99] flex h-[64] w-full justify-between px-[24] md:h-[81] lg:h-[96]">
@@ -43,13 +48,13 @@ const Navbar = () => {
 				>
 					<IconKanban />
 				</div>
-				{board_id && (isLoading ? <Skeleton className="w-64 h-8" /> : <h1 className="!text-h-xl self-center">{board?.name}</h1>)}
+				{board_id && (is_loading_boards ? <Skeleton className="w-64 h-8" /> : <h1 className="!text-h-xl self-center">{board_list_entry?.name}</h1>)}
 			</div>
 
 			<NavMobile />
 
 			<div className="flex items-center gap-[8] self-center md:gap-[16]">
-				{board_id && (
+				{board_id && is_task_management && (
 					<>
 						<Button type="button" className="text-md h-[32] w-[48] md:h-[48] md:w-fit md:!px-[24]" onClick={() => setTaskModal("add_task", true)}>
 							<FaPlus className="size-[12]" /> <span className="hidden md:block">Add New Task</span>
@@ -57,21 +62,21 @@ const Navbar = () => {
 						<ActionOptions
 							name="Board"
 							onDeleteClick={() => {
-								if (board) {
+								if (task_management_board) {
 									setBoardModal("delete_board", true);
-									setSelectedBoard(board);
+									setSelectedBoard(task_management_board);
 								}
 							}}
 							onEditClick={() => {
-								if (board) {
+								if (task_management_board) {
 									setBoardModal("edit_board", true);
-									setSelectedBoard(board);
+									setSelectedBoard(task_management_board);
 								}
 							}}
 							onEditTagsClick={() => {
-								if (board) {
+								if (task_management_board) {
 									setBoardModal("edit_tags", true);
-									setSelectedBoard(board);
+									setSelectedBoard(task_management_board);
 								}
 							}}
 						/>

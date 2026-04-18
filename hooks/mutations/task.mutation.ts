@@ -11,7 +11,7 @@ import { AddSubtaskSchemaType, CreateTaskSchemaType, DeleteTaskSchemaType, EditT
 import { Board, CallbackResponse, Subtask, Task } from "@/types";
 
 /* CONSTANTS */
-import { CACHE_KEY_BOARD } from "@/constants/query-keys";
+import { CACHE_KEY_TASK_MANAGEMENT_BOARD } from "@/constants/query-keys";
 
 /* PLUGINS */
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -30,7 +30,7 @@ export const useCreateTask = (callback?: CallbackResponse) => {
 		mutationFn: (payload: CreateTaskSchemaType) => executeAction(createTaskAction(payload)),
 		onSuccess: (response, payload) => {
 			if (response) {
-				queryClient.setQueryData<Board>([...CACHE_KEY_BOARD, payload.board_id], (board) => {
+				queryClient.setQueryData<Board>([...CACHE_KEY_TASK_MANAGEMENT_BOARD, payload.board_id], (board) => {
 					if (!board) return board;
 
 					return {
@@ -72,7 +72,7 @@ export const useEditTask = (callback?: CallbackResponse) => {
 		mutationFn: (payload: EditTaskSchemaType) => executeAction(editTaskAction(payload)),
 		onSuccess: (response, payload) => {
 			if (response) {
-				queryClient.setQueryData<Board>([...CACHE_KEY_BOARD, payload.board_id], (board) => {
+				queryClient.setQueryData<Board>([...CACHE_KEY_TASK_MANAGEMENT_BOARD, payload.board_id], (board) => {
 					if (!board) return board;
 
 					return {
@@ -120,7 +120,7 @@ export const useDeleteTask = (callback?: CallbackResponse) => {
 	const { mutate: deleteTask, ...rest } = useMutation({
 		mutationFn: (payload: DeleteTaskSchemaType & { board_id: string; column_id: string }) => executeAction(deleteTaskAction({ id: payload.id })),
 		onSuccess: (_, payload) => {
-			queryClient.setQueryData<Board>([...CACHE_KEY_BOARD, payload.board_id], (board) => {
+			queryClient.setQueryData<Board>([...CACHE_KEY_TASK_MANAGEMENT_BOARD, payload.board_id], (board) => {
 				if (!board) return board;
 
 				return {
@@ -160,11 +160,11 @@ export const useUpdateSubtask = (callback?: CallbackResponse) => {
 	const { mutate: updateSubtask, ...rest } = useMutation({
 		mutationFn: (payload: UpdateSubtaskSchemaType) => executeAction(updateSubtaskAction(payload)),
 		onMutate: async (payload) => {
-			await queryClient.cancelQueries({ queryKey: [...CACHE_KEY_BOARD, payload.board_id] });
+			await queryClient.cancelQueries({ queryKey: [...CACHE_KEY_TASK_MANAGEMENT_BOARD, payload.board_id] });
 
-			const previous_board = queryClient.getQueryData<Board>([...CACHE_KEY_BOARD, payload.board_id]);
+			const previous_board = queryClient.getQueryData<Board>([...CACHE_KEY_TASK_MANAGEMENT_BOARD, payload.board_id]);
 
-			queryClient.setQueryData<Board>([...CACHE_KEY_BOARD, payload.board_id], (board) => {
+			queryClient.setQueryData<Board>([...CACHE_KEY_TASK_MANAGEMENT_BOARD, payload.board_id], (board) => {
 				if (!board) return board;
 
 				return {
@@ -199,7 +199,7 @@ export const useUpdateSubtask = (callback?: CallbackResponse) => {
 		},
 		onError: (_, payload, context) => {
 			if (context?.previous_board) {
-				queryClient.setQueryData<Board>([...CACHE_KEY_BOARD, payload.board_id], context.previous_board);
+				queryClient.setQueryData<Board>([...CACHE_KEY_TASK_MANAGEMENT_BOARD, payload.board_id], context.previous_board);
 			}
 
 			toast.error("Something went wrong. Please try again.");
@@ -225,11 +225,11 @@ export const useUpdateTaskColumn = (callback?: CallbackResponse) => {
 	const { mutate: updateTaskColumn, ...rest } = useMutation({
 		mutationFn: (payload: UpdateTaskColumnSchemaType) => executeAction(updateTaskColumnAction(payload)),
 		onMutate: async (payload) => {
-			await queryClient.cancelQueries({ queryKey: [...CACHE_KEY_BOARD, payload.board_id] });
+			await queryClient.cancelQueries({ queryKey: [...CACHE_KEY_TASK_MANAGEMENT_BOARD, payload.board_id] });
 
-			const previous_board = queryClient.getQueryData<Board>([...CACHE_KEY_BOARD, payload.board_id]);
+			const previous_board = queryClient.getQueryData<Board>([...CACHE_KEY_TASK_MANAGEMENT_BOARD, payload.board_id]);
 
-			queryClient.setQueryData<Board>([...CACHE_KEY_BOARD, payload.board_id], (board) => {
+			queryClient.setQueryData<Board>([...CACHE_KEY_TASK_MANAGEMENT_BOARD, payload.board_id], (board) => {
 				if (!board) return board;
 
 				/* Find the task being moved */
@@ -264,7 +264,7 @@ export const useUpdateTaskColumn = (callback?: CallbackResponse) => {
 		},
 		onError: (_, payload, context) => {
 			if (context?.previous_board) {
-				queryClient.setQueryData<Board>([...CACHE_KEY_BOARD, payload.board_id], context.previous_board);
+				queryClient.setQueryData<Board>([...CACHE_KEY_TASK_MANAGEMENT_BOARD, payload.board_id], context.previous_board);
 			}
 
 			toast.error("Something went wrong. Please try again.");
@@ -289,11 +289,11 @@ export const useReorderTask = (callback?: CallbackResponse) => {
 	const { mutate: reorderTask, ...rest } = useMutation({
 		mutationFn: (payload: ReorderTaskSchemaType) => executeAction(reorderTaskAction(payload)),
 		onMutate: async (payload) => {
-			await queryClient.cancelQueries({ queryKey: [...CACHE_KEY_BOARD, payload.board_id] });
+			await queryClient.cancelQueries({ queryKey: [...CACHE_KEY_TASK_MANAGEMENT_BOARD, payload.board_id] });
 
-			const previous_board = queryClient.getQueryData<Board>([...CACHE_KEY_BOARD, payload.board_id]);
+			const previous_board = queryClient.getQueryData<Board>([...CACHE_KEY_TASK_MANAGEMENT_BOARD, payload.board_id]);
 
-			queryClient.setQueryData<Board>([...CACHE_KEY_BOARD, payload.board_id], (board) => {
+			queryClient.setQueryData<Board>([...CACHE_KEY_TASK_MANAGEMENT_BOARD, payload.board_id], (board) => {
 				if (!board) return board;
 
 				/* Find which column currently holds the task in the cache */
@@ -342,7 +342,7 @@ export const useReorderTask = (callback?: CallbackResponse) => {
 		},
 		onError: (_, payload, context) => {
 			if (context?.previous_board) {
-				queryClient.setQueryData<Board>([...CACHE_KEY_BOARD, payload.board_id], context.previous_board);
+				queryClient.setQueryData<Board>([...CACHE_KEY_TASK_MANAGEMENT_BOARD, payload.board_id], context.previous_board);
 			}
 
 			toast.error("Something went wrong. Please try again.");
@@ -368,11 +368,11 @@ export const useReorderSubtask = (callback?: CallbackResponse) => {
 	const { mutate: reorderSubtask, ...rest } = useMutation({
 		mutationFn: (payload: ReorderSubtaskSchemaType) => executeAction(reorderSubtaskAction(payload)),
 		onMutate: async (payload) => {
-			await queryClient.cancelQueries({ queryKey: [...CACHE_KEY_BOARD, payload.board_id] });
+			await queryClient.cancelQueries({ queryKey: [...CACHE_KEY_TASK_MANAGEMENT_BOARD, payload.board_id] });
 
-			const previous_board = queryClient.getQueryData<Board>([...CACHE_KEY_BOARD, payload.board_id]);
+			const previous_board = queryClient.getQueryData<Board>([...CACHE_KEY_TASK_MANAGEMENT_BOARD, payload.board_id]);
 
-			queryClient.setQueryData<Board>([...CACHE_KEY_BOARD, payload.board_id], (board) => {
+			queryClient.setQueryData<Board>([...CACHE_KEY_TASK_MANAGEMENT_BOARD, payload.board_id], (board) => {
 				if (!board) return board;
 
 				return {
@@ -397,7 +397,7 @@ export const useReorderSubtask = (callback?: CallbackResponse) => {
 		},
 		onError: (_, payload, context) => {
 			if (context?.previous_board) {
-				queryClient.setQueryData<Board>([...CACHE_KEY_BOARD, payload.board_id], context.previous_board);
+				queryClient.setQueryData<Board>([...CACHE_KEY_TASK_MANAGEMENT_BOARD, payload.board_id], context.previous_board);
 			}
 
 			toast.error("Something went wrong. Please try again.");
@@ -424,7 +424,7 @@ export const useAddSubtask = (callback?: CallbackResponse) => {
 		mutationFn: (payload: AddSubtaskSchemaType) => executeAction(addSubtaskAction(payload)),
 		onSuccess: (response, payload) => {
 			if (response) {
-				queryClient.setQueryData<Board>([...CACHE_KEY_BOARD, payload.board_id], (board) => {
+				queryClient.setQueryData<Board>([...CACHE_KEY_TASK_MANAGEMENT_BOARD, payload.board_id], (board) => {
 					if (!board) return board;
 
 					return {
@@ -470,11 +470,11 @@ export const useMarkAllSubtasksComplete = (callback?: CallbackResponse) => {
 	const { mutate: markAllSubtasksComplete, ...rest } = useMutation({
 		mutationFn: (payload: MarkAllSubtasksCompleteSchemaType) => executeAction(markAllSubtasksCompleteAction(payload)),
 		onMutate: async (payload) => {
-			await queryClient.cancelQueries({ queryKey: [...CACHE_KEY_BOARD, payload.board_id] });
+			await queryClient.cancelQueries({ queryKey: [...CACHE_KEY_TASK_MANAGEMENT_BOARD, payload.board_id] });
 
-			const previous_board = queryClient.getQueryData<Board>([...CACHE_KEY_BOARD, payload.board_id]);
+			const previous_board = queryClient.getQueryData<Board>([...CACHE_KEY_TASK_MANAGEMENT_BOARD, payload.board_id]);
 
-			queryClient.setQueryData<Board>([...CACHE_KEY_BOARD, payload.board_id], (board) => {
+			queryClient.setQueryData<Board>([...CACHE_KEY_TASK_MANAGEMENT_BOARD, payload.board_id], (board) => {
 				if (!board) return board;
 
 				return {
@@ -500,7 +500,7 @@ export const useMarkAllSubtasksComplete = (callback?: CallbackResponse) => {
 		},
 		onError: (_, payload, context) => {
 			if (context?.previous_board) {
-				queryClient.setQueryData<Board>([...CACHE_KEY_BOARD, payload.board_id], context.previous_board);
+				queryClient.setQueryData<Board>([...CACHE_KEY_TASK_MANAGEMENT_BOARD, payload.board_id], context.previous_board);
 			}
 
 			toast.error("Something went wrong. Please try again.");
@@ -526,11 +526,11 @@ export const useToggleTaskComplete = (callback?: CallbackResponse) => {
 	const { mutate: toggleTaskComplete, ...rest } = useMutation({
 		mutationFn: (payload: ToggleTaskCompleteSchemaType) => executeAction(toggleTaskCompleteAction(payload)),
 		onMutate: async (payload) => {
-			await queryClient.cancelQueries({ queryKey: [...CACHE_KEY_BOARD, payload.board_id] });
+			await queryClient.cancelQueries({ queryKey: [...CACHE_KEY_TASK_MANAGEMENT_BOARD, payload.board_id] });
 
-			const previous_board = queryClient.getQueryData<Board>([...CACHE_KEY_BOARD, payload.board_id]);
+			const previous_board = queryClient.getQueryData<Board>([...CACHE_KEY_TASK_MANAGEMENT_BOARD, payload.board_id]);
 
-			queryClient.setQueryData<Board>([...CACHE_KEY_BOARD, payload.board_id], (board) => {
+			queryClient.setQueryData<Board>([...CACHE_KEY_TASK_MANAGEMENT_BOARD, payload.board_id], (board) => {
 				if (!board) return board;
 
 				return {
@@ -552,7 +552,7 @@ export const useToggleTaskComplete = (callback?: CallbackResponse) => {
 		},
 		onError: (_, payload, context) => {
 			if (context?.previous_board) {
-				queryClient.setQueryData<Board>([...CACHE_KEY_BOARD, payload.board_id], context.previous_board);
+				queryClient.setQueryData<Board>([...CACHE_KEY_TASK_MANAGEMENT_BOARD, payload.board_id], context.previous_board);
 			}
 
 			toast.error("Something went wrong. Please try again.");

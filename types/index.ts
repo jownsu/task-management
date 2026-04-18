@@ -1,6 +1,7 @@
 import type {
     Board as PrismaBoard,
     Column as PrismaColumn,
+    Habit as PrismaHabit,
     Task as PrismaTask,
     Subtask as PrismaSubtask,
     User as PrismaUser,
@@ -12,14 +13,17 @@ export interface CallbackResponse<T = unknown> {
 	onError?: (error_msg?: string) => void;
 }
 
-export type Board = Pick<PrismaBoard, "id" | "name" | "columnOrder"> & {
+export type Board = Pick<PrismaBoard, "id" | "name" | "columnOrder" | "habitOrder" | "type"> & {
 	columns?: Column[];
+	habits?: Habit[];
 	tags?: Tag[];
 };
 
 export type Column = Pick<PrismaColumn, "id" | "name" | "theme" | "taskOrder"> & {
 	tasks?: Task[];
 };
+
+export type Habit = Pick<PrismaHabit, "id" | "name" | "theme" | "goal">;
 
 export type Subtask = Pick<PrismaSubtask, "id" | "title" | "isCompleted">;
 

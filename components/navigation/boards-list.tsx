@@ -8,14 +8,13 @@ import { useEffect, useRef, useState } from "react";
 
 /* COMPONENTS */
 import CreateBoardButton from "@/components/board/create-board-button";
-import SortableBoardLink from "@/components/navigation/sortable-board-link";
+import SortableBoardLink, { BOARD_ICONS } from "@/components/navigation/sortable-board-link";
 
 /* PLUGINS */
 import { DragDropProvider, DragOverlay } from "@dnd-kit/react";
 import { move } from "@dnd-kit/helpers";
 
 /* ICONS */
-import IconBoardLink from "@/public/icon-board-link.svg";
 import { MdDragIndicator } from "react-icons/md";
 
 /* QUERIES */
@@ -27,7 +26,7 @@ import { useReorderBoard } from "@/hooks/mutations/board.mutation";
 /* TYPES */
 import { Board } from "@/types";
 
-type BoardItem = Omit<Board, "columns" | "columnOrder">;
+type BoardItem = Pick<Board, "id" | "name" | "type">;
 
 const BoardsList = () => {
 
@@ -129,13 +128,15 @@ const BoardsList = () => {
 						const board = findBoardById(source.id as string);
 						if (!board) return null;
 
+						const Icon = BOARD_ICONS[board.type];
+
 						return (
 							<div className="flex items-center h-[48] pl-[16] rounded-r-full bg-foreground drop-shadow-md text-medium-grey !text-h-md">
 								<span className="text-primary -translate-x-0.5">
 									<MdDragIndicator size={16} />
 								</span>
 								<span className="flex items-center gap-[12]">
-									<IconBoardLink /> {board.name}
+									<Icon /> {board.name}
 								</span>
 							</div>
 						);

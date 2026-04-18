@@ -6,24 +6,24 @@ import { authActionClient, getAuthUser } from "@/lib/safe-action";
 import { sortByIdOrder } from "@/lib/helpers";
 
 /* SCHEMA */
-import { add_board_schema, delete_board_schema, edit_board_schema, reorder_board_schema } from "@/schema/board-schema";
+import { add_board_schema, delete_board_schema, reorder_board_schema } from "@/schema/board-schema";
 
 /* TYPES */
 import { Board } from "@/types";
 
 /**
- * DOCU: Fetches all boards for the current user, sorted by their custom board order. <br>
+ * DOCU: Fetches all boards for the current user (including board type), sorted by their custom board order. <br>
  * Triggered: When loading the sidebar or boards list. <br>
- * Last Updated: April 02, 2026
+ * Last Updated: April 18, 2026
  * @author Jhones
  */
-export async function getAllBoards(): Promise<Omit<Board, "columns" | "columnOrder">[]> {
+export async function getAllBoards(): Promise<Pick<Board, "id" | "name" | "type">[]> {
 	const user = await getAuthUser();
 
 	const [boards, user_data] = await Promise.all([
 		prisma.board.findMany({
 			where: { userId: user.id },
-			select: { id: true, name: true },
+			select: { id: true, name: true, type: true },
 			orderBy: { createdAt: "asc" }
 		}),
 		prisma.user.findUnique({
@@ -47,37 +47,49 @@ export async function getAllBoards(): Promise<Omit<Board, "columns" | "columnOrd
 }
 
 /**
- * DOCU: Creates a new board with its columns for the current user. <br>
+ * DOCU: Creates a new board for the current user. For TASK_MANAGEMENT boards, creates columns. For HABIT_TRACKER boards, creates habits. <br>
  * Triggered: On submission of new board form. <br>
- * Last Updated: April 06, 2026
+ * Last Updated: April 18, 2026
  * @author Jhones
  */
 export const createBoardAction = authActionClient
 	.schema(add_board_schema)
 	.action(async ({ parsedInput, ctx }) => {
 		const board = await prisma.$transaction(async (tx) => {
-			/* Create the board with its columns */
+			/* Create the board with columns or habits depending on type */
 			const new_board = await tx.board.create({
 				data: {
 					name: parsedInput.name,
+					type: parsedInput.type,
 					userId: ctx.userId,
-					columns: {
-						create: parsedInput.columns.map((column) => ({ name: column.name, theme: column.theme }))
-					}
+					columns:
+						parsedInput.type === "TASK_MANAGEMENT" && parsedInput.columns
+							? { create: parsedInput.columns.map((column) => ({ name: column.name, theme: column.theme })) }
+							: undefined,
+					habits:
+						parsedInput.type === "HABIT_TRACKER" && parsedInput.habits
+							? { create: parsedInput.habits.map((habit) => ({ name: habit.name, theme: habit.theme, goal: habit.goal })) }
+							: undefined
 				},
 				include: {
-					columns: { select: { id: true }, orderBy: { createdAt: "asc" } }
+					columns: { select: { id: true }, orderBy: { createdAt: "asc" } },
+					habits: { select: { id: true }, orderBy: { createdAt: "asc" } }
 				}
 			});
 
-			/* Set the column order on the board */
+			/* Set column / habit order on the board */
 			const updated_board = await tx.board.update({
 				where: { id: new_board.id },
-				data: { columnOrder: new_board.columns.map((column) => column.id) },
+				data: {
+					columnOrder: new_board.columns.map((column) => column.id),
+					habitOrder: new_board.habits.map((habit) => habit.id)
+				},
 				select: {
 					id: true,
 					name: true,
-					columnOrder: true
+					type: true,
+					columnOrder: true,
+					habitOrder: true
 				}
 			});
 
@@ -91,143 +103,6 @@ export const createBoardAction = authActionClient
 		});
 
 		return board;
-	});
-
-/**
- * DOCU: Edits a board and its columns (create, update, delete) for the current user. <br>
- * Triggered: On submission of edit board form. <br>
- * Last Updated: April 09, 2026
- * @author Jhones
- */
-export const editBoardAction = authActionClient
-	.schema(edit_board_schema)
-	.action(async ({ parsedInput, ctx }) => {
-		const { id, name, columns, tags } = parsedInput;
-
-		/* Get existing column IDs to determine which ones to delete */
-		const existing_columns = await prisma.column.findMany({
-			where: { boardId: id },
-			select: { id: true }
-		});
-
-		const existing_column_ids = existing_columns.map((column) => column.id);
-		const payload_column_ids = columns.filter((column) => column.id && !column.is_new).map((column) => column.id!);
-		const columns_to_delete = existing_column_ids.filter((column_id) => !payload_column_ids.includes(column_id));
-
-		/* Get existing tag IDs to determine which ones to delete */
-		const existing_tags = await prisma.tag.findMany({
-			where: { boardId: id },
-			select: { id: true }
-		});
-
-		const existing_tag_ids = existing_tags.map((tag) => tag.id);
-		const payload_tag_ids = (tags || []).filter((tag) => tag.id && !tag.is_new).map((tag) => tag.id!);
-		const tags_to_delete = existing_tag_ids.filter((tag_id) => !payload_tag_ids.includes(tag_id));
-
-		const board = await prisma.$transaction(async (tx) => {
-			/* Delete removed columns */
-			if (columns_to_delete.length > 0) {
-				await tx.column.deleteMany({
-					where: { id: { in: columns_to_delete } }
-				});
-			}
-
-			/* Delete removed tags */
-			if (tags_to_delete.length > 0) {
-				await tx.tag.deleteMany({
-					where: { id: { in: tags_to_delete } }
-				});
-			}
-
-			/* Update existing columns and create new ones, collect IDs for ordering */
-			const column_ids: string[] = [];
-
-			for (const column of columns) {
-				if (column.id && !column.is_new) {
-					await tx.column.update({
-						where: { id: column.id },
-						data: { name: column.name, theme: column.theme }
-					});
-					column_ids.push(column.id);
-				} else {
-					const new_column = await tx.column.create({
-						data: { name: column.name, theme: column.theme, boardId: id }
-					});
-					column_ids.push(new_column.id);
-				}
-			}
-
-			/* Update existing tags and create new ones */
-			for (const tag of tags || []) {
-				if (tag.id && !tag.is_new) {
-					await tx.tag.update({
-						where: { id: tag.id },
-						data: { name: tag.name.trim(), color: tag.color }
-					});
-				} else {
-					await tx.tag.create({
-						data: { name: tag.name.trim(), color: tag.color, boardId: id }
-					});
-				}
-			}
-
-			/* Update board name, column order, and return full board */
-			return tx.board.update({
-				where: { id, userId: ctx.userId },
-				data: { name, columnOrder: column_ids },
-				include: {
-					tags: true,
-					columns: {
-						include: {
-							tasks: {
-								include: {
-									subtasks: true,
-									tags: {
-										include: {
-											tag: true
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			});
-		});
-
-		return {
-			id: board.id,
-			name: board.name,
-			columnOrder: board.columnOrder,
-			tags: board.tags.map((tag) => ({
-				id: tag.id,
-				name: tag.name,
-				color: tag.color
-			})),
-			columns: sortByIdOrder(board.columns, board.columnOrder).map((column) => ({
-				id: column.id,
-				name: column.name,
-				theme: column.theme,
-				taskOrder: column.taskOrder,
-				tasks: sortByIdOrder(column.tasks, column.taskOrder).map((task) => ({
-					id: task.id,
-					title: task.title,
-					isCompleted: task.isCompleted,
-					description: task.description || "",
-					subtaskOrder: task.subtaskOrder,
-					subtasks: sortByIdOrder(task.subtasks, task.subtaskOrder).map((subtask) => ({
-						id: subtask.id,
-						title: subtask.title,
-						isCompleted: subtask.isCompleted
-					})),
-					tags: task.tags.map((task_tag) => ({
-						id: task_tag.tag.id,
-						name: task_tag.tag.name,
-						color: task_tag.tag.color
-					}))
-				}))
-			}))
-		};
 	});
 
 /**
@@ -274,68 +149,3 @@ export const reorderBoardAction = authActionClient
 			data: { boardOrder: parsedInput.updated_board_order }
 		});
 	});
-
-/**
- * DOCU: Fetches a single board with all its columns, tasks, and subtasks. <br>
- * Triggered: When loading a specific board page. <br>
- * Last Updated: April 09, 2026
- * @author Jhones
- */
-export async function getBoardById(board_id: string): Promise<Board | null> {
-	const board = await prisma.board.findUnique({
-		where: { id: board_id },
-		include: {
-			tags: true,
-			columns: {
-				include: {
-					tasks: {
-						include: {
-							subtasks: true,
-							tags: {
-								include: {
-									tag: true
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-	});
-
-	if (!board) return null;
-
-	return {
-		id: board.id,
-		name: board.name,
-		columnOrder: board.columnOrder,
-		tags: board.tags.map((tag) => ({
-			id: tag.id,
-			name: tag.name,
-			color: tag.color
-		})),
-		columns: sortByIdOrder(board.columns, board.columnOrder).map((column) => ({
-			id: column.id,
-			name: column.name,
-			theme: column.theme,
-			taskOrder: column.taskOrder,
-			tasks: sortByIdOrder(column.tasks, column.taskOrder).map((task) => ({
-				id: task.id,
-				title: task.title,
-				isCompleted: task.isCompleted,
-				description: task.description || "",
-				subtaskOrder: task.subtaskOrder,
-				subtasks: sortByIdOrder(task.subtasks, task.subtaskOrder).map((subtask) => ({
-					id: subtask.id,
-					title: subtask.title,
-					isCompleted: subtask.isCompleted
-				})),
-				tags: task.tags.map((task_tag) => ({
-					id: task_tag.tag.id,
-					name: task_tag.tag.name,
-					color: task_tag.tag.color
-				}))
-			}))
-		}))
-	};
-}
