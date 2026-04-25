@@ -35,7 +35,7 @@ export default function RootLayout({
 				<Providers>
 					{children}
 					<ReactQueryDevtools initialIsOpen={false} />
-									</Providers>
+				</Providers>
 			</body>
 		</html>
 	);
