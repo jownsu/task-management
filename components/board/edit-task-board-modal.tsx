@@ -38,7 +38,7 @@ import { Column } from "@/types";
 /* CONSTANTS */
 import { DEFAULT_COLUMN_THEME } from "@/constants";
 
-const EditBoardmodal = () => {
+const EditTaskBoardModal = () => {
 	const board_modals = useBoardStore((state) => state.modals);
 	const setModal = useBoardStore((state) => state.setModal);
 	const selected_board = useBoardStore((state) => state.selected_board);
@@ -300,4 +300,4 @@ const EditBoardmodal = () => {
 	);
 };
 
-export default EditBoardmodal;
+export default EditTaskBoardModal;

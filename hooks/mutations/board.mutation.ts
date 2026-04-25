@@ -4,18 +4,19 @@ import { useRouter } from "next/navigation";
 /* ACTIONS */
 import { createBoardAction, deleteBoardAction, reorderBoardAction } from "@/actions/board.actions";
 import { editTaskManagementBoard } from "@/actions/task-management-board.actions";
+import { editHabitTrackerBoard } from "@/actions/habit-tracker-board.actions";
 
 /* UTILITIES */
 import { executeAction } from "@/lib/execute-action";
 
 /* SCHEMA */
-import { AddBoardSchema, DeleteBoardSchema, EditBoardSchema, ReorderBoardSchema } from "@/schema/board-schema";
+import { AddBoardSchema, DeleteBoardSchema, EditBoardSchema, EditHabitBoardSchema, ReorderBoardSchema } from "@/schema/board-schema";
 
 /* TYPES */
 import { Board, CallbackResponse } from "@/types";
 
 /* CONSTANTS */
-import { CACHE_KEY_BOARDS, CACHE_KEY_TASK_MANAGEMENT_BOARD } from "@/constants/query-keys";
+import { CACHE_KEY_BOARDS, CACHE_KEY_HABIT_TRACKER_BOARD, CACHE_KEY_TASK_MANAGEMENT_BOARD } from "@/constants/query-keys";
 
 /* PLUGINS */
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -88,6 +89,49 @@ export const useEditTaskManagementBoard = (callback?: CallbackResponse) => {
 				});
 
 				queryClient.setQueryData<Board>([...CACHE_KEY_TASK_MANAGEMENT_BOARD, response.id], (board) => {
+					if (board) {
+						return response;
+					}
+				});
+
+				toast.success("Board updated successfully.");
+				callback?.onSuccess?.();
+			}
+		},
+		onError: () => {
+			toast.error("Something went wrong. Please try again.");
+		}
+	});
+
+	return { editBoard, ...rest };
+};
+
+/**
+ * DOCU: Edits a habit-tracker board and its habits. <br>
+ * Triggered: On submission of edit habit-tracker board form. <br>
+ * Last Updated: April 25, 2026
+ * @author Jhones
+ */
+export const useEditHabitTrackerBoard = (callback?: CallbackResponse) => {
+	const queryClient = useQueryClient();
+
+	const { mutate: editBoard, ...rest } = useMutation({
+		mutationFn: (payload: EditHabitBoardSchema) => executeAction(editHabitTrackerBoard(payload)),
+		onSuccess: (response) => {
+			if (response) {
+				queryClient.setQueryData<BoardListItem[]>(CACHE_KEY_BOARDS, (boards) => {
+					if (boards) {
+						return boards.map((board) => {
+							if (board.id === response.id) {
+								return { id: response.id, name: response.name, type: response.type };
+							}
+
+							return board;
+						});
+					}
+				});
+
+				queryClient.setQueryData<Board>([...CACHE_KEY_HABIT_TRACKER_BOARD, response.id], (board) => {
 					if (board) {
 						return response;
 					}

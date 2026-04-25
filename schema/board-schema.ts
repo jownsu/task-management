@@ -42,6 +42,18 @@ export const edit_board_schema = z.object({
 	})).max(MAX_BOARD_TAGS, `You can only have up to ${MAX_BOARD_TAGS} tags`).optional()
 });
 
+export const edit_habit_board_schema = z.object({
+	id: z.string(),
+	name: z.string().min(1, "Name is required"),
+	habits: z.array(z.object({
+		id: z.string().optional(),
+		name: z.string().min(1, "Can't be empty"),
+		theme: z.string().regex(/^#[0-9A-Fa-f]{6}$/, "Invalid hex color").default("#635FC7"),
+		goal: z.coerce.number().int().min(0, "Goal must be 0 or more").default(0),
+		is_new: z.boolean().default(false).optional()
+	})).max(MAX_HABITS, `You can only have up to ${MAX_HABITS} habits`)
+});
+
 export const delete_board_schema = z.object({
 	id: z.string()
 });
@@ -54,5 +66,6 @@ export type BoardType = z.infer<typeof board_type_schema>;
 export type HabitSchema = z.infer<typeof habit_schema>;
 export type AddBoardSchema = z.infer<typeof add_board_schema>;
 export type EditBoardSchema = z.infer<typeof edit_board_schema>;
+export type EditHabitBoardSchema = z.infer<typeof edit_habit_board_schema>;
 export type DeleteBoardSchema = z.infer<typeof delete_board_schema>;
 export type ReorderBoardSchema = z.infer<typeof reorder_board_schema>;

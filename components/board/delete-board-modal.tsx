@@ -16,6 +16,14 @@ import { useDeleteBoard } from "@/hooks/mutations/board.mutation";
 /* STORE */
 import { useBoardStore } from "@/store/board.store";
 
+/* SCHEMA */
+import { BoardType } from "@/schema/board-schema";
+
+const BOARD_DELETE_DESCRIPTIONS: Record<BoardType, string> = {
+	TASK_MANAGEMENT: "This action will remove all columns and tasks and cannot be reversed.",
+	HABIT_TRACKER: "This action will remove all habits and their progress and cannot be reversed."
+};
+
 const DeleteBoardModal = () => {
 	const setModal = useBoardStore((state) => state.setModal);
 	const modals = useBoardStore((state) => state.modals);
@@ -54,8 +62,7 @@ const DeleteBoardModal = () => {
 
 				<DialogDescription>
 					Are you sure you want to delete the &apos;{selected_board?.name}&apos;
-					board? This action will remove all columns and tasks and cannot be
-					reversed.
+					board? {selected_board && BOARD_DELETE_DESCRIPTIONS[selected_board.type]}
 				</DialogDescription>
 
 				<div className="flex flex-col gap-[16] md:flex-row">

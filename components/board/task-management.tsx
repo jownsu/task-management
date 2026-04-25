@@ -3,7 +3,7 @@ import ColumnList from "@/components/columns/column-list";
 import FilterBar from "@/components/columns/filter-bar";
 import CreateColumnModal from "@/components/columns/create-column-modal";
 import CreateTaskModal from "@/components/task/create-task-modal";
-import EditBoardmodal from "@/components/board/edit-board-modal";
+import EditTaskBoardModal from "@/components/board/edit-task-board-modal";
 import DeleteBoardModal from "@/components/board/delete-board-modal";
 import EditTagsModal from "@/components/board/edit-tags-modal";
 import ViewTaskModal from "@/components/task/view-task-modal";
@@ -25,7 +25,7 @@ const TaskManagement = () => {
 			{/* MODALS */}
 			<CreateColumnModal />
 			<CreateTaskModal />
-			<EditBoardmodal />
+			<EditTaskBoardModal />
 			<EditTagsModal />
 			<DeleteBoardModal />
 			<ViewTaskModal />
