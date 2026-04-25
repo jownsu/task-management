@@ -25,6 +25,11 @@ export type Column = Pick<PrismaColumn, "id" | "name" | "theme" | "taskOrder"> &
 
 export type Habit = Pick<PrismaHabit, "id" | "name" | "theme" | "goal">;
 
+export type HabitLog = {
+	habitId: string;
+	date: string;
+};
+
 export type Subtask = Pick<PrismaSubtask, "id" | "title" | "isCompleted">;
 
 export type Tag = Pick<PrismaTag, "id" | "name" | "color">;

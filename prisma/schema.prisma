@@ -151,14 +151,15 @@ model Tag {
 }
 
 model Habit {
-  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id        String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   name      String
-  theme     String   @default("#635FC7")
-  goal      Int      @default(0)
-  boardId   String   @db.Uuid
-  board     Board    @relation(fields: [boardId], references: [id], onDelete: Cascade)
-  createdAt DateTime @default(now()) @db.Timestamp(6)
-  updatedAt DateTime @updatedAt @db.Timestamp(6)
+  theme     String     @default("#635FC7")
+  goal      Int        @default(0)
+  boardId   String     @db.Uuid
+  board     Board      @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  logs      HabitLog[]
+  createdAt DateTime   @default(now()) @db.Timestamp(6)
+  updatedAt DateTime   @updatedAt @db.Timestamp(6)
 }
 
 model TaskTag {
@@ -169,4 +170,15 @@ model TaskTag {
   createdAt DateTime @default(now()) @db.Timestamp(6)
 
   @@id([taskId, tagId])
+}
+
+model HabitLog {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  habitId   String   @db.Uuid
+  habit     Habit    @relation(fields: [habitId], references: [id], onDelete: Cascade)
+  date      DateTime @db.Date
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+
+  @@unique([habitId, date])
+  @@index([habitId])
 }

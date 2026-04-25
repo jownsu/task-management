@@ -800,7 +800,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import TaskManagementFields from "@/components/board/task-management-fields";
-import HabitTrackerFields from "@/components/board/habit-tracker-fields";
+import HabitTrackerFields from "@/components/habit-tracker-fields";
 
 /* PLUGINS */
 import { zodResolver } from "@hookform/resolvers/zod";

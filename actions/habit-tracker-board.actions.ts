@@ -6,7 +6,7 @@ import { authActionClient } from "@/lib/safe-action";
 import { sortByIdOrder } from "@/lib/helpers";
 
 /* SCHEMA */
-import { edit_habit_board_schema } from "@/schema/board-schema";
+import { add_habit_schema, edit_habit_board_schema, edit_habit_schema } from "@/schema/board-schema";
 
 /* TYPES */
 import { Board } from "@/types";
@@ -113,3 +113,68 @@ export async function getHabitTrackerBoardById(board_id: string): Promise<Board 
 		}))
 	};
 }
+
+/**
+ * DOCU: Creates a new habit on a habit-tracker board and appends it to habitOrder. <br>
+ * Triggered: On submission of the Add Habit modal. <br>
+ * Last Updated: April 25, 2026
+ * @author Jhones
+ */
+export const addHabitAction = authActionClient
+	.schema(add_habit_schema)
+	.action(async ({ parsedInput, ctx }) => {
+		const { board_id, name, theme, goal } = parsedInput;
+
+		const habit = await prisma.$transaction(async (tx) => {
+			const new_habit = await tx.habit.create({
+				data: { name, theme, goal, boardId: board_id }
+			});
+
+			await tx.board.update({
+				where: { id: board_id, userId: ctx.userId },
+				data: { habitOrder: { push: new_habit.id } }
+			});
+
+			return new_habit;
+		});
+
+		return {
+			id: habit.id,
+			name: habit.name,
+			theme: habit.theme,
+			goal: habit.goal,
+			board_id
+		};
+	});
+
+/**
+ * DOCU: Updates a single habit's name, theme, and goal. Verifies board ownership before mutating. <br>
+ * Triggered: On submission of the Edit Habit modal. <br>
+ * Last Updated: April 25, 2026
+ * @author Jhones
+ */
+export const editHabitAction = authActionClient
+	.schema(edit_habit_schema)
+	.action(async ({ parsedInput, ctx }) => {
+		const { id, board_id, name, theme, goal } = parsedInput;
+
+		const board = await prisma.board.findUnique({
+			where: { id: board_id, userId: ctx.userId },
+			select: { id: true }
+		});
+
+		if (!board) throw new Error("Board not found");
+
+		const habit = await prisma.habit.update({
+			where: { id, boardId: board_id },
+			data: { name, theme, goal }
+		});
+
+		return {
+			id: habit.id,
+			name: habit.name,
+			theme: habit.theme,
+			goal: habit.goal,
+			board_id
+		};
+	});

@@ -62,6 +62,26 @@ export const reorder_board_schema = z.object({
 	updated_board_order: z.array(z.string())
 });
 
+export const add_habit_schema = z.object({
+	board_id: z.string().uuid(),
+	name: z.string().min(1, "Name is required"),
+	theme: z.string().regex(/^#[0-9A-Fa-f]{6}$/, "Invalid hex color").default("#635FC7"),
+	goal: z.coerce.number().int().min(0, "Goal must be 0 or more").default(20)
+});
+
+export const edit_habit_schema = z.object({
+	id: z.string().uuid(),
+	board_id: z.string().uuid(),
+	name: z.string().min(1, "Name is required"),
+	theme: z.string().regex(/^#[0-9A-Fa-f]{6}$/, "Invalid hex color").default("#635FC7"),
+	goal: z.coerce.number().int().min(0, "Goal must be 0 or more").default(20)
+});
+
+export const toggle_habit_log_schema = z.object({
+	habit_id: z.string().uuid(),
+	date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date")
+});
+
 export type BoardType = z.infer<typeof board_type_schema>;
 export type HabitSchema = z.infer<typeof habit_schema>;
 export type AddBoardSchema = z.infer<typeof add_board_schema>;
@@ -69,3 +89,6 @@ export type EditBoardSchema = z.infer<typeof edit_board_schema>;
 export type EditHabitBoardSchema = z.infer<typeof edit_habit_board_schema>;
 export type DeleteBoardSchema = z.infer<typeof delete_board_schema>;
 export type ReorderBoardSchema = z.infer<typeof reorder_board_schema>;
+export type AddHabitSchema = z.infer<typeof add_habit_schema>;
+export type EditHabitSchema = z.infer<typeof edit_habit_schema>;
+export type ToggleHabitLogSchema = z.infer<typeof toggle_habit_log_schema>;
