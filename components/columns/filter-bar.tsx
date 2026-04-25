@@ -17,7 +17,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useFilterStore } from "@/store/filter.store";
 
 /* QUERIES */
-import { useGetBoard } from "@/hooks/queries/board.query";
+import { useGetTaskManagementBoard } from "@/hooks/queries/task-management-board.query";
 
 /* ICONS */
 import { MdSearch, MdFilterList, MdClose } from "react-icons/md";
@@ -33,7 +33,7 @@ import { cn } from "@/lib/utils";
  */
 const FilterBar = () => {
 	const { board_id } = useParams() as { board_id: string };
-	const { board } = useGetBoard(board_id);
+	const { board } = useGetTaskManagementBoard(board_id);
 
 	const search_query = useFilterStore((state) => state.search_query);
 	const completion_filter = useFilterStore((state) => state.completion_filter);

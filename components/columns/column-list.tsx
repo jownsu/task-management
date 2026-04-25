@@ -20,7 +20,7 @@ import { move } from "@dnd-kit/helpers";
 import { useReorderTask } from "@/hooks/mutations/task.mutation";
 
 /* QUERIES */
-import { useGetBoard } from "@/hooks/queries/board.query";
+import { useGetTaskManagementBoard } from "@/hooks/queries/task-management-board.query";
 
 /* TYPES */
 import { Column, Task } from "@/types";
@@ -28,7 +28,7 @@ import { Column, Task } from "@/types";
 const ColumnList = () => {
 
 	const { board_id } = useParams() as { board_id: string };
-	const { board } = useGetBoard(board_id);
+	const { board } = useGetTaskManagementBoard(board_id);
 	const { reorderTask, isPending: is_reordering } = useReorderTask();
 	const [columns, setColumns] = useState<Column[]>(board?.columns || []);
 	const columns_snapshot_ref = useRef<Column[]>([]);

@@ -41,7 +41,7 @@ import { getContrastColor } from "@/lib/helpers";
 import { useTaskStore } from "@/store/task.store";
 
 /* QUERIES */
-import { useGetBoard } from "@/hooks/queries/board.query";
+import { useGetTaskManagementBoard } from "@/hooks/queries/task-management-board.query";
 
 /* MUTATIONS */
 import { useCreateTask } from "@/hooks/mutations/task.mutation";
@@ -57,7 +57,7 @@ const CreateTaskModal = () => {
 
 	const setModal = useTaskStore((state) => state.setModal);
 	const modals = useTaskStore((state) => state.modals);
-	const { board } = useGetBoard(board_id);
+	const { board } = useGetTaskManagementBoard(board_id);
 	const { createTask, isPending } = useCreateTask({
 		onSuccess: () => setModal("add_task", false)
 	});

@@ -21,7 +21,7 @@ import { move } from "@dnd-kit/helpers";
 import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 
 /* QUERIES */
-import { useGetBoard } from "@/hooks/queries/board.query";
+import { useGetTaskManagementBoard } from "@/hooks/queries/task-management-board.query";
 
 /* MUTATIONS */
 import { useEditTask } from "@/hooks/mutations/task.mutation";
@@ -54,7 +54,7 @@ const EditTaskModal = () => {
 	const setModal = useTaskStore((state) => state.setModal);
 	const modals = useTaskStore((state) => state.modals);
 	const selected_task = useSelectedTask();
-	const { board } = useGetBoard(board_id);
+	const { board } = useGetTaskManagementBoard(board_id);
 	const { editTask, isPending } = useEditTask({
 		onSuccess: () => setModal("edit_task", false)
 	});

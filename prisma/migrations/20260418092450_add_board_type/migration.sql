@@ -1,0 +1,5 @@
+-- CreateEnum
+CREATE TYPE "BoardType" AS ENUM ('TASK_MANAGEMENT', 'HABIT_TRACKER');
+
+-- AlterTable
+ALTER TABLE "Board" ADD COLUMN "type" "BoardType" NOT NULL DEFAULT 'TASK_MANAGEMENT';

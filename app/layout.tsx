@@ -7,6 +7,7 @@ import Providers from "@/components/providers";
 /* PLUGINS */
 import { Plus_Jakarta_Sans } from "next/font/google";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 
 /* STYLES */
 import "./globals.css";
@@ -32,10 +33,12 @@ export default function RootLayout({
 			<body
 				className={`${jakarta.variable} bg-background flex flex-col gap-[16] min-h-screen`}
 			>
-				<Providers>
-					{children}
-					<ReactQueryDevtools initialIsOpen={false} />
-									</Providers>
+				<NuqsAdapter>
+					<Providers>
+						{children}
+						<ReactQueryDevtools initialIsOpen={false} />
+					</Providers>
+				</NuqsAdapter>
 			</body>
 		</html>
 	);
