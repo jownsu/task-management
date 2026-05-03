@@ -84,22 +84,22 @@ const FilterBar = () => {
 	}, [board_id]);
 
 	return (
-		<div className="flex flex-wrap items-center gap-[12] mb-[20]">
+		<div className="flex flex-wrap items-center gap-[12] mb-[20] sticky top-[120] left-[324] z-50">
 			{/* Search Input */}
 			<div className="relative">
-				<MdSearch className="absolute left-[12] top-1/2 -translate-y-1/2 size-[18] text-medium-grey" />
+				<MdSearch className="absolute left-[12] top-1/2 -translate-y-1/2 size-[18] text-medium-grey z-10" />
 				<Input
 					value={local_search}
 					onChange={(e) => setLocalSearch(e.target.value)}
 					placeholder="Search tasks..."
-					containerClassName="w-[220]"
+					containerClassName="w-[220] bg-background"
 					className="pl-[36]"
 				/>
 			</div>
 
 			{/* Completion Filter */}
 			<Select value={completion_filter} onValueChange={(value) => setCompletionFilter(value as "all" | "completed" | "not_completed")}>
-				<SelectTrigger className="w-[170]">
+				<SelectTrigger className="w-[170] bg-background">
 					<SelectValue />
 				</SelectTrigger>
 				<SelectContent>
