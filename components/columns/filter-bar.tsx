@@ -13,8 +13,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Checkbox } from "@/components/ui/checkbox";
 
-/* STORE */
-import { useFilterStore } from "@/store/filter.store";
+/* HOOKS */
+import { useFilterParams, type CompletionFilter } from "@/hooks/use-filter-params";
 
 /* QUERIES */
 import { useGetTaskManagementBoard } from "@/hooks/queries/task-management-board.query";
@@ -28,60 +28,43 @@ import { cn } from "@/lib/utils";
 /**
  * DOCU: Renders the filter bar with search input, completion filter, tag filter, and clear button. <br>
  * Triggered: When the board page renders above the column list. <br>
- * Last Updated: April 10, 2026
+ * Last Updated: May 21, 2026
  * @author Jhones
  */
 const FilterBar = () => {
 	const { board_id } = useParams() as { board_id: string };
 	const { board } = useGetTaskManagementBoard(board_id);
 
-	const search_query = useFilterStore((state) => state.search_query);
-	const completion_filter = useFilterStore((state) => state.completion_filter);
-	const selected_tag_ids = useFilterStore((state) => state.selected_tag_ids);
-	const setSearchQuery = useFilterStore((state) => state.setSearchQuery);
-	const setCompletionFilter = useFilterStore((state) => state.setCompletionFilter);
-	const toggleTagFilter = useFilterStore((state) => state.toggleTagFilter);
-	const clearFilters = useFilterStore((state) => state.clearFilters);
+	const { search_query, completion_filter, selected_tag_ids, setSearchQuery, setCompletionFilter, toggleTagFilter, clearFilters, is_filters_active } = useFilterParams();
 
-	const is_filters_active = search_query !== "" || completion_filter !== "all" || selected_tag_ids.length > 0;
-
-	const [local_search, setLocalSearch] = useState("");
+	const [local_search, setLocalSearch] = useState(search_query);
 
 	/**
-	 * DOCU: Debounces the local search input and updates the filter store after 300ms. <br>
+	 * DOCU: Debounces the local search input and updates the URL search param after 300ms. <br>
 	 * Triggered: When the local search input value changes. <br>
-	 * Last Updated: April 10, 2026
+	 * Last Updated: May 21, 2026
 	 * @author Jhones
 	 */
 	useEffect(() => {
+		if (local_search === search_query) return;
 		const timeout = setTimeout(() => {
 			setSearchQuery(local_search);
 		}, 300);
 
 		return () => clearTimeout(timeout);
-	}, [local_search]);
+	}, [local_search, setSearchQuery, search_query]);
 
 	/**
-	 * DOCU: Syncs the local search input when the store search query is cleared externally. <br>
-	 * Triggered: When the store search_query resets to empty (e.g., via clearFilters). <br>
-	 * Last Updated: April 10, 2026
+	 * DOCU: Syncs the local search input when the URL search param is cleared externally. <br>
+	 * Triggered: When search_query resets to empty (e.g., via clearFilters). <br>
+	 * Last Updated: May 21, 2026
 	 * @author Jhones
 	 */
 	useEffect(() => {
 		if (search_query === "") {
 			setLocalSearch("");
 		}
-	}, [search_query]);
-
-	/**
-	 * DOCU: Resets all filters when the user navigates to a different board. <br>
-	 * Triggered: When the board_id URL parameter changes. <br>
-	 * Last Updated: April 10, 2026
-	 * @author Jhones
-	 */
-	useEffect(() => {
-		clearFilters();
-	}, [board_id]);
+	}, [search_query, setLocalSearch]);
 
 	return (
 		<div className="flex flex-wrap items-center gap-[12] mb-[20] sticky top-[120] left-[324] z-50">
@@ -98,7 +81,7 @@ const FilterBar = () => {
 			</div>
 
 			{/* Completion Filter */}
-			<Select value={completion_filter} onValueChange={(value) => setCompletionFilter(value as "all" | "completed" | "not_completed")}>
+			<Select value={completion_filter} onValueChange={(value) => setCompletionFilter(value as CompletionFilter)}>
 				<SelectTrigger className="w-[170] bg-background">
 					<SelectValue />
 				</SelectTrigger>

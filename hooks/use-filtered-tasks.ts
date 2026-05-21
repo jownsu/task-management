@@ -1,22 +1,22 @@
+"use client";
+
 /* REACT */
 import { useMemo } from "react";
 
-/* STORE */
-import { useFilterStore } from "@/store/filter.store";
+/* HOOKS */
+import { useFilterParams } from "@/hooks/use-filter-params";
 
 /* TYPES */
 import { Task } from "@/types";
 
 /**
- * DOCU: Filters an array of tasks based on the current filter store state (search, completion, tags). <br>
+ * DOCU: Filters an array of tasks based on current URL filter params (search, completion, tags). <br>
  * Triggered: When column items render their task lists. <br>
- * Last Updated: April 10, 2026
+ * Last Updated: May 21, 2026
  * @author Jhones
  */
 export const useFilteredTasks = (tasks: Task[]): Task[] => {
-	const search_query = useFilterStore((state) => state.search_query);
-	const completion_filter = useFilterStore((state) => state.completion_filter);
-	const selected_tag_ids = useFilterStore((state) => state.selected_tag_ids);
+	const { search_query, completion_filter, selected_tag_ids } = useFilterParams();
 
 	return useMemo(() => {
 		let filtered = tasks;
