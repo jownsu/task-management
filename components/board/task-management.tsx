@@ -18,7 +18,7 @@ import DeleteTaskModal from "@/components/task/delete-task-modal";
  */
 const TaskManagement = () => {
 	return (
-		<div className="p-[24] relative">
+		<div className="p-[24] relative flex flex-col h-full">
 			<FilterBar />
 			<ColumnList />
 
