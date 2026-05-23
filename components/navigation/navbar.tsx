@@ -10,7 +10,7 @@ import HabitTrackerNavActions from "@/components/navigation/habit-tracker-nav-ac
 import { Skeleton } from "@/components/ui/skeleton";
 
 /* ICONS */
-import IconKanban from "@/components/kanban-icon";
+import FlowBoardIcon from "@/components/flowboard-icon";
 
 /* STORE */
 import { useNavigationStore } from "@/store/navigation.store";
@@ -45,7 +45,7 @@ const Navbar = () => {
 						["pr-[109] delay-200 duration-300 lg:pr-[149]"]: is_sidebar_open,
 					})}
 				>
-					<IconKanban />
+					<FlowBoardIcon />
 				</div>
 				{board_id && (is_loading_boards ? <Skeleton className="w-64 h-8" /> : <h1 className="!text-h-xl self-center">{board_list_entry?.name}</h1>)}
 			</div>

@@ -9,12 +9,12 @@ const BoardsDropdown = dynamic(() => import("@/components/navigation/boards-drop
 });
 
 /* ICONS */
-import IconKanbanOnly from "@/public/icon-kanban.svg";
+import FlowBoardSVG from "@/public/icon-kanban.svg";
 
 const NavMobile = () => {
 	return (
 		<div className="flex items-center gap-[16] md:hidden">
-			<IconKanbanOnly />
+			<FlowBoardSVG />
 			<BoardsDropdown />
 		</div>
 	);

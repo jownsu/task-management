@@ -4,7 +4,7 @@ import Link from "next/link";
 /* COMPONENTS */
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
-import KanbanIcon from "@/components/kanban-icon";
+import FlowBoardIcon from "@/components/flowboard-icon";
 
 const ERROR_MESSAGES: Record<string, { title: string; message: string }> = {
 	Configuration: {
@@ -39,7 +39,7 @@ const AuthErrorPage = async ({ searchParams }: { searchParams: Promise<{ error?:
 		<div className="flex min-h-screen w-full items-center justify-center px-[16]">
 			<Card className="mx-auto flex w-full max-w-[560] flex-col items-center gap-[21] border-none">
 				<CardTitle className="t-[21]">
-					<KanbanIcon />
+					<FlowBoardIcon />
 				</CardTitle>
 				<CardContent className="flex w-full flex-col items-center gap-[24]">
 					<div className="flex flex-col items-center gap-[8]">

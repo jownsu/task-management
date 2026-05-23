@@ -1,7 +1,7 @@
 "use client";
 
 /* COMPONENTS */
-import KanbanIcon from "@/components/kanban-icon";
+import FlowBoardIcon from "@/components/flowboard-icon";
 import BoardsList from "@/components/navigation/boards-list";
 import ThemeSwitch from "@/components/navigation/theme-switch";
 import UserProfile from "@/components/navigation/user-profile";
@@ -29,7 +29,7 @@ const SideNav = () => {
 			)}
 		>
 			<div className="h-[81] flex px-[24] mb-[7]">
-				<KanbanIcon />
+				<FlowBoardIcon />
 			</div>
 
 			<BoardsList />

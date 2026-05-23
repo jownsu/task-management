@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { Form, FormField, FormItem, FormLabel } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import KanbanIcon from "@/components/kanban-icon";
+import FlowBoardIcon from "@/components/flowboard-icon";
 
 /* PLUGINS */
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -86,7 +86,7 @@ const ResetPasswordForm = () => {
 		return (
 			<Card className="mx-auto flex w-full max-w-[560] flex-col items-center gap-[21] border-none">
 				<CardTitle className="t-[21]">
-					<KanbanIcon />
+					<FlowBoardIcon />
 				</CardTitle>
 				<CardContent className="flex w-full flex-col items-center gap-[24]">
 					<div className="flex flex-col items-center gap-[8]">
@@ -104,7 +104,7 @@ const ResetPasswordForm = () => {
 	return (
 		<Card className="mx-auto flex w-full max-w-[560] flex-col items-center gap-[21] border-none">
 			<CardTitle className="t-[21]">
-				<KanbanIcon />
+				<FlowBoardIcon />
 			</CardTitle>
 			<CardContent className="flex w-full flex-col gap-[12]">
 				{is_reset ? (

@@ -19,8 +19,8 @@ const jakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-	title: "Kanban Task Management",
-	description: "Kanban Task Management"
+	title: "FlowBoard",
+	description: "A multi-board productivity app for managing tasks, habits, and more."
 };
 
 export default function RootLayout({

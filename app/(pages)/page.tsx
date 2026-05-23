@@ -38,7 +38,7 @@ const HomePage = () => {
 				{has_boards ? (
 					<>
 						<div className="flex flex-col gap-[8]">
-							<h1 className="!text-h-xl text-black dark:text-white">Welcome to Kanban</h1>
+							<h1 className="!text-h-xl text-black dark:text-white">Welcome to FlowBoard</h1>
 							<p className="text-b-lg text-medium-grey max-w-[400]">Select a board from the sidebar to get started, or create a new one.</p>
 						</div>
 
@@ -54,7 +54,7 @@ const HomePage = () => {
 				) : (
 					<>
 						<div className="flex flex-col gap-[8]">
-							<h1 className="!text-h-xl text-black dark:text-white">Welcome to Kanban</h1>
+							<h1 className="!text-h-xl text-black dark:text-white">Welcome to FlowBoard</h1>
 							<p className="text-b-lg text-medium-grey max-w-[400]">You don&apos;t have any boards yet. Create your first board to start managing your tasks.</p>
 						</div>
 
