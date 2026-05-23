@@ -51,4 +51,11 @@ export type UserProfile = Pick<PrismaUser, "id" | "name" | "email" | "image" | "
 		completed_subtasks: number;
 		completion_rate: number;
 	};
+	habit_stats: {
+		total_habits: number;
+		current_streak: number;
+		longest_streak: number;
+		today_completed: number;
+		weekly_activity: Array<{ date: string; count: number }>;
+	};
 };

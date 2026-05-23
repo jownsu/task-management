@@ -9,6 +9,7 @@ import { Form, FormField, FormItem, FormLabel } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import DangerZone from "@/components/profile/danger-zone";
+import HabitStats from "@/components/profile/habit-stats";
 
 /* PLUGINS */
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -45,7 +46,7 @@ const getInitials = (name: string) => {
 /**
  * DOCU: This component renders the profile page content with user info, statistics, and forms. <br>
  * Triggered: Rendered in the profile page. <br>
- * Last Updated: March 25, 2026
+ * Last Updated: May 23, 2026
  * @author Jhones
  */
 const ProfileContent = () => {
@@ -148,6 +149,8 @@ const ProfileContent = () => {
 					))}
 				</div>
 			</div>
+
+			<HabitStats />
 
 			{/* Forms Row */}
 			<div className="grid grid-cols-1 gap-[24] md:grid-cols-2">
