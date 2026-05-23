@@ -19,13 +19,13 @@ const HabitStats = () => {
 
 	if (!user_profile) return null;
 
-	const { total_habits, current_streak, longest_streak, today_completed, weekly_activity } = user_profile.habit_stats;
+	const { total_habits, current_streak, longest_streak, total_completions, weekly_activity } = user_profile.habit_stats;
 
 	const stats = [
 		{ label: "Total Habits", value: total_habits, icon: LuActivity, color: "text-primary" },
 		{ label: "Current Streak", value: `${current_streak}d`, icon: LuFlame, color: "text-orange-500" },
 		{ label: "Longest Streak", value: `${longest_streak}d`, icon: LuTrophy, color: "text-amber-500" },
-		{ label: "Today", value: `${today_completed}/${total_habits}`, icon: LuTarget, color: "text-emerald-500" },
+		{ label: "Completions", value: total_completions, icon: LuTarget, color: "text-emerald-500" },
 	];
 
 	const max_count = Math.max(...weekly_activity.map((d) => d.count), 1);

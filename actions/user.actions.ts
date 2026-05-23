@@ -87,18 +87,18 @@ export async function getUserProfile(): Promise<UserProfile> {
 
 	const today = new Date();
 	today.setUTCHours(0, 0, 0, 0);
-	const today_str = today.toISOString().slice(0, 10);
 
 	const seven_days_ago = new Date(today);
 	seven_days_ago.setUTCDate(seven_days_ago.getUTCDate() - 6);
 
-	const [total_boards, total_columns, total_tasks, total_subtasks, completed_subtasks, total_habits, all_log_dates, weekly_log_counts] = await Promise.all([
+	const [total_boards, total_columns, total_tasks, total_subtasks, completed_subtasks, total_habits, total_completions, all_log_dates, weekly_log_counts] = await Promise.all([
 		prisma.board.count({ where: { userId: user.id } }),
 		prisma.column.count({ where: { board: { userId: user.id } } }),
 		prisma.task.count({ where: { column: { board: { userId: user.id } } } }),
 		prisma.subtask.count({ where: { task: { column: { board: { userId: user.id } } } } }),
 		prisma.subtask.count({ where: { task: { column: { board: { userId: user.id } } }, isCompleted: true } }),
 		prisma.habit.count({ where: { board: { userId: user.id } } }),
+		prisma.habitLog.count({ where: { habit: { board: { userId: user.id } } } }),
 		/* All unique log dates (ascending) — used for streak computation */
 		prisma.habitLog.groupBy({
 			by: ["date"],
@@ -132,8 +132,6 @@ export async function getUserProfile(): Promise<UserProfile> {
 		return { date: date_str, count: weekly_count_map.get(date_str) ?? 0 };
 	});
 
-	const today_completed = weekly_count_map.get(today_str) ?? 0;
-
 	return {
 		id: db_user.id,
 		name: db_user.name,
@@ -154,7 +152,7 @@ export async function getUserProfile(): Promise<UserProfile> {
 			total_habits,
 			current_streak,
 			longest_streak,
-			today_completed,
+			total_completions,
 			weekly_activity,
 		},
 	};
