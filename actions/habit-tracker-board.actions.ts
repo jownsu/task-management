@@ -6,7 +6,7 @@ import { authActionClient } from "@/lib/safe-action";
 import { sortByIdOrder } from "@/lib/helpers";
 
 /* SCHEMA */
-import { add_habit_schema, edit_habit_board_schema, edit_habit_schema } from "@/schema/board-schema";
+import { add_habit_schema, edit_habit_board_schema, edit_habit_schema, reorder_habit_schema } from "@/schema/board-schema";
 
 /* TYPES */
 import { Board } from "@/types";
@@ -145,6 +145,21 @@ export const addHabitAction = authActionClient
 			goal: habit.goal,
 			board_id
 		};
+	});
+
+/**
+ * DOCU: Persists a new habit order on a habit-tracker board by overwriting its habitOrder. Verifies board ownership before mutating. <br>
+ * Triggered: When the user finishes dragging a habit card into a new position. <br>
+ * Last Updated: May 30, 2026
+ * @author Jhones
+ */
+export const reorderHabitAction = authActionClient
+	.schema(reorder_habit_schema)
+	.action(async ({ parsedInput, ctx }) => {
+		await prisma.board.update({
+			where: { id: parsedInput.board_id, userId: ctx.userId },
+			data: { habitOrder: parsedInput.updated_habit_order }
+		});
 	});
 
 /**

@@ -76,6 +76,7 @@ const HabitTrackerBoard = () => {
 			<MonthPicker year_month={year_month} onChange={setYearMonth} />
 
 			<HabitGrid
+				board_id={board_id}
 				habits={habits}
 				logs={logs}
 				year={year}

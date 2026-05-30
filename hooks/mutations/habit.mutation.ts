@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 /* ACTIONS */
-import { addHabitAction, editHabitAction } from "@/actions/habit-tracker-board.actions";
+import { addHabitAction, editHabitAction, reorderHabitAction } from "@/actions/habit-tracker-board.actions";
 import { toggleHabitLogAction } from "@/actions/habit-log.actions";
 
 /* UTILITIES */
@@ -13,7 +13,7 @@ import { executeAction } from "@/lib/execute-action";
 import { CACHE_KEY_HABIT_TRACKER_BOARD, CACHE_KEY_HABIT_LOGS } from "@/constants/query-keys";
 
 /* SCHEMA */
-import { AddHabitSchema, EditHabitSchema, ToggleHabitLogSchema } from "@/schema/board-schema";
+import { AddHabitSchema, EditHabitSchema, ReorderHabitSchema, ToggleHabitLogSchema } from "@/schema/board-schema";
 
 /* TYPES */
 import { Board, CallbackResponse, Habit, HabitLog } from "@/types";
@@ -127,4 +127,47 @@ export const useToggleHabitLog = (board_id: string, year: number, month_num: num
 	});
 
 	return { toggleHabitLog, ...rest };
+};
+
+/**
+ * DOCU: Persists a reordered habit list to the board's habitOrder with an optimistic cache update + rollback on failure. <br>
+ * Triggered: When the user finishes dragging a habit card into a new position. <br>
+ * Last Updated: May 30, 2026
+ * @author Jhones
+ */
+export const useReorderHabit = (board_id: string, callback?: CallbackResponse) => {
+	const queryClient = useQueryClient();
+	const queryKey = [...CACHE_KEY_HABIT_TRACKER_BOARD, board_id];
+
+	const { mutate: reorderHabit, ...rest } = useMutation({
+		mutationFn: (payload: ReorderHabitSchema) => executeAction(reorderHabitAction(payload)),
+		onMutate: async (payload) => {
+			await queryClient.cancelQueries({ queryKey });
+
+			const previous_board = queryClient.getQueryData<Board>(queryKey);
+
+			queryClient.setQueryData<Board>(queryKey, (board) => {
+				if (!board) return board;
+
+				const habit_map = new Map((board.habits ?? []).map((habit) => [habit.id, habit]));
+				const habits = payload.updated_habit_order.map((id) => habit_map.get(id)).filter(Boolean) as Habit[];
+
+				return { ...board, habits, habitOrder: payload.updated_habit_order };
+			});
+
+			return { previous_board };
+		},
+		onError: (_, __, context) => {
+			if (context?.previous_board) {
+				queryClient.setQueryData(queryKey, context.previous_board);
+			}
+			toast.error("Something went wrong. Please try again.");
+			callback?.onError?.();
+		},
+		onSuccess: () => {
+			callback?.onSuccess?.();
+		}
+	});
+
+	return { reorderHabit, ...rest };
 };
