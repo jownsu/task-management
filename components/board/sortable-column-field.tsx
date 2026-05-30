@@ -42,7 +42,7 @@ const SortableColumnField = ({ id, index, children, disabled }: Props) => {
 
 	return (
 		<div ref={setElement} className={cn("flex items-center rounded-md", isDragging && "border-dashed border-2 border-primary !bg-transparent")}>
-			<button ref={handle_ref} type="button" className={cn("cursor-grab text-primary duration-200 -translate-x-0.5", isDragging && "opacity-0", disabled && "cursor-not-allowed")}>
+			<button ref={handle_ref} type="button" className={cn("cursor-grab touch-none text-primary duration-200 -translate-x-0.5", isDragging && "opacity-0", disabled && "cursor-not-allowed")}>
 				<MdDragIndicator size={16} />
 			</button>
 			<div className={cn("flex items-center flex-1 min-w-0", isDragging && "opacity-0")}>

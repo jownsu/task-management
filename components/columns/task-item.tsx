@@ -127,7 +127,7 @@ const TaskItem = ({ task, column_id, index, disabled }: Props) => {
 			</button>
 
 			{!is_filters_active && (
-				<button ref={handleRef} type="button" className={cn("cursor-grab text-primary/70 transition-opacity", isDragging ? "opacity-0" : "opacity-100 group-hover:opacity-100")}>
+				<button ref={handleRef} type="button" className={cn("cursor-grab touch-none text-primary/70 transition-opacity", isDragging ? "opacity-0" : "opacity-100 group-hover:opacity-100")}>
 					<MdDragIndicator size={20} />
 				</button>
 			)}
