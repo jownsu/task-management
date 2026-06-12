@@ -62,6 +62,11 @@ export const reorder_board_schema = z.object({
 	updated_board_order: z.array(z.string())
 });
 
+export const reorder_habit_schema = z.object({
+	board_id: z.string().uuid(),
+	updated_habit_order: z.array(z.string().uuid())
+});
+
 export const add_habit_schema = z.object({
 	board_id: z.string().uuid(),
 	name: z.string().min(1, "Name is required"),
@@ -89,6 +94,7 @@ export type EditBoardSchema = z.infer<typeof edit_board_schema>;
 export type EditHabitBoardSchema = z.infer<typeof edit_habit_board_schema>;
 export type DeleteBoardSchema = z.infer<typeof delete_board_schema>;
 export type ReorderBoardSchema = z.infer<typeof reorder_board_schema>;
+export type ReorderHabitSchema = z.infer<typeof reorder_habit_schema>;
 export type AddHabitSchema = z.infer<typeof add_habit_schema>;
 export type EditHabitSchema = z.infer<typeof edit_habit_schema>;
 export type ToggleHabitLogSchema = z.infer<typeof toggle_habit_log_schema>;

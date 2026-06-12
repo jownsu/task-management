@@ -13,6 +13,7 @@ import { login_schema } from "@/schema/auth-schema";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
 	adapter: PrismaAdapter(prisma),
+	trustHost: true,
 	session: { strategy: "jwt" },
 	pages: {
 		error: "/auth/error",

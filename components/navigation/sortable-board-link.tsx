@@ -75,7 +75,7 @@ const SortableBoardLink = ({ board, index, is_active, disabled }: Props) => {
 				ref={handle_ref}
 				type="button"
 				className={cn(
-					"cursor-grab -translate-x-0.5 duration-200",
+					"cursor-grab touch-none -translate-x-0.5 duration-200",
 					is_active ? "text-white/70" : "text-primary",
 					isDragging && "opacity-0",
 					disabled && "cursor-not-allowed"

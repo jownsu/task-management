@@ -137,7 +137,7 @@ const ColumnList = () => {
 
 	return (
 		<DragDropProvider onDragStart={handleDragStart} onDragOver={handleDragOver} onDragEnd={handleDragEnd}>
-			<div className="h-full flex gap-[24]">
+			<div className="h-full flex gap-[24] overflow-x-auto pb-[8]">
 				{columns.map((column) => (
 					<ColumnItem key={column.id} column={column} is_reordering={is_reordering} />
 				))}

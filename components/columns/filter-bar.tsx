@@ -67,7 +67,7 @@ const FilterBar = () => {
 	}, [search_query, setLocalSearch]);
 
 	return (
-		<div className="flex flex-wrap items-center gap-[12] mb-[20] sticky top-[120] left-[324] z-50">
+		<div className="flex flex-wrap items-center gap-[12] mb-[20]">
 			{/* Search Input */}
 			<div className="relative">
 				<MdSearch className="absolute left-[12] top-1/2 -translate-y-1/2 size-[18] text-medium-grey z-10" />
