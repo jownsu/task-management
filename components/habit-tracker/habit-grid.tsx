@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 
 /* COMPONENTS */
 import HabitCard from "@/components/habit-tracker/habit-card";
+import CreateHabitItem from "@/components/habit-tracker/create-habit-item";
 
 /* PLUGINS */
 import { DragDropProvider, DragOverlay } from "@dnd-kit/react";
@@ -111,6 +112,7 @@ const HabitGrid = ({ board_id, habits, logs, year, month_num, days_count, today_
 						onToggle={onToggle}
 					/>
 				))}
+				<CreateHabitItem />
 			</div>
 
 			<DragOverlay dropAnimation={null}>

@@ -9,12 +9,11 @@ import { useEffect, useState } from "react";
 /* COMPONENTS */
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Checkbox } from "@/components/ui/checkbox";
 
 /* HOOKS */
-import { useFilterParams, type CompletionFilter } from "@/hooks/use-filter-params";
+import { useFilterParams } from "@/hooks/use-filter-params";
 
 /* QUERIES */
 import { useGetTaskManagementBoard } from "@/hooks/queries/task-management-board.query";
@@ -35,7 +34,7 @@ const FilterBar = () => {
 	const { board_id } = useParams() as { board_id: string };
 	const { board } = useGetTaskManagementBoard(board_id);
 
-	const { search_query, completion_filter, selected_tag_ids, setSearchQuery, setCompletionFilter, toggleTagFilter, clearFilters, is_filters_active } = useFilterParams();
+	const { search_query, selected_tag_ids, setSearchQuery, toggleTagFilter, clearFilters, is_filters_active } = useFilterParams();
 
 	const [local_search, setLocalSearch] = useState(search_query);
 
@@ -79,18 +78,6 @@ const FilterBar = () => {
 					className="pl-[36]"
 				/>
 			</div>
-
-			{/* Completion Filter */}
-			<Select value={completion_filter} onValueChange={(value) => setCompletionFilter(value as CompletionFilter)}>
-				<SelectTrigger className="w-[170] bg-background">
-					<SelectValue />
-				</SelectTrigger>
-				<SelectContent>
-					<SelectItem value="all">All Tasks</SelectItem>
-					<SelectItem value="completed">Completed</SelectItem>
-					<SelectItem value="not_completed">Not Completed</SelectItem>
-				</SelectContent>
-			</Select>
 
 			{/* Tag Filter */}
 			{board?.tags && board.tags.length > 0 && (

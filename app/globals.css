@@ -192,3 +192,73 @@ body {
   width: 100% !important;
   height: 150px !important;
 }
+
+/* ===== Task completion celebration ===== */
+
+/* Slight playful shake with a tiny scale pop. */
+@keyframes slight-wiggle {
+	0%, 15% { transform: rotate(0deg) scale(1); }
+	22% { transform: rotate(0deg) scale(1.04); }
+	30% { transform: rotate(-2.2deg) scale(1); }
+	44% { transform: rotate(2.2deg) scale(1); }
+	58% { transform: rotate(-1.4deg) scale(1); }
+	72% { transform: rotate(1.4deg) scale(1); }
+	85%, 100% { transform: rotate(0deg) scale(1); }
+}
+
+/* Card stays fully visible through the wiggle, then fades out at the tail. */
+@keyframes card-fade-out {
+	0%, 60% { opacity: 1; }
+	100% { opacity: 0; }
+}
+
+/* A particle erupts outward and fades. Direction/rotation come from per-particle CSS vars. */
+@keyframes confetti-fly {
+	0% { opacity: 0; transform: translate(0, 0) scale(0.3) rotate(0deg); }
+	15% { opacity: 1; transform: translate(calc(var(--cf-x) * 0.3), calc(var(--cf-y) * 0.3)) scale(1) rotate(calc(var(--cf-r) * 0.3)); }
+	100% { opacity: 0; transform: translate(var(--cf-x), var(--cf-y)) scale(0.85) rotate(var(--cf-r)); }
+}
+
+/* Applied to the task card root during the ~700ms celebration window.
+   Duration here MUST match CELEBRATION_DURATION_MS in task-item.tsx. */
+.animate-celebrate {
+	animation: slight-wiggle 700ms ease-in-out, card-fade-out 700ms ease-in forwards;
+}
+
+.confetti-particle {
+	animation: confetti-fly 700ms ease-out forwards;
+}
+
+/* Honor reduced-motion: no wiggle, no confetti. (opacity:0 stays on the
+   particle overlay only — never on the card root, which would hide the card.) */
+@media (prefers-reduced-motion: reduce) {
+	.animate-celebrate {
+		animation: none !important;
+	}
+	.confetti-particle {
+		animation: none !important;
+		opacity: 0;
+	}
+}
+
+/* ===== Habit day-chip celebration ===== */
+
+/* Quick scale pop when a day is marked done. Unlike the task card, the chip
+   stays in place (it just fills), so it pops and settles rather than fading out.
+   The confetti burst reuses the shared .confetti-particle / confetti-fly above. */
+@keyframes habit-pop {
+	0% { transform: scale(1); }
+	35% { transform: scale(1.3); }
+	65% { transform: scale(0.92); }
+	100% { transform: scale(1); }
+}
+
+.animate-habit-pop {
+	animation: habit-pop 550ms ease-in-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.animate-habit-pop {
+		animation: none !important;
+	}
+}
