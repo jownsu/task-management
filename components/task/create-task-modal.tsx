@@ -57,10 +57,24 @@ const CreateTaskModal = () => {
 
 	const setModal = useTaskStore((state) => state.setModal);
 	const modals = useTaskStore((state) => state.modals);
+	const add_task_column_id = useTaskStore((state) => state.add_task_column_id);
+	const add_task_initial_title = useTaskStore((state) => state.add_task_initial_title);
+	const resetAddTask = useTaskStore((state) => state.resetAddTask);
 	const { board } = useGetTaskManagementBoard(board_id);
 	const { createTask, isPending } = useCreateTask({
-		onSuccess: () => setModal("add_task", false)
+		onSuccess: () => closeAddTask()
 	});
+
+	/**
+	 * DOCU: Closes the add-task modal and clears the column/title pre-fill so the next open starts clean. <br>
+	 * Triggered: On Cancel, outside-click/Esc, or after a successful create. <br>
+	 * Last Updated: June 13, 2026
+	 * @author Jhones
+	 */
+	const closeAddTask = () => {
+		setModal("add_task", false);
+		resetAddTask();
+	};
 
 	const form = useForm<TaskSchemaType>({
 		resolver: zodResolver(task_schema),
@@ -164,19 +178,23 @@ const CreateTaskModal = () => {
 	useEffect(() => {
 		if (modals.add_task) {
 			form.reset({
-				title: "",
+				title: add_task_initial_title,
 				description: "",
 				sub_tasks: [],
-				column_id: board?.columns?.[0]?.id || "",
-			tag_ids: []
+				column_id: add_task_column_id ?? board?.columns?.[0]?.id ?? "",
+				tag_ids: []
 			});
 		}
-	}, [modals.add_task, form, board]);
+	}, [modals.add_task, form, board, add_task_column_id, add_task_initial_title]);
 
 	return (
 		<Dialog
 			open={modals.add_task}
-			onOpenChange={(value) => setModal("add_task", value)}
+			onOpenChange={(value) => {
+				if (!value) {
+					closeAddTask();
+				}
+			}}
 		>
 			<DialogContent>
 				<DialogHeader>
@@ -352,7 +370,7 @@ const CreateTaskModal = () => {
 							<Button type="submit" className="w-full" disabled={isPending}>
 								{isPending ? "Creating..." : "Create Task"}
 							</Button>
-							<Button type="button" variant="secondary" className="w-full" disabled={isPending} onClick={() => setModal("add_task", false)}>
+							<Button type="button" variant="secondary" className="w-full" disabled={isPending} onClick={() => closeAddTask()}>
 								Cancel
 							</Button>
 						</div>
