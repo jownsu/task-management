@@ -10,23 +10,16 @@ import { useFilterParams } from "@/hooks/use-filter-params";
 import { Task } from "@/types";
 
 /**
- * DOCU: Filters an array of tasks based on current URL filter params (search, completion, tags). <br>
+ * DOCU: Filters an array of tasks based on current URL filter params (search, tags). Completion visibility is handled by the per-column CompletedSection, not here. <br>
  * Triggered: When column items render their task lists. <br>
- * Last Updated: May 21, 2026
+ * Last Updated: June 13, 2026
  * @author Jhones
  */
 export const useFilteredTasks = (tasks: Task[]): Task[] => {
-	const { search_query, completion_filter, selected_tag_ids } = useFilterParams();
+	const { search_query, selected_tag_ids } = useFilterParams();
 
 	return useMemo(() => {
 		let filtered = tasks;
-
-		/* Filter by completion status */
-		if (completion_filter === "completed") {
-			filtered = filtered.filter((task) => task.isCompleted);
-		} else if (completion_filter === "not_completed") {
-			filtered = filtered.filter((task) => !task.isCompleted);
-		}
 
 		/* Filter by search query (case-insensitive title match) */
 		if (search_query) {
@@ -40,5 +33,5 @@ export const useFilteredTasks = (tasks: Task[]): Task[] => {
 		}
 
 		return filtered;
-	}, [tasks, search_query, completion_filter, selected_tag_ids]);
+	}, [tasks, search_query, selected_tag_ids]);
 };

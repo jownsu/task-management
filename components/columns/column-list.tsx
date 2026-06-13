@@ -57,16 +57,21 @@ const ColumnList = () => {
 		setColumns((prev) => {
 			const tasks_map: Record<string, Task[]> = {};
 
+			/* Reorder operates on incomplete tasks only; completed tasks are appended back after the move calculation. */
 			for (const column of prev) {
-				tasks_map[column.id] = column.tasks || [];
+				tasks_map[column.id] = (column.tasks || []).filter((task) => !task.isCompleted);
 			}
 
 			const updated_map = move(tasks_map, event);
 
-			return prev.map((column) => ({
-				...column,
-				tasks: updated_map[column.id] || [],
-			}));
+			/* Reconstruct each column as [reordered incomplete..., completed...] so completed ids are never dropped from taskOrder. */
+			return prev.map((column) => {
+				const completed_tasks = (column.tasks || []).filter((task) => task.isCompleted);
+				return {
+					...column,
+					tasks: [...(updated_map[column.id] || []), ...completed_tasks],
+				};
+			});
 		});
 	};
 

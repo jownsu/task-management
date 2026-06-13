@@ -33,9 +33,10 @@ interface Props {
 	task: Task;
 	index: number;
 	disabled?: boolean;
+	is_completed_section?: boolean;
 }
 
-const TaskItem = ({ task, column_id, index, disabled }: Props) => {
+const TaskItem = ({ task, column_id, index, disabled, is_completed_section }: Props) => {
 	const { board_id } = useParams() as { board_id: string };
 	const setModal = useTaskStore((state) => state.setModal);
 	const setSelectedTask = useTaskStore((state) => state.setSelectedTask);
@@ -51,7 +52,7 @@ const TaskItem = ({ task, column_id, index, disabled }: Props) => {
 		type: "task",
 		accept: "task",
 		group: column_id,
-		disabled: disabled || is_filters_active
+		disabled: disabled || is_filters_active || is_completed_section
 	});
 
 	/**
@@ -126,7 +127,7 @@ const TaskItem = ({ task, column_id, index, disabled }: Props) => {
 				)}
 			</button>
 
-			{!is_filters_active && (
+			{!is_filters_active && !is_completed_section && (
 				<button ref={handleRef} type="button" className={cn("cursor-grab touch-none text-primary/70 transition-opacity", isDragging ? "opacity-0" : "opacity-100 group-hover:opacity-100")}>
 					<MdDragIndicator size={20} />
 				</button>
