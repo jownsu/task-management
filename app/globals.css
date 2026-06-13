@@ -240,3 +240,25 @@ body {
 		opacity: 0;
 	}
 }
+
+/* ===== Habit day-chip celebration ===== */
+
+/* Quick scale pop when a day is marked done. Unlike the task card, the chip
+   stays in place (it just fills), so it pops and settles rather than fading out.
+   The confetti burst reuses the shared .confetti-particle / confetti-fly above. */
+@keyframes habit-pop {
+	0% { transform: scale(1); }
+	35% { transform: scale(1.3); }
+	65% { transform: scale(0.92); }
+	100% { transform: scale(1); }
+}
+
+.animate-habit-pop {
+	animation: habit-pop 550ms ease-in-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.animate-habit-pop {
+		animation: none !important;
+	}
+}
